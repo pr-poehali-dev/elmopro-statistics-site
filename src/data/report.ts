@@ -20,6 +20,17 @@ export const CLIENT = {
   paybackFunnel: 'https://docs.google.com/spreadsheets/d/1Q3IAkMR1H7tOhgANisZCoDWc9LFwvvbiDbSxchVoVK8/edit?gid=520946394#gid=520946394',
 };
 
+export const AGENCY = {
+  name: 'Tolka Digital',
+  logo: 'https://tolkadigital.ru/wp-content/themes/tolka-digital/assets/images/logo.svg',
+};
+
+export const aboutLinks = [
+  { icon: 'CalendarRange', label: 'Понедельная статистика', desc: 'Расход, заявки и стоимость лида по неделям месяца.', href: CLIENT.weeklyStats, cta: 'Открыть таблицу' },
+  { icon: 'TrendingUp', label: 'Воронка окупаемости', desc: 'Путь от лида до сделки и юнит-экономика проекта.', href: CLIENT.paybackFunnel, cta: 'Открыть таблицу' },
+  { icon: 'Globe', label: 'Сайт', desc: 'Посадочная страница, на которую ведёт реклама.', href: CLIENT.site, cta: 'elmopro.org' },
+];
+
 // ── Блок: план / факт за прошедший месяц ──
 // isCost=true → выполнение считается как plan/fact (дороже плана — хуже)
 // isCost=false → выполнение считается как fact/plan (больше плана — лучше)

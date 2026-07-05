@@ -2,11 +2,11 @@ import { useState, useMemo } from 'react';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
 import {
-  AreaChart, Area, LineChart, Line, PieChart, Pie, Cell,
+  ComposedChart, Area, LineChart, Line, BarChart, Bar, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
 } from 'recharts';
 import {
-  NEON, PIE_COLORS, CLIENT, planFact, planFactNotes, monthCompare, yearly, demand,
+  NEON, PIE_COLORS, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, demand,
   deviceDim, genderDim, ageDim, targetingDim, byGeo,
   campaigns, campaignTotals, byGroupFull, adsFull,
   workDone, workPlan, nextPlan, upsellChannels, upsellDiscountPerChannel, breakdownInsights, contacts,
@@ -126,56 +126,52 @@ const nav = [
   { id: 'contacts', label: 'Контакты' },
 ];
 
-// ── Мини пирог с легендой, вынесенными % и (шт × стоимость) подписями ──
+// ── Столбчатая диаграмма разреза: клик по столбцу/легенде подсвечивает выбранные, остальные — в тени ──
 type DimRow = { name: string; [k: string]: number | string };
-const DimPie = ({ data, dataKey, title, unit = '', showCost = false }: {
+type DimLabelProps = { x?: number; y?: number; width?: number; height?: number; value?: number; index?: number };
+
+const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onToggle }: {
   data: DimRow[]; dataKey: string; title: string; unit?: string; showCost?: boolean;
+  active: string[]; onToggle: (name: string) => void;
 }) => {
+  const isDimmed = (name: string) => active.length > 0 && !active.includes(name);
+  const BarLabel = (p: DimLabelProps) => {
+    const { x, y, width, height, value, index } = p;
+    if (x === undefined || y === undefined || width === undefined || height === undefined || value === undefined || index === undefined) return null;
+    const row = data[index];
+    const costPer = showCost && value ? Number(row.cost) / value : null;
+    const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
+    const dim = isDimmed(row.name as string);
+    return (
+      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,15%,45%)' : '#fff'}>
+        {text}
+      </text>
+    );
+  };
   return (
     <div>
       <div className="mb-2 text-center font-mono text-xs uppercase tracking-wide text-muted-foreground">{title}</div>
-      <ResponsiveContainer width="100%" height={220}>
-        <PieChart margin={{ top: 10, bottom: 10 }}>
-          <Pie
-            data={data} dataKey={dataKey} nameKey="name" cx="50%" cy="50%" innerRadius={42} outerRadius={68} paddingAngle={2}
-            label={(p: { cx: number; cy: number; midAngle: number; outerRadius: number; percent: number; index: number }) => {
-              const { cx, cy, midAngle, outerRadius, percent, index } = p;
-              if (!percent) return null;
-              const RAD = Math.PI / 180;
-              const sin = Math.sin(-midAngle * RAD);
-              const cos = Math.cos(-midAngle * RAD);
-              const sx = cx + (outerRadius + 4) * cos;
-              const sy = cy + (outerRadius + 4) * sin;
-              const mx = cx + (outerRadius + 20) * cos;
-              const my = cy + (outerRadius + 20) * sin;
-              const ex = mx + (cos >= 0 ? 1 : -1) * 12;
-              const ey = my;
-              const row = data[index];
-              const val = Number(row[dataKey]) || 0;
-              const costPer = showCost && val ? Number(row.cost) / val : null;
-              return (
-                <g>
-                  <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={PIE_COLORS[index % PIE_COLORS.length]} fill="none" />
-                  <circle cx={ex} cy={ey} r={2} fill={PIE_COLORS[index % PIE_COLORS.length]} stroke="none" />
-                  <text x={ex + (cos >= 0 ? 6 : -6)} y={ey} textAnchor={cos >= 0 ? 'start' : 'end'} dominantBaseline="central" fontSize={11} fontWeight={700} fill="#fff">
-                    {(percent * 100).toFixed(0)}% ({fmt(val)}{costPer !== null ? ` по ${fmt(costPer)} ₽` : ''})
-                  </text>
-                </g>
-              );
-            }}
-            labelLine={false}
-          >
-            {data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} stroke="none" />)}
-          </Pie>
+      <ResponsiveContainer width="100%" height={Math.max(140, data.length * 40)}>
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 70, left: 4, bottom: 4 }}>
+          <XAxis type="number" hide />
+          <YAxis type="category" dataKey="name" width={0} hide />
           <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)}${unit}`} />
-        </PieChart>
+          <Bar dataKey={dataKey} radius={[0, 6, 6, 0]} onClick={(d: DimRow) => onToggle(d.name)} cursor="pointer" maxBarSize={26}>
+            {data.map((d, i) => (
+              <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} opacity={isDimmed(d.name) ? 0.25 : 1} />
+            ))}
+            <LabelList dataKey={dataKey} content={BarLabel} />
+          </Bar>
+        </BarChart>
       </ResponsiveContainer>
       <div className="mt-1 flex flex-wrap justify-center gap-2">
         {data.map((d, i) => (
-          <span key={d.name} className="flex items-center gap-1 font-mono text-[11px]" style={{ color: '#e2e8f0' }}>
+          <button key={d.name} onClick={() => onToggle(d.name)}
+            className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
+            style={{ color: isDimmed(d.name) ? 'hsl(220,15%,45%)' : '#e2e8f0', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
             <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
             {d.name}
-          </span>
+          </button>
         ))}
       </div>
     </div>
@@ -202,30 +198,20 @@ const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | u
   { key: 'cpa', label: 'CPA, ₽', fmt },
 ];
 
-type AdMetricKey = MetricKey | 'impressions' | 'ctr' | 'avgTraffic' | 'avgPos' | 'bounce';
-type AdRow = Record<AdMetricKey, number | null> & { campaign?: string; group?: string; title?: string; text?: string };
-
-// Полный набор столбцов — для блока «Объявления»
-const adColumns: { key: AdMetricKey; label: string; fmt?: (v: number | null | undefined) => string }[] = [
-  { key: 'cost', label: 'Расход, ₽', fmt },
-  { key: 'impressions', label: 'Показы', fmt },
-  { key: 'clicks', label: 'Клики', fmt },
-  { key: 'ctr', label: 'CTR, %', fmt: fmt1 },
-  { key: 'cpc', label: 'CPC, ₽', fmt },
-  { key: 'avgTraffic', label: 'Ср. объём трафика', fmt },
-  { key: 'avgPos', label: 'Ср. позиция', fmt: fmt1 },
-  { key: 'bounce', label: 'Отказы, %', fmt: fmt1 },
-  { key: 'conv', label: 'Конверсии', fmt },
-  { key: 'cr', label: 'CR, %', fmt: fmt1 },
-  { key: 'cpa', label: 'CPA, ₽', fmt },
-];
-
 const Index = () => {
   const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false, demand: false });
   const [campaignFilter, setCampaignFilter] = useState<string>('all');
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
   const [adsGroupFilter, setAdsGroupFilter] = useState<string>('all');
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+  const [dimActive, setDimActive] = useState<Record<string, string[]>>({ device: [], gender: [], age: [], targeting: [] });
+
+  const toggleDim = (dimKey: string, name: string) =>
+    setDimActive((s) => {
+      const cur = s[dimKey] || [];
+      const next = cur.includes(name) ? cur.filter((x) => x !== name) : [...cur, name];
+      return { ...s, [dimKey]: next };
+    });
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -263,10 +249,9 @@ const Index = () => {
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="container mx-auto flex items-center gap-4 overflow-x-auto px-6 py-3">
-          <span className="flex items-center gap-2 whitespace-nowrap font-display text-lg font-700 uppercase">
-            <span className="flex h-2.5 w-2.5 animate-pulse rounded-full bg-primary" />
-            Elmo<span className="text-primary">pro</span>
-          </span>
+          <div className="flex shrink-0 items-center rounded-lg bg-white px-3 py-1.5">
+            <img src={AGENCY.logo} alt={AGENCY.name} className="h-5 w-auto" />
+          </div>
           <nav className="flex gap-1">
             {nav.map((n) => (
               <button key={n.id} onClick={() => scroll(n.id)}
@@ -289,10 +274,13 @@ const Index = () => {
               <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Яндекс Директ · ежемесячный отчёт</span>
             </div>
             <h1 className="font-display text-5xl font-700 uppercase leading-none tracking-tight md:text-7xl">
-              Отчёт <span className="text-primary text-glow">{CLIENT.period}</span>
+              Эльмопро
             </h1>
+            <h2 className="mt-1 font-display text-3xl font-600 uppercase leading-none tracking-tight text-primary text-glow md:text-5xl">
+              Отчёт {CLIENT.period}
+            </h2>
             <p className="mt-4 max-w-xl text-muted-foreground">
-              {CLIENT.name} · {CLIENT.id}. Статистика, тренды, сравнение периодов и план на следующий месяц.
+              Статистика, тренды, сравнение периодов и план на следующий месяц.
             </p>
           </div>
         </div>
@@ -302,17 +290,14 @@ const Index = () => {
         {/* 1. ОБЩАЯ ИНФОРМАЦИЯ */}
         <Section id="about" num="01" title="Общая информация" icon="Info" sub="Ключевые ссылки по проекту">
           <div className="grid gap-4 md:grid-cols-3">
-            {[
-              { icon: 'CalendarRange', label: 'Понедельная статистика', href: CLIENT.weeklyStats, cta: 'Открыть таблицу' },
-              { icon: 'TrendingUp', label: 'Воронка окупаемости', href: CLIENT.paybackFunnel, cta: 'Открыть таблицу' },
-              { icon: 'Globe', label: 'Сайт проекта', href: CLIENT.site, cta: 'elmopro.org' },
-            ].map((l) => (
+            {aboutLinks.map((l) => (
               <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
                 className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Icon name={l.icon} size={20} />
                 </div>
                 <div className="mb-1 font-500">{l.label}</div>
+                <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
                 <div className="flex items-center gap-1 font-mono text-sm text-primary">
                   {l.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </div>
@@ -345,11 +330,7 @@ const Index = () => {
                         <td className="py-3.5 text-right font-mono font-700">
                           {r.factLabel}{r.factNote && <Sup>{r.factNote}</Sup>}
                         </td>
-                        <td className="py-3.5 text-right">
-                          <span className="inline-flex items-center gap-1 font-mono text-sm font-bold" style={{ color: st.color }}>
-                            {fmt1(st.pct)}%
-                          </span>
-                        </td>
+                        <td className="py-3.5 text-right"><MonthDelta mayNum={r.planNum} junNum={r.factNum} isCost={r.isCost} /></td>
                         <td className="py-3.5 text-center">
                           <Icon name={st.icon} size={18} className="inline" style={{ color: st.color }} />
                         </td>
@@ -399,10 +380,6 @@ const Index = () => {
                 </tbody>
               </table>
             </div>
-            <p className="mt-4 font-mono text-xs text-muted-foreground">
-              * По Чистым лидам возможны спам и необработанные заявки. ** Учтены Потенциальные Квалы.
-              Изменения до 5% считаются незначительными и не подсвечиваются.
-            </p>
           </Card>
         </Section>
 
@@ -554,15 +531,18 @@ const Index = () => {
 
         {/* 5. РАЗРЕЗЫ */}
         <Section id="breakdown" num="05" title="Статистика по Директу" icon="ChartPie" sub={`Разрезы за ${CLIENT.period} · период 01.06 – 30.06.2026`}>
-          {/* Круговые диаграммы по 4 измерениям × 3 метрики */}
+          {/* Столбчатые диаграммы по 4 измерениям × 3 метрики, с подсветкой выбранных сегментов */}
           <div className="space-y-6">
             {dimensions.map((dim) => (
               <Card key={dim.key}>
-                <ChartTitle title={dim.label} />
+                <ChartTitle title={dim.label} sub="Кликните по столбцу или подписи, чтобы выделить сегмент" />
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <DimPie data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽" />
-                  <DimPie data={dim.data} dataKey="leads" title="Уникальные лиды" showCost />
-                  <DimPie data={dim.data} dataKey="quals" title="Квал. лиды" showCost />
+                  <DimBar data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽"
+                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
+                  <DimBar data={dim.data} dataKey="leads" title="Уникальные лиды" showCost
+                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
+                  <DimBar data={dim.data} dataKey="quals" title="Квал. лиды" showCost
+                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
                 </div>
               </Card>
             ))}
@@ -670,11 +650,11 @@ const Index = () => {
                     <div className="mt-1 text-sm text-muted-foreground">{a.text}</div>
                     <div className="mt-1 font-mono text-xs text-muted-foreground">Группа: {a.group}</div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 lg:grid-cols-11">
-                    {adColumns.map((c) => (
+                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+                    {groupColumns.map((c) => (
                       <div key={c.key} className="text-center">
                         <div className="text-[10px] uppercase text-muted-foreground">{c.label}</div>
-                        <div className="font-mono text-sm">{c.fmt ? c.fmt((a as AdRow)[c.key]) : (a as AdRow)[c.key]}</div>
+                        <div className="font-mono text-sm">{c.fmt ? c.fmt((a as MetricRow)[c.key]) : (a as MetricRow)[c.key]}</div>
                       </div>
                     ))}
                   </div>
@@ -696,11 +676,15 @@ const Index = () => {
                 ))}
               </div>
             </div>
-            <ul className="space-y-2 text-sm leading-relaxed text-foreground/90">
+            <ul className="space-y-3 text-sm leading-relaxed text-foreground/90">
               {breakdownInsights.flatMap((group) =>
                 group.items.map((it) => (
                   <li key={it.title} className="flex items-start justify-between gap-3">
-                    <span><b>{it.title}:</b> {it.text} <span className="text-muted-foreground">Гипотеза: {it.hint}</span></span>
+                    <span>
+                      <b>{it.title}:</b> {it.text}
+                      <br />
+                      <span className="text-muted-foreground">Гипотеза: {it.hint}</span>
+                    </span>
                     <Icon name={group.icon} size={16} className="mt-0.5 shrink-0" style={{ color: group.color }} />
                   </li>
                 ))
@@ -745,7 +729,7 @@ const Index = () => {
             <ChartTitle title="Динамика спроса" sub="Число запросов в месяц"
               action={<ValueToggle show={showVals.demand} setShow={(v) => setShowVals((s) => ({ ...s, demand: v }))} />} />
             <ResponsiveContainer width="100%" height={320}>
-              <AreaChart data={demand} margin={{ top: 30 }}>
+              <ComposedChart data={demand} margin={{ top: 30 }}>
                 <defs>
                   <linearGradient id="dem" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={NEON.cyan} stopOpacity={0.4} />
@@ -762,16 +746,13 @@ const Index = () => {
                 <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
                   {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} />} />}
                 </Area>
-              </AreaChart>
+              </ComposedChart>
             </ResponsiveContainer>
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
               Спрос по Wordstat в 2026 году заметно ниже 2024-2025: в среднем на 40-45% запросов меньше, чем годом ранее.
               Сезонный рост к маю-июню сохраняется, но на суженной базе — рынок в целом сжался, а не только наш канал.
               Рекомендуем учитывать это при планировании бюджета на июль и не ожидать роста количества заявок пропорционально прошлым годам.
             </p>
-            <Badge className="mt-3 bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
-              <Icon name="Image" size={12} className="mr-1" /> Место под скриншот из Wordstat — можно заменить график на ваш снимок
-            </Badge>
           </Card>
         </Section>
 
@@ -799,69 +780,28 @@ const Index = () => {
           </Card>
         </Section>
 
-        {/* UPSELL — переработанный продающий блок */}
+        {/* UPSELL — компактный продающий блок, помещается на один разворот десктопа */}
         <Section id="upsell" num="09" title="Расширьте охват" icon="Sparkles" sub="Дополнительные каналы трафика для стабильного потока заявок">
-          {/* Асимметричная сетка: первый канал крупный, остальные компактные */}
-          <div className="grid gap-4 lg:grid-cols-3">
-            <Card className="relative overflow-hidden border-primary/40 lg:col-span-2 lg:row-span-2">
-              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/15 blur-3xl" />
-              <div className="relative">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                    <Icon name={upsellChannels[0].icon} size={24} />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {upsellChannels.map((c, i) => (
+              <Card key={c.name} className={`transition-all hover:border-primary/40 ${i === 0 ? 'border-primary/40' : ''}`}>
+                <div className="mb-2 flex items-center justify-between">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon name={c.icon} size={18} />
                   </div>
-                  <Badge className="bg-primary/15 font-mono text-primary hover:bg-primary/15">от {fmt(upsellChannels[0].price)} ₽/мес</Badge>
+                  <Badge className="bg-secondary font-mono text-[11px] text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
                 </div>
-                <div className="mb-2 font-display text-2xl font-700 uppercase">{upsellChannels[0].name}</div>
-                <div className="mb-3 flex items-baseline gap-2">
-                  <span className="font-mono text-4xl font-700 text-primary">{upsellChannels[0].stat}</span>
-                  <span className="text-sm text-muted-foreground">{upsellChannels[0].statLabel}</span>
+                <div className="mb-1.5 font-display text-sm font-600 uppercase leading-tight">{c.name}</div>
+                <div className="mb-1.5 flex items-baseline gap-1.5">
+                  <span className="font-mono text-lg font-700" style={{ color: NEON.cyan }}>{c.stat}</span>
+                  <span className="text-[11px] text-muted-foreground">{c.statLabel}</span>
                 </div>
-                <p className="text-sm leading-relaxed text-foreground/90">{upsellChannels[0].pitch}</p>
-                <div className="mt-4 flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-2 font-mono text-xs text-muted-foreground">
-                  <Icon name="ShieldCheck" size={14} className="shrink-0 text-primary" /> {upsellChannels[0].proof}
-                </div>
-              </div>
-            </Card>
-
-            {upsellChannels.slice(1, 3).map((c) => (
-              <Card key={c.name} className="transition-all hover:border-primary/40">
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon name={c.icon} size={20} />
-                  </div>
-                  <Badge className="bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
-                </div>
-                <div className="mb-2 font-display text-base font-600 uppercase">{c.name}</div>
-                <div className="mb-2 flex items-baseline gap-1.5">
-                  <span className="font-mono text-xl font-700" style={{ color: NEON.cyan }}>{c.stat}</span>
-                  <span className="text-xs text-muted-foreground">{c.statLabel}</span>
-                </div>
-                <p className="text-sm text-muted-foreground">{c.pitch}</p>
-              </Card>
-            ))}
-
-            {upsellChannels.slice(3).map((c) => (
-              <Card key={c.name} className="transition-all hover:border-primary/40 lg:col-span-3 lg:flex lg:items-center lg:gap-6">
-                <div className="flex items-center gap-3 lg:w-72 lg:shrink-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon name={c.icon} size={20} />
-                  </div>
-                  <div>
-                    <div className="font-display text-base font-600 uppercase">{c.name}</div>
-                    <Badge className="mt-1 bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-baseline gap-1.5 lg:mt-0 lg:w-56 lg:shrink-0">
-                  <span className="font-mono text-xl font-700" style={{ color: NEON.cyan }}>{c.stat}</span>
-                  <span className="text-xs text-muted-foreground">{c.statLabel}</span>
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground lg:mt-0">{c.pitch}</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">{c.pitch}</p>
               </Card>
             ))}
           </div>
 
-          {/* Калькулятор выгоды — вертикальная раскладка */}
+          {/* Посчитайте свою выгоду — слева список каналов, справа сумма */}
           <Card className="mt-6 border-primary/40 glow-cyan">
             <div className="mb-4 flex items-center gap-2 font-display text-lg font-700 uppercase text-primary">
               <Icon name="Calculator" size={20} /> Посчитайте свою выгоду
@@ -870,52 +810,54 @@ const Index = () => {
               Выберите каналы — скидка {upsellDiscountPerChannel}% за каждый дополнительный канал (максимум {(upsellChannels.length - 1) * upsellDiscountPerChannel}% при подключении всех {upsellChannels.length}).
             </p>
 
-            <div className="flex flex-col gap-2">
-              {upsellChannels.map((c) => {
-                const active = selectedChannels.includes(c.name);
-                return (
-                  <button key={c.name} onClick={() => toggleChannel(c.name)}
-                    className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
-                      active ? 'border-primary bg-primary/10' : 'border-border bg-secondary/30 hover:border-primary/40'
-                    }`}>
-                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
-                      <Icon name={active ? 'Check' : c.icon} size={17} />
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-500">{c.name}</div>
-                      <div className="font-mono text-xs text-muted-foreground">{fmt(c.price)} ₽/мес</div>
-                    </div>
-                    {active && <Icon name="CircleCheck" size={18} className="text-primary" />}
-                  </button>
-                );
-              })}
-            </div>
+            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+              <div className="flex flex-col gap-2">
+                {upsellChannels.map((c) => {
+                  const active = selectedChannels.includes(c.name);
+                  return (
+                    <button key={c.name} onClick={() => toggleChannel(c.name)}
+                      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
+                        active ? 'border-primary bg-primary/10' : 'border-border bg-secondary/30 hover:border-primary/40'
+                      }`}>
+                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
+                        <Icon name={active ? 'Check' : c.icon} size={17} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-500">{c.name}</div>
+                        <div className="font-mono text-xs text-muted-foreground">{fmt(c.price)} ₽/мес</div>
+                      </div>
+                      {active && <Icon name="CircleCheck" size={18} className="text-primary" />}
+                    </button>
+                  );
+                })}
+              </div>
 
-            <div className="mt-5 rounded-xl border border-border bg-secondary/40 p-4">
-              {calc.count === 0 ? (
-                <div className="text-sm text-muted-foreground">Выберите один или несколько каналов, чтобы увидеть стоимость</div>
-              ) : (
-                <div className="space-y-1">
-                  <div className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    {calc.count} канал{calc.count > 1 ? (calc.count < 5 ? 'а' : 'ов') : ''} · скидка {calc.discount}%
-                  </div>
-                  <div className="flex items-baseline gap-2">
+              <div className="flex flex-col items-center justify-center rounded-xl border border-primary/30 bg-secondary/40 p-6 text-center">
+                {calc.count === 0 ? (
+                  <div className="text-sm text-muted-foreground">Выберите один или несколько каналов слева, чтобы увидеть стоимость</div>
+                ) : (
+                  <>
+                    <div className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                      {calc.count} канал{calc.count > 1 ? (calc.count < 5 ? 'а' : 'ов') : ''} · скидка {calc.discount}%
+                    </div>
                     {calc.discount > 0 && (
-                      <span className="font-mono text-lg text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
+                      <span className="mt-2 font-mono text-base text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
                     )}
-                    <span className="font-mono text-3xl font-700 text-primary">от {fmt(calc.finalPrice)} ₽/мес</span>
-                  </div>
-                  {calc.discount > 0 && (
-                    <div className="font-mono text-xs" style={{ color: NEON.pos }}>Экономия {fmt(calc.base - calc.finalPrice)} ₽/мес</div>
-                  )}
-                </div>
-              )}
+                    <span className="mt-1 font-mono text-4xl font-700 leading-tight text-primary">от {fmt(calc.finalPrice)} ₽</span>
+                    <span className="font-mono text-sm text-muted-foreground">в месяц</span>
+                    {calc.discount > 0 && (
+                      <div className="mt-3 rounded-full bg-primary/10 px-3 py-1 font-mono text-xs" style={{ color: NEON.pos }}>
+                        Экономия {fmt(calc.base - calc.finalPrice)} ₽/мес
+                      </div>
+                    )}
+                  </>
+                )}
+                <button onClick={() => scroll('contacts')}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
+                  Посчитать медиаплан <Icon name="ArrowRight" size={16} />
+                </button>
+              </div>
             </div>
-
-            <button onClick={() => scroll('contacts')}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
-              Посчитать медиаплан <Icon name="ArrowRight" size={16} />
-            </button>
 
             <div className="mt-4 flex items-center gap-2 font-mono text-xs text-muted-foreground">
               <Icon name="Gift" size={14} className="text-primary" /> Действует для текущих клиентов Директа — скидка суммируется автоматически при подключении каждого следующего канала
