@@ -6,7 +6,10 @@ export const NEON = {
   grid: 'hsl(231, 22%, 18%)',
   pos: 'hsl(152,70%,50%)',
   neg: 'hsl(355,80%,62%)',
+  gray: 'hsl(220,10%,55%)',
 };
+
+export const PIE_COLORS = [NEON.cyan, NEON.violet, NEON.amber, NEON.lime, 'hsl(210,10%,50%)', 'hsl(340,70%,60%)'];
 
 export const CLIENT = {
   name: 'Электромонтаж Elmopro Мск',
@@ -18,14 +21,16 @@ export const CLIENT = {
 };
 
 // ── Блок: план / факт за прошедший месяц ──
+// isCost=true → выполнение считается как plan/fact (дороже плана — хуже)
+// isCost=false → выполнение считается как fact/plan (больше плана — лучше)
 export const planFact = [
-  { param: 'Бюджет, с НДС', plan: '200 000', fact: '191 750,92 ₽', ok: true },
-  { param: 'Количество заявок', plan: '50', fact: '32', ok: false },
-  { param: 'Стоимость заявки, с НДС', plan: '4 000', fact: '5 992,22 ₽', ok: false },
-  { param: 'Количество чистых заявок', plan: '40', fact: '19*', ok: false },
-  { param: 'Стоимость чистой заявки, с НДС', plan: '5 000', fact: '10 092,15 ₽', ok: false },
-  { param: 'Количество Квал заявок', plan: '8', fact: '7**', ok: true },
-  { param: 'Стоимость Квал заявки, с НДС', plan: '25 000', fact: '25 839 ₽', ok: false },
+  { param: 'Бюджет, с НДС', planNum: 200000, factNum: 191750.92, planLabel: '200 000', factLabel: '191 750,92 ₽', isCost: false },
+  { param: 'Количество заявок', planNum: 50, factNum: 32, planLabel: '50', factLabel: '32', isCost: false },
+  { param: 'Стоимость заявки, с НДС', planNum: 4000, factNum: 5992.22, planLabel: '4 000', factLabel: '5 992,22 ₽', isCost: true },
+  { param: 'Количество чистых заявок', planNum: 40, factNum: 19, planLabel: '40', factLabel: '19', factNote: '*', isCost: false },
+  { param: 'Стоимость чистой заявки, с НДС', planNum: 5000, factNum: 10092.15, planLabel: '5 000', factLabel: '10 092,15 ₽', isCost: true },
+  { param: 'Количество Квал заявок', planNum: 8, factNum: 7, planLabel: '8', factLabel: '7', factNote: '**', isCost: false },
+  { param: 'Стоимость Квал заявки, с НДС', planNum: 25000, factNum: 25839, planLabel: '25 000', factLabel: '25 839 ₽', isCost: true },
 ];
 
 export const planFactNotes = [
@@ -35,32 +40,32 @@ export const planFactNotes = [
 
 // ── Блок: факт май vs факт июнь ──
 export const monthCompare = [
-  { param: 'Бюджет, с НДС', may: '125 591,44 ₽', jun: '191 750,92 ₽', d: 52.7 },
-  { param: 'Количество заявок', may: '22', jun: '32', d: 45.5 },
-  { param: 'Стоимость заявки, с НДС', may: '5 708,70 ₽', jun: '5 992,22 ₽', d: 5.0 },
-  { param: 'Количество чистых заявок', may: '16*', jun: '19*', d: 18.8 },
-  { param: 'Стоимость чистой заявки, с НДС', may: '7 849,47 ₽', jun: '10 092,15 ₽', d: 28.6 },
-  { param: 'Количество Квал заявок', may: '5**', jun: '7**', d: 40.0 },
-  { param: 'Стоимость Квал заявки, с НДС', may: '25 118,29 ₽', jun: '25 839 ₽', d: 2.9 },
+  { param: 'Бюджет, с НДС', mayNum: 125591.44, junNum: 191750.92, mayLabel: '125 591,44 ₽', junLabel: '191 750,92 ₽', isCost: false },
+  { param: 'Количество заявок', mayNum: 22, junNum: 32, mayLabel: '22', junLabel: '32', isCost: false },
+  { param: 'Стоимость заявки, с НДС', mayNum: 5708.70, junNum: 5992.22, mayLabel: '5 708,70 ₽', junLabel: '5 992,22 ₽', isCost: true },
+  { param: 'Количество чистых заявок', mayNum: 16, junNum: 19, mayLabel: '16', junLabel: '19', mayNote: '*', junNote: '*', isCost: false },
+  { param: 'Стоимость чистой заявки, с НДС', mayNum: 7849.47, junNum: 10092.15, mayLabel: '7 849,47 ₽', junLabel: '10 092,15 ₽', isCost: true },
+  { param: 'Количество Квал заявок', mayNum: 5, junNum: 7, mayLabel: '5', junLabel: '7', mayNote: '**', junNote: '**', isCost: false },
+  { param: 'Стоимость Квал заявки, с НДС', mayNum: 25118.29, junNum: 25839, mayLabel: '25 118,29 ₽', junLabel: '25 839 ₽', isCost: true },
 ];
 
 // ── Блок: годовые тренды (текущий 2026 vs прошлый 2025 год) ──
 export const yearly = [
-  { m: 'Янв', cost25: 82883.84, cost26: 95949.18, clk25: 303, clk26: 376, cpc25: 273.54, cpc26: 255.18, lead25: 21, lead26: 18, lc25: 3946.85, lc26: 5330.51, qual25: 3, qual26: 2, qc25: 27627.95, qc26: 47974.59 },
-  { m: 'Фев', cost25: 111401.31, cost26: 91518.8, clk25: 395, clk26: 395, cpc25: 282.03, cpc26: 231.69, lead25: 38, lead26: 20, lc25: 2931.61, lc26: 4575.94, qual25: 5, qual26: 3, qc25: 22280.26, qc26: 30506.27 },
-  { m: 'Мар', cost25: 122873.39, cost26: 144326.43, clk25: 399, clk26: 352, cpc25: 307.95, cpc26: 410.02, lead25: 31, lead26: 36, lc25: 3963.66, lc26: 4009.07, qual25: 6, qual26: 5, qc25: 20478.9, qc26: 28865.29 },
-  { m: 'Апр', cost25: 99036.98, cost26: 176642.18, clk25: 384, clk26: 581, cpc25: 257.91, cpc26: 304.03, lead25: 45, lead26: 23, lc25: 2200.82, lc26: 7680.09, qual25: 7, qual26: 3, qc25: 14148.14, qc26: 58880.73 },
-  { m: 'Май', cost25: 86058.17, cost26: 124791.07, clk25: 323, clk26: 353, cpc25: 266.43, cpc26: 353.52, lead25: 29, lead26: 17, lc25: 2967.52, lc26: 7340.65, qual25: 6, qual26: 4, qc25: 14343.03, qc26: 31197.77 },
-  { m: 'Июн', cost25: 98688.98, cost26: 191750.93, clk25: 381, clk26: 298, cpc25: 259.03, cpc26: 643.46, lead25: 36, lead26: 24, lc25: 2741.36, lc26: 7989.62, qual25: 4, qual26: 3, qc25: 24672.25, qc26: 63916.98 },
-  { m: 'Июл', cost25: 115595.69, cost26: null, clk25: 428, clk26: null, cpc25: 270.08, cpc26: null, lead25: 37, lead26: null, lc25: 3124.21, lc26: null, qual25: 6, qual26: null, qc25: 19265.95, qc26: null },
-  { m: 'Авг', cost25: 103875.43, cost26: null, clk25: 406, clk26: null, cpc25: 255.85, cpc26: null, lead25: 28, lead26: null, lc25: 3709.84, lc26: null, qual25: 3, qual26: null, qc25: 34625.14, qc26: null },
-  { m: 'Сен', cost25: 117485.8, cost26: null, clk25: 336, clk26: null, cpc25: 349.66, cpc26: null, lead25: 34, lead26: null, lc25: 3455.46, lc26: null, qual25: 4, qual26: null, qc25: 29371.45, qc26: null },
-  { m: 'Окт', cost25: 115687.52, cost26: null, clk25: 364, clk26: null, cpc25: 317.82, cpc26: null, lead25: 34, lead26: null, lc25: 3402.57, lc26: null, qual25: 6, qual26: null, qc25: 19281.25, qc26: null },
-  { m: 'Ноя', cost25: 104500.39, cost26: null, clk25: 303, clk26: null, cpc25: 344.89, cpc26: null, lead25: 26, lead26: null, lc25: 4019.25, lc26: null, qual25: 2, qual26: null, qc25: 52250.19, qc26: null },
-  { m: 'Дек', cost25: 98785.47, cost26: null, clk25: 320, clk26: null, cpc25: 308.7, cpc26: null, lead25: 25, lead26: null, lc25: 3951.42, lc26: null, qual25: 4, qual26: null, qc25: 24696.37, qc26: null },
+  { m: 'Янв', cost25: 82884, cost26: 95949, clk25: 303, clk26: 376, cpc25: 274, cpc26: 255, lead25: 21, lead26: 18, lc25: 3947, lc26: 5331, qual25: 3, qual26: 2, qc25: 27628, qc26: 47975 },
+  { m: 'Фев', cost25: 111401, cost26: 91519, clk25: 395, clk26: 395, cpc25: 282, cpc26: 232, lead25: 38, lead26: 20, lc25: 2932, lc26: 4576, qual25: 5, qual26: 3, qc25: 22280, qc26: 30506 },
+  { m: 'Мар', cost25: 122873, cost26: 144326, clk25: 399, clk26: 352, cpc25: 308, cpc26: 410, lead25: 31, lead26: 36, lc25: 3964, lc26: 4009, qual25: 6, qual26: 5, qc25: 20479, qc26: 28865 },
+  { m: 'Апр', cost25: 99037, cost26: 176642, clk25: 384, clk26: 581, cpc25: 258, cpc26: 304, lead25: 45, lead26: 23, lc25: 2201, lc26: 7680, qual25: 7, qual26: 3, qc25: 14148, qc26: 58881 },
+  { m: 'Май', cost25: 86058, cost26: 124791, clk25: 323, clk26: 353, cpc25: 266, cpc26: 354, lead25: 29, lead26: 17, lc25: 2968, lc26: 7341, qual25: 6, qual26: 4, qc25: 14343, qc26: 31198 },
+  { m: 'Июн', cost25: 98689, cost26: 191751, clk25: 381, clk26: 298, cpc25: 259, cpc26: 643, lead25: 36, lead26: 24, lc25: 2741, lc26: 7990, qual25: 4, qual26: 3, qc25: 24672, qc26: 63917 },
+  { m: 'Июл', cost25: 115596, cost26: null, clk25: 428, clk26: null, cpc25: 270, cpc26: null, lead25: 37, lead26: null, lc25: 3124, lc26: null, qual25: 6, qual26: null, qc25: 19266, qc26: null },
+  { m: 'Авг', cost25: 103875, cost26: null, clk25: 406, clk26: null, cpc25: 256, cpc26: null, lead25: 28, lead26: null, lc25: 3710, lc26: null, qual25: 3, qual26: null, qc25: 34625, qc26: null },
+  { m: 'Сен', cost25: 117486, cost26: null, clk25: 336, clk26: null, cpc25: 350, cpc26: null, lead25: 34, lead26: null, lc25: 3455, lc26: null, qual25: 4, qual26: null, qc25: 29371, qc26: null },
+  { m: 'Окт', cost25: 115688, cost26: null, clk25: 364, clk26: null, cpc25: 318, cpc26: null, lead25: 34, lead26: null, lc25: 3403, lc26: null, qual25: 6, qual26: null, qc25: 19281, qc26: null },
+  { m: 'Ноя', cost25: 104500, cost26: null, clk25: 303, clk26: null, cpc25: 345, cpc26: null, lead25: 26, lead26: null, lc25: 4019, lc26: null, qual25: 2, qual26: null, qc25: 52250, qc26: null },
+  { m: 'Дек', cost25: 98785, cost26: null, clk25: 320, clk26: null, cpc25: 309, cpc26: null, lead25: 25, lead26: null, lc25: 3951, lc26: null, qual25: 4, qual26: null, qc25: 24696, qc26: null },
 ];
 
-// ── Спрос (сезонность, условные индексы) ──
+// ── Спрос (сезонность, условные индексы Wordstat) ──
 export const demand = [
   { m: 'Янв', y25: 68, y26: 74 }, { m: 'Фев', y25: 82, y26: 88 },
   { m: 'Мар', y25: 95, y26: 102 }, { m: 'Апр', y25: 110, y26: 118 },
@@ -70,56 +75,85 @@ export const demand = [
   { m: 'Ноя', y25: 96, y26: null }, { m: 'Дек', y25: 78, y26: null },
 ];
 
-// ── Разрезы за июнь 2026 (агрегация) ──
-export const byPlatform = [
-  { name: 'Поиск', cost: 191750.93, clk: 298, imp: 6267, conv: 24, share: 100 },
+// ── Разрезы за июнь 2026: расход / уник. лиды / квал. лиды по каждому измерению ──
+export const deviceDim = [
+  { name: 'Десктопы', cost: 182000, leads: 22, quals: 3 },
+  { name: 'Смартфоны', cost: 5500, leads: 1, quals: 0 },
+  { name: 'Планшеты', cost: 4250, leads: 1, quals: 0 },
 ];
 
-export const byDevice = [
-  { name: 'Десктопы', cost: 170560, clk: 252, conv: 22 },
-  { name: 'Смартфоны', cost: 1685, clk: 21, conv: 0 },
-  { name: 'Планшеты', cost: 1596, clk: 25, conv: 0 },
+export const genderDim = [
+  { name: 'Мужской', cost: 111215, leads: 14, quals: 2 },
+  { name: 'Женский', cost: 53690, leads: 7, quals: 1 },
+  { name: 'Не определён', cost: 26845, leads: 3, quals: 0 },
 ];
 
-export const byGender = [
-  { name: 'Мужской', value: 58 },
-  { name: 'Женский', value: 28 },
-  { name: 'Не определён', value: 14 },
+export const ageDim = [
+  { name: '18-24', cost: 3000, leads: 0, quals: 0 },
+  { name: '25-34', cost: 32000, leads: 5, quals: 0 },
+  { name: '35-44', cost: 48000, leads: 6, quals: 1 },
+  { name: '45-54', cost: 72000, leads: 9, quals: 2 },
+  { name: 'Старше 55', cost: 24750, leads: 2, quals: 0 },
+  { name: 'Не опр.', cost: 12000, leads: 2, quals: 0 },
 ];
 
-export const byAge = [
-  { name: '18-24', conv: 0, clk: 12 },
-  { name: '25-34', conv: 5, clk: 58 },
-  { name: '35-44', conv: 6, clk: 82 },
-  { name: '45-54', conv: 9, clk: 96 },
-  { name: 'Старше 55', conv: 2, clk: 34 },
-  { name: 'Не опр.', conv: 2, clk: 16 },
+export const targetingDim = [
+  { name: 'Ключевые фразы', cost: 143500, leads: 17, quals: 2 },
+  { name: 'Автотаргетинг', cost: 48250, leads: 7, quals: 1 },
 ];
 
-export const byGroup = [
-  { name: 'Электромонтажные работы под ключ Москва', cost: 130000, clk: 155, conv: 16, cpa: 8125 },
-  { name: 'Электромонтажные работы общая', cost: 34500, clk: 68, conv: 3, cpa: 11500 },
-  { name: 'Электромонтажные работы цена +за м2', cost: 12969, clk: 12, conv: 1, cpa: 12969 },
-  { name: 'Подрядные организации по электромонтажу', cost: 2468, clk: 1, conv: 1, cpa: 2468 },
-  { name: 'Прочие группы (ВРУ, освещение, электрика)', cost: 11814, clk: 62, conv: 3, cpa: 3938 },
-];
-
-export const byTargeting = [
-  { name: 'Ключевые фразы', cost: 143500, clk: 178, conv: 17 },
-  { name: 'Автотаргетинг', cost: 48250, clk: 120, conv: 7 },
-];
-
+// ── География: доля, расход, уники+стоимость, кваллы+стоимость ──
 export const byGeo = [
-  { name: 'Москва', share: 74 },
-  { name: 'Московская обл.', share: 19 },
-  { name: 'Прочие регионы', share: 7 },
+  { name: 'Москва', share: 74, cost: 141895, leads: 18, quals: 2 },
+  { name: 'Московская обл.', share: 19, cost: 36432, leads: 5, quals: 1 },
+  { name: 'Прочие регионы', share: 7, cost: 13423, leads: 1, quals: 0 },
 ];
 
-export const topAds = [
-  { title: 'Электромонтажные работы под ключ в Москве', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', clk: 142, conv: 14, cpa: 8250 },
-  { title: 'Электромонтажные работы "под ключ". Рассчитайте цену!', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', clk: 68, conv: 5, cpa: 9600 },
-  { title: 'Услуги по производству электромонтажных работ', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', clk: 24, conv: 2, cpa: 5800 },
-  { title: 'Монтаж ВРУ! Рассчитайте цену на сайте!', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', clk: 12, conv: 2, cpa: 2400 },
+// ── Кампании ──
+export const campaigns = ['Поиск/Перезапуск/05.02/МаксКонв за клики'];
+
+// ── Кампания → группа: полная статистика (топ-10 по расходу) ──
+export const byGroupFull = [
+  { campaign: campaigns[0], name: 'Электромонтажные работы под ключ Москва', cost: 130000, impressions: 3600, clicks: 155, ctr: 4.31, cpc: 838.71, avgTraffic: 86, avgPos: 3.1, bounce: 32, conv: 16, cr: 10.32, cpa: 8125 },
+  { campaign: campaigns[0], name: 'Электромонтажные работы общая', cost: 34500, impressions: 850, clicks: 68, ctr: 8.00, cpc: 507.35, avgTraffic: 90, avgPos: 2.3, bounce: 35, conv: 3, cr: 4.41, cpa: 11500 },
+  { campaign: campaigns[0], name: 'Электромонтажные работы цена +за м2', cost: 9500, impressions: 210, clicks: 11, ctr: 5.24, cpc: 863.64, avgTraffic: 80, avgPos: 2.6, bounce: 27, conv: 1, cr: 9.09, cpa: 9500 },
+  { campaign: campaigns[0], name: 'Электромонтажные работы под ключ цена', cost: 5500, impressions: 380, clicks: 6, ctr: 1.58, cpc: 916.67, avgTraffic: 88, avgPos: 4.8, bounce: 17, conv: 1, cr: 16.67, cpa: 5500 },
+  { campaign: campaigns[0], name: 'Электромонтаж подрядчик', cost: 5950, impressions: 210, clicks: 4, ctr: 1.90, cpc: 1487.50, avgTraffic: 87, avgPos: 4.6, bounce: 0, conv: 1, cr: 25.00, cpa: 5950 },
+  { campaign: campaigns[0], name: 'Установка вру цена', cost: 3600, impressions: 40, clicks: 5, ctr: 12.50, cpc: 720.00, avgTraffic: 88, avgPos: 2.7, bounce: 0, conv: 1, cr: 20.00, cpa: 3600 },
+  { campaign: campaigns[0], name: 'Установка освещения цена', cost: 3400, impressions: 40, clicks: 3, ctr: 7.50, cpc: 1133.33, avgTraffic: 65, avgPos: 3.4, bounce: 33, conv: 0, cr: 0, cpa: null },
+  { campaign: campaigns[0], name: 'Монтаж вру цена', cost: 3000, impressions: 90, clicks: 4, ctr: 4.44, cpc: 750.00, avgTraffic: 95, avgPos: 2.5, bounce: 25, conv: 1, cr: 25.00, cpa: 3000 },
+  { campaign: campaigns[0], name: 'Подрядные организации по электромонтажным работам', cost: 2468, impressions: 250, clicks: 1, ctr: 0.40, cpc: 2468.00, avgTraffic: 85, avgPos: 4.8, bounce: 0, conv: 1, cr: 100.00, cpa: 2468 },
+  { campaign: campaigns[0], name: 'Услуги по производству монтажных электромонтажных', cost: 1350, impressions: 240, clicks: 2, ctr: 0.83, cpc: 675.00, avgTraffic: 90, avgPos: 4.4, bounce: 50, conv: 1, cr: 50.00, cpa: 1350 },
+];
+
+// ── Агрегат по кампаниям ──
+export const campaignTotals = campaigns.map((c) => {
+  const rows = byGroupFull.filter((g) => g.campaign === c);
+  const cost = rows.reduce((s, r) => s + r.cost, 0);
+  const impressions = rows.reduce((s, r) => s + r.impressions, 0);
+  const clicks = rows.reduce((s, r) => s + r.clicks, 0);
+  const conv = rows.reduce((s, r) => s + r.conv, 0);
+  const avgTraffic = rows.reduce((s, r) => s + r.avgTraffic, 0) / rows.length;
+  const avgPos = rows.reduce((s, r) => s + r.avgPos, 0) / rows.length;
+  const bounceRows = rows.filter((r) => r.bounce > 0);
+  const bounce = bounceRows.reduce((s, r) => s + r.bounce, 0) / (bounceRows.length || 1);
+  return {
+    name: c, cost, impressions, clicks,
+    ctr: (clicks / impressions) * 100,
+    cpc: cost / clicks,
+    avgTraffic, avgPos, bounce, conv,
+    cr: (conv / clicks) * 100,
+    cpa: conv ? cost / conv : null,
+  };
+});
+
+// ── Объявления: полная статистика ──
+export const adsFull = [
+  { campaign: campaigns[0], group: 'Электромонтажные работы под ключ Москва', title: 'Электромонтажные работы под ключ в Москве', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', cost: 59652, impressions: 2400, clicks: 94, ctr: 3.92, cpc: 634.60, avgTraffic: 85, avgPos: 3.2, bounce: 35, conv: 9, cr: 9.57, cpa: 6628 },
+  { campaign: campaigns[0], group: 'Электромонтажные работы общая', title: 'Электромонтажные работы "под ключ". Рассчитайте цену!', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', cost: 13740, impressions: 520, clicks: 27, ctr: 5.19, cpc: 508.89, avgTraffic: 88, avgPos: 2.4, bounce: 30, conv: 2, cr: 7.41, cpa: 6870 },
+  { campaign: campaigns[0], group: 'Услуги по производству монтажных электромонтажных', title: 'Услуги по производству электромонтажных работ', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', cost: 1350, impressions: 240, clicks: 2, ctr: 0.83, cpc: 675.00, avgTraffic: 90, avgPos: 4.4, bounce: 50, conv: 1, cr: 50.00, cpa: 1350 },
+  { campaign: campaigns[0], group: 'Монтаж вру цена', title: 'Монтаж ВРУ! Рассчитайте цену на сайте!', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', cost: 3000, impressions: 90, clicks: 4, ctr: 4.44, cpc: 750.00, avgTraffic: 95, avgPos: 2.5, bounce: 25, conv: 1, cr: 25.00, cpa: 3000 },
+  { campaign: campaigns[0], group: 'Подрядные организации по электромонтажным работам', title: 'Подрядная организация по электромонтажным работам', text: 'Электромонтажные работы в офисах, ТРЦ, складах и производствах. Рассчитайте смету!', cost: 2468, impressions: 250, clicks: 1, ctr: 0.40, cpc: 2468.00, avgTraffic: 85, avgPos: 4.8, bounce: 0, conv: 1, cr: 100.00, cpa: 2468 },
 ];
 
 // ── Работы ──
@@ -148,6 +182,14 @@ export const nextPlan = [
   { param: 'Стоимость чистой заявки, с НДС', plan: '6 250' },
   { param: 'Количество Квал заявок', plan: '9' },
   { param: 'Стоимость Квал заявки, с НДС', plan: '22 222' },
+];
+
+// ── Допродажа каналов ──
+export const upsellChannels = [
+  { icon: 'Search', name: 'SEO-продвижение', pitch: 'Органический трафик без оплаты за клик — работает 24/7 и снижает среднюю стоимость лида в долгосрочной перспективе.' },
+  { icon: 'Users', name: 'ВКонтакте Реклама', pitch: 'Тёплая аудитория Москвы и области с точным таргетингом по интересам и ретаргетингом с сайта.' },
+  { icon: 'Package', name: 'Авито', pitch: 'Прямой спрос от тех, кто уже ищет электромонтажные услуги здесь и сейчас — короткий цикл сделки.' },
+  { icon: 'Building2', name: 'Яндекс Бизнес', pitch: 'Карточка компании в Картах и Поиске повышает доверие и добавляет бесплатный канал заявок.' },
 ];
 
 export const contacts = {
