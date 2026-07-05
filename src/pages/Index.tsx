@@ -2,14 +2,14 @@ import { useState, useMemo } from 'react';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
 import {
-  AreaChart, Area, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
+  AreaChart, Area, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
 } from 'recharts';
 import {
   NEON, PIE_COLORS, CLIENT, planFact, planFactNotes, monthCompare, yearly, demand,
   deviceDim, genderDim, ageDim, targetingDim, byGeo,
   campaigns, campaignTotals, byGroupFull, adsFull,
-  workDone, workPlan, nextPlan, upsellChannels, contacts,
+  workDone, workPlan, nextPlan, upsellChannels, upsellDiscountPerChannel, breakdownInsights, contacts,
 } from '@/data/report';
 
 const tipStyle = {
@@ -96,6 +96,23 @@ const ValueToggle = ({ show, setShow }: { show: boolean; setShow: (v: boolean) =
   </button>
 );
 
+// ── Общий вид метки значения на линии: тёмная плашка + белый текст, чтобы не сливалось с графиком ──
+type ValueLabelProps = { x?: number; y?: number; value?: number | string; fill?: string };
+const ValueLabel = (props: ValueLabelProps) => {
+  const { x, y, value, fill } = props;
+  if (value === null || value === undefined || x === undefined || y === undefined) return null;
+  const text = typeof value === 'number' ? fmt(value) : value;
+  const w = Math.max(28, String(text).length * 7 + 10);
+  return (
+    <g>
+      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="hsl(229,28%,9%)" stroke={fill} strokeWidth={1} opacity={0.95} />
+      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill="#fff" fontFamily="JetBrains Mono, monospace">
+        {text}
+      </text>
+    </g>
+  );
+};
+
 const nav = [
   { id: 'about', label: 'Общая инфо' },
   { id: 'planfact', label: 'План / Факт' },
@@ -109,29 +126,61 @@ const nav = [
   { id: 'contacts', label: 'Контакты' },
 ];
 
-// ── Мини пирог с легендой ──
+// ── Мини пирог с легендой, вынесенными % и (шт × стоимость) подписями ──
 type DimRow = { name: string; [k: string]: number | string };
-const DimPie = ({ data, dataKey, title, unit = '' }: { data: DimRow[]; dataKey: string; title: string; unit?: string }) => (
-  <div>
-    <div className="mb-2 text-center font-mono text-xs uppercase tracking-wide text-muted-foreground">{title}</div>
-    <ResponsiveContainer width="100%" height={200}>
-      <PieChart>
-        <Pie data={data} dataKey={dataKey} nameKey="name" cx="50%" cy="50%" innerRadius={42} outerRadius={70} paddingAngle={2}>
-          {data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} stroke="none" />)}
-        </Pie>
-        <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)}${unit}`} />
-      </PieChart>
-    </ResponsiveContainer>
-    <div className="mt-2 flex flex-wrap justify-center gap-2">
-      {data.map((d, i) => (
-        <span key={d.name} className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground">
-          <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
-          {d.name}
-        </span>
-      ))}
+const DimPie = ({ data, dataKey, title, unit = '', showCost = false }: {
+  data: DimRow[]; dataKey: string; title: string; unit?: string; showCost?: boolean;
+}) => {
+  return (
+    <div>
+      <div className="mb-2 text-center font-mono text-xs uppercase tracking-wide text-muted-foreground">{title}</div>
+      <ResponsiveContainer width="100%" height={220}>
+        <PieChart margin={{ top: 10, bottom: 10 }}>
+          <Pie
+            data={data} dataKey={dataKey} nameKey="name" cx="50%" cy="50%" innerRadius={42} outerRadius={68} paddingAngle={2}
+            label={(p: { cx: number; cy: number; midAngle: number; outerRadius: number; percent: number; index: number }) => {
+              const { cx, cy, midAngle, outerRadius, percent, index } = p;
+              if (!percent) return null;
+              const RAD = Math.PI / 180;
+              const sin = Math.sin(-midAngle * RAD);
+              const cos = Math.cos(-midAngle * RAD);
+              const sx = cx + (outerRadius + 4) * cos;
+              const sy = cy + (outerRadius + 4) * sin;
+              const mx = cx + (outerRadius + 20) * cos;
+              const my = cy + (outerRadius + 20) * sin;
+              const ex = mx + (cos >= 0 ? 1 : -1) * 12;
+              const ey = my;
+              const row = data[index];
+              const val = Number(row[dataKey]) || 0;
+              const costPer = showCost && val ? Number(row.cost) / val : null;
+              return (
+                <g>
+                  <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={PIE_COLORS[index % PIE_COLORS.length]} fill="none" />
+                  <circle cx={ex} cy={ey} r={2} fill={PIE_COLORS[index % PIE_COLORS.length]} stroke="none" />
+                  <text x={ex + (cos >= 0 ? 6 : -6)} y={ey} textAnchor={cos >= 0 ? 'start' : 'end'} dominantBaseline="central" fontSize={11} fontWeight={700} fill="#fff">
+                    {(percent * 100).toFixed(0)}% ({fmt(val)}{costPer !== null ? ` по ${fmt(costPer)} ₽` : ''})
+                  </text>
+                </g>
+              );
+            }}
+            labelLine={false}
+          >
+            {data.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} stroke="none" />)}
+          </Pie>
+          <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)}${unit}`} />
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="mt-1 flex flex-wrap justify-center gap-2">
+        {data.map((d, i) => (
+          <span key={d.name} className="flex items-center gap-1 font-mono text-[11px] text-foreground/80">
+            <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
+            {d.name}
+          </span>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const dimensions = [
   { key: 'device', label: 'Тип устройства', data: deviceDim },
@@ -140,10 +189,24 @@ const dimensions = [
   { key: 'targeting', label: 'Условие показа', data: targetingDim },
 ];
 
-type MetricKey = 'cost' | 'impressions' | 'clicks' | 'ctr' | 'cpc' | 'avgTraffic' | 'avgPos' | 'bounce' | 'conv' | 'cr' | 'cpa';
+type MetricKey = 'cost' | 'clicks' | 'cpc' | 'conv' | 'cr' | 'cpa';
 type MetricRow = Record<MetricKey, number | null> & { name?: string; campaign?: string; group?: string; title?: string; text?: string };
 
+// Урезанный набор столбцов для таблиц кампаний/групп (без Показы, CTR, Ср. объём трафика, Ср. позиция, Отказы)
 const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | undefined) => string }[] = [
+  { key: 'cost', label: 'Расход, ₽', fmt },
+  { key: 'clicks', label: 'Клики', fmt },
+  { key: 'cpc', label: 'CPC, ₽', fmt },
+  { key: 'conv', label: 'Конверсии', fmt },
+  { key: 'cr', label: 'CR, %', fmt: fmt1 },
+  { key: 'cpa', label: 'CPA, ₽', fmt },
+];
+
+type AdMetricKey = MetricKey | 'impressions' | 'ctr' | 'avgTraffic' | 'avgPos' | 'bounce';
+type AdRow = Record<AdMetricKey, number | null> & { campaign?: string; group?: string; title?: string; text?: string };
+
+// Полный набор столбцов — для блока «Объявления»
+const adColumns: { key: AdMetricKey; label: string; fmt?: (v: number | null | undefined) => string }[] = [
   { key: 'cost', label: 'Расход, ₽', fmt },
   { key: 'impressions', label: 'Показы', fmt },
   { key: 'clicks', label: 'Клики', fmt },
@@ -157,11 +220,14 @@ const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | u
   { key: 'cpa', label: 'CPA, ₽', fmt },
 ];
 
+const levelBadge: Record<string, string> = { high: 'border-red-500/40 bg-red-500/10', mid: 'border-amber-500/40 bg-amber-500/10', low: 'border-cyan-500/40 bg-cyan-500/10' };
+
 const Index = () => {
-  const [showVals, setShowVals] = useState({ cost: false, clk: false, lead: false, qual: false });
+  const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false });
   const [campaignFilter, setCampaignFilter] = useState<string>('all');
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
   const [adsGroupFilter, setAdsGroupFilter] = useState<string>('all');
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -182,6 +248,17 @@ const Index = () => {
       (adsGroupFilter === 'all' || a.group === adsGroupFilter)
     );
   }, [adsCampaignFilter, adsGroupFilter]);
+
+  const toggleChannel = (name: string) =>
+    setSelectedChannels((s) => (s.includes(name) ? s.filter((x) => x !== name) : [...s, name]));
+
+  const calc = useMemo(() => {
+    const chosen = upsellChannels.filter((c) => selectedChannels.includes(c.name));
+    const base = chosen.reduce((s, c) => s + c.price, 0);
+    const discount = chosen.length > 1 ? (chosen.length - 1) * upsellDiscountPerChannel : 0;
+    const finalPrice = Math.round(base * (1 - discount / 100));
+    return { base, discount, finalPrice, count: chosen.length };
+  }, [selectedChannels]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -250,12 +327,13 @@ const Index = () => {
         <Section id="planfact" num="02" title="Сравнение план / факт" icon="Target" sub={`Динамика по ключевым показателям за ${CLIENT.period}`}>
           <Card>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px]">
+              <table className="w-full min-w-[640px]">
                 <thead>
                   <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
                     <th className="pb-3 font-500">Параметры</th>
                     <th className="pb-3 text-right font-500">План</th>
                     <th className="pb-3 text-right font-500">Факт</th>
+                    <th className="pb-3 text-right font-500">% выполнения</th>
                     <th className="pb-3 text-center font-500">Статус</th>
                   </tr>
                 </thead>
@@ -268,6 +346,11 @@ const Index = () => {
                         <td className="py-3.5 text-right font-mono text-muted-foreground">{r.planLabel}</td>
                         <td className="py-3.5 text-right font-mono font-700">
                           {r.factLabel}{r.factNote && <Sup>{r.factNote}</Sup>}
+                        </td>
+                        <td className="py-3.5 text-right">
+                          <span className="inline-flex items-center gap-1 font-mono text-sm font-bold" style={{ color: st.color }}>
+                            <Icon name="TrendingUp" size={13} />Δ {fmt1(st.pct)}%
+                          </span>
                         </td>
                         <td className="py-3.5 text-center">
                           <Icon name={st.icon} size={18} className="inline" style={{ color: st.color }} />
@@ -331,8 +414,8 @@ const Index = () => {
             <Card>
               <ChartTitle title="Расход, ₽" sub="Помесячно"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
-              <ResponsiveContainer width="100%" height={280}>
-                <LineChart data={yearly} margin={{ top: 20 }}>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={yearly} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                   <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                   <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
@@ -340,7 +423,7 @@ const Index = () => {
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="cost25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
                   <Line type="monotone" dataKey="cost26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                    {showVals.cost && <LabelList dataKey="cost26" position="top" formatter={fmt} fontSize={11} fill={NEON.cyan} />}
+                    {showVals.cost && <LabelList dataKey="cost26" content={<ValueLabel fill={NEON.cyan} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
@@ -350,8 +433,8 @@ const Index = () => {
               <Card>
                 <ChartTitle title="Клики" sub="Количество кликов"
                   action={<ValueToggle show={showVals.clk} setShow={(v) => setShowVals((s) => ({ ...s, clk: v }))} />} />
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={yearly} margin={{ top: 20 }}>
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                     <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
@@ -359,23 +442,26 @@ const Index = () => {
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="clk25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
                     <Line type="monotone" dataKey="clk26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.clk && <LabelList dataKey="clk26" position="top" formatter={fmt} fontSize={11} fill={NEON.cyan} />}
+                      {showVals.clk && <LabelList dataKey="clk26" content={<ValueLabel fill={NEON.cyan} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
               </Card>
 
               <Card>
-                <ChartTitle title="CPC, ₽" sub="Цена клика" />
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={yearly} margin={{ top: 20 }}>
+                <ChartTitle title="CPC, ₽" sub="Цена клика"
+                  action={<ValueToggle show={showVals.cpc} setShow={(v) => setShowVals((s) => ({ ...s, cpc: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                     <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="cpc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
-                    <Line type="monotone" dataKey="cpc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false} />
+                    <Line type="monotone" dataKey="cpc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.cpc && <LabelList dataKey="cpc26" content={<ValueLabel fill={NEON.amber} />} />}
+                    </Line>
                   </LineChart>
                 </ResponsiveContainer>
               </Card>
@@ -383,8 +469,8 @@ const Index = () => {
               <Card>
                 <ChartTitle title="Уникальные лиды" sub="Количество"
                   action={<ValueToggle show={showVals.lead} setShow={(v) => setShowVals((s) => ({ ...s, lead: v }))} />} />
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={yearly} margin={{ top: 20 }}>
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                     <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
@@ -392,23 +478,26 @@ const Index = () => {
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="lead25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
                     <Line type="monotone" dataKey="lead26" name="2026" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.lead && <LabelList dataKey="lead26" position="top" formatter={fmt} fontSize={11} fill={NEON.lime} />}
+                      {showVals.lead && <LabelList dataKey="lead26" content={<ValueLabel fill={NEON.lime} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
               </Card>
 
               <Card>
-                <ChartTitle title="Стоимость уник. лида, ₽" />
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={yearly} margin={{ top: 20 }}>
+                <ChartTitle title="Стоимость уник. лида, ₽"
+                  action={<ValueToggle show={showVals.lc} setShow={(v) => setShowVals((s) => ({ ...s, lc: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                     <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="lc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
-                    <Line type="monotone" dataKey="lc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false} />
+                    <Line type="monotone" dataKey="lc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.lc && <LabelList dataKey="lc26" content={<ValueLabel fill={NEON.amber} />} />}
+                    </Line>
                   </LineChart>
                 </ResponsiveContainer>
               </Card>
@@ -416,8 +505,8 @@ const Index = () => {
               <Card>
                 <ChartTitle title="Квал. лиды" sub="Количество"
                   action={<ValueToggle show={showVals.qual} setShow={(v) => setShowVals((s) => ({ ...s, qual: v }))} />} />
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={yearly} margin={{ top: 20 }}>
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                     <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
@@ -425,23 +514,26 @@ const Index = () => {
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="qual25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
                     <Line type="monotone" dataKey="qual26" name="2026" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.qual && <LabelList dataKey="qual26" position="top" formatter={fmt} fontSize={11} fill={NEON.violet} />}
+                      {showVals.qual && <LabelList dataKey="qual26" content={<ValueLabel fill={NEON.violet} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
               </Card>
 
               <Card>
-                <ChartTitle title="Стоимость квал. лида, ₽" />
-                <ResponsiveContainer width="100%" height={240}>
-                  <LineChart data={yearly} margin={{ top: 20 }}>
+                <ChartTitle title="Стоимость квал. лида, ₽"
+                  action={<ValueToggle show={showVals.qc} setShow={(v) => setShowVals((s) => ({ ...s, qc: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
                     <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="qc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
-                    <Line type="monotone" dataKey="qc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false} />
+                    <Line type="monotone" dataKey="qc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.qc && <LabelList dataKey="qc26" content={<ValueLabel fill={NEON.amber} />} />}
+                    </Line>
                   </LineChart>
                 </ResponsiveContainer>
               </Card>
@@ -471,8 +563,8 @@ const Index = () => {
                 <ChartTitle title={dim.label} />
                 <div className="grid gap-4 sm:grid-cols-3">
                   <DimPie data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽" />
-                  <DimPie data={dim.data} dataKey="leads" title="Уникальные лиды" />
-                  <DimPie data={dim.data} dataKey="quals" title="Квал. лиды" />
+                  <DimPie data={dim.data} dataKey="leads" title="Уникальные лиды" showCost />
+                  <DimPie data={dim.data} dataKey="quals" title="Квал. лиды" showCost />
                 </div>
               </Card>
             ))}
@@ -502,7 +594,7 @@ const Index = () => {
           <Card className="mt-6">
             <ChartTitle title="Статистика по кампаниям" />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px]">
+              <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
                     <th className="pb-3 font-500">Кампания</th>
@@ -534,7 +626,7 @@ const Index = () => {
                 </select>
               } />
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[900px]">
+              <table className="w-full min-w-[720px]">
                 <thead>
                   <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
                     <th className="pb-3 font-500">Группа</th>
@@ -557,7 +649,7 @@ const Index = () => {
 
           {/* Объявления с фильтрами */}
           <Card className="mt-6">
-            <ChartTitle title="Объявления" sub="Заголовок + текст, полная статистика"
+            <ChartTitle title="Объявления" sub={`Заголовок + текст, полная статистика · ${filteredAds.length} из ${adsFull.length}`}
               action={
                 <div className="flex gap-2">
                   <select value={adsCampaignFilter} onChange={(e) => { setAdsCampaignFilter(e.target.value); setAdsGroupFilter('all'); }}
@@ -581,10 +673,10 @@ const Index = () => {
                     <div className="mt-1 font-mono text-xs text-muted-foreground">Группа: {a.group}</div>
                   </div>
                   <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 lg:grid-cols-11">
-                    {groupColumns.map((c) => (
+                    {adColumns.map((c) => (
                       <div key={c.key} className="text-center">
                         <div className="text-[10px] uppercase text-muted-foreground">{c.label}</div>
-                        <div className="font-mono text-sm">{c.fmt ? c.fmt((a as MetricRow)[c.key]) : (a as MetricRow)[c.key]}</div>
+                        <div className="font-mono text-sm">{c.fmt ? c.fmt((a as AdRow)[c.key]) : (a as AdRow)[c.key]}</div>
                       </div>
                     ))}
                   </div>
@@ -593,19 +685,28 @@ const Index = () => {
             </div>
           </Card>
 
-          <Card className="mt-6 border-primary/30">
-            <div className="mb-3 flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
-              <Icon name="Lightbulb" size={20} /> Выводы и гипотезы по разрезам
-            </div>
-            <ul className="space-y-2 text-sm leading-relaxed text-foreground/90">
-              <li><b>Площадка:</b> 100% бюджета — Поиск. Гипотеза: протестировать РСЯ на ретаргетинг для добора дешёвых лидов.</li>
-              <li><b>Устройства:</b> десктоп даёт почти весь объём конверсий; смартфоны и планшеты тратят бюджет почти без заявок — усилить понижающие корректировки на mobile.</li>
-              <li><b>Пол/возраст:</b> ядро конверсий — мужчины и сегмент 45-54. Повысить ставки на конверсионные сегменты, срезать 18-24 (0 конверсий).</li>
-              <li><b>Группы:</b> «Электромонтажные работы под ключ Москва» — главный драйвер лидов, но CPA высокий. Перераспределить бюджет в группы с CPA ниже среднего.</li>
-              <li><b>Условие показа:</b> ключевые фразы конверсионнее автотаргетинга. Автотаргет держать на контроле, отсекать нерелевантные запросы.</li>
-              <li><b>Объявления:</b> лучший оффер — «под ключ в Москве». Гипотеза: добавить УТП с ценой/сроком и быстрые ссылки.</li>
-            </ul>
-          </Card>
+          {/* Выводы по 3 уровням важности */}
+          <div className="mt-6 space-y-4">
+            {breakdownInsights.map((group) => (
+              <Card key={group.level} className={`border ${levelBadge[group.level]}`}>
+                <div className="mb-3 flex items-center gap-2 font-display text-base font-700 uppercase" style={{ color: group.color }}>
+                  <Icon name={group.icon} size={20} /> {group.label}
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {group.items.map((it) => (
+                    <div key={it.title} className="rounded-xl border border-border/60 bg-secondary/30 p-4">
+                      <div className="mb-1 font-600">{it.title}</div>
+                      <p className="text-sm text-muted-foreground">{it.text}</p>
+                      <div className="mt-2 flex items-start gap-1.5 text-sm" style={{ color: group.color }}>
+                        <Icon name="ArrowRight" size={14} className="mt-0.5 shrink-0" />
+                        <span>{it.hint}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            ))}
+          </div>
         </Section>
 
         {/* 6. РАБОТЫ */}
@@ -639,9 +740,9 @@ const Index = () => {
         </Section>
 
         {/* 7. СПРОС */}
-        <Section id="demand" num="07" title="Спрос на следующий месяц" icon="Search" sub="Сезонность по Wordstat: 2026 vs 2025">
+        <Section id="demand" num="07" title="Спрос на следующий месяц" icon="Search" sub="Сезонность по Wordstat: 2027 (прогноз) vs 2026 vs 2025">
           <Card>
-            <ResponsiveContainer width="100%" height={280}>
+            <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={demand}>
                 <defs>
                   <linearGradient id="dem" x1="0" y1="0" x2="0" y2="1">
@@ -656,6 +757,7 @@ const Index = () => {
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Area type="monotone" dataKey="y26" name="Спрос 2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false} />
                 <Line type="monotone" dataKey="y25" name="Спрос 2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                <Line type="monotone" dataKey="y27" name="Прогноз 2027*" stroke={NEON.lime} strokeWidth={2} strokeDasharray="2 4" dot={false} />
               </AreaChart>
             </ResponsiveContainer>
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
@@ -663,9 +765,14 @@ const Index = () => {
               стабильно выше прошлогоднего на 3-7%. Рекомендуем удерживать бюджет и позиции в спецразмещении, чтобы
               не терять долю на растущем рынке.
             </p>
-            <Badge className="mt-3 bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
-              <Icon name="Image" size={12} className="mr-1" /> Место под скриншот из Wordstat — можно заменить график на ваш снимок
-            </Badge>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Badge className="bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
+                <Icon name="Image" size={12} className="mr-1" /> Место под скриншот из Wordstat — можно заменить график на ваш снимок
+              </Badge>
+              <Badge className="bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
+                <Icon name="Dices" size={12} className="mr-1" /> * Прогноз 2027 — рандомная заглушка, обновим по реальным данным
+              </Badge>
+            </div>
           </Card>
         </Section>
 
@@ -693,34 +800,103 @@ const Index = () => {
           </Card>
         </Section>
 
-        {/* UPSELL */}
+        {/* UPSELL — переработанный продающий блок */}
         <Section id="upsell" num="09" title="Расширьте охват" icon="Sparkles" sub="Дополнительные каналы трафика для стабильного потока заявок">
-          <div className="grid gap-4 md:grid-cols-2">
-            {upsellChannels.map((c) => (
-              <Card key={c.name} className="transition-all hover:border-primary/40">
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon name={c.icon} size={22} />
+          {/* Асимметричная сетка: первый канал крупный, остальные компактные */}
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="relative overflow-hidden border-primary/40 lg:col-span-2 lg:row-span-2">
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/15 blur-3xl" />
+              <div className="relative">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
+                    <Icon name={upsellChannels[0].icon} size={24} />
+                  </div>
+                  <Badge className="bg-primary/15 font-mono text-primary hover:bg-primary/15">от {fmt(upsellChannels[0].price)} ₽/мес</Badge>
                 </div>
-                <div className="mb-1 font-display text-base font-600 uppercase">{c.name}</div>
+                <div className="mb-2 font-display text-2xl font-700 uppercase">{upsellChannels[0].name}</div>
+                <div className="mb-3 flex items-baseline gap-2">
+                  <span className="font-mono text-4xl font-700 text-primary">{upsellChannels[0].stat}</span>
+                  <span className="text-sm text-muted-foreground">{upsellChannels[0].statLabel}</span>
+                </div>
+                <p className="text-sm leading-relaxed text-foreground/90">{upsellChannels[0].pitch}</p>
+                <div className="mt-4 flex items-center gap-2 rounded-lg bg-secondary/50 px-3 py-2 font-mono text-xs text-muted-foreground">
+                  <Icon name="ShieldCheck" size={14} className="shrink-0 text-primary" /> {upsellChannels[0].proof}
+                </div>
+              </div>
+            </Card>
+
+            {upsellChannels.slice(1).map((c) => (
+              <Card key={c.name} className="transition-all hover:border-primary/40">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon name={c.icon} size={20} />
+                  </div>
+                  <Badge className="bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
+                </div>
+                <div className="mb-2 font-display text-base font-600 uppercase">{c.name}</div>
+                <div className="mb-2 flex items-baseline gap-1.5">
+                  <span className="font-mono text-xl font-700" style={{ color: NEON.cyan }}>{c.stat}</span>
+                  <span className="text-xs text-muted-foreground">{c.statLabel}</span>
+                </div>
                 <p className="text-sm text-muted-foreground">{c.pitch}</p>
               </Card>
             ))}
           </div>
+
+          {/* Калькулятор стоимости */}
           <Card className="mt-6 border-primary/40 glow-cyan">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                  <Icon name="Gift" size={24} />
-                </div>
-                <div>
-                  <div className="font-display text-lg font-700 uppercase">Скидка 15% на второй канал</div>
-                  <p className="text-sm text-muted-foreground">Для постоянных клиентов при подключении любого нового канала трафика в течение месяца</p>
-                </div>
+            <div className="mb-4 flex items-center gap-2 font-display text-lg font-700 uppercase text-primary">
+              <Icon name="Calculator" size={20} /> Калькулятор медиаплана
+            </div>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Выберите каналы — скидка {upsellDiscountPerChannel}% за каждый дополнительный канал (максимум {upsellChannels.length * upsellDiscountPerChannel - upsellDiscountPerChannel}% при подключении всех {upsellChannels.length}).
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {upsellChannels.map((c) => {
+                const active = selectedChannels.includes(c.name);
+                return (
+                  <button key={c.name} onClick={() => toggleChannel(c.name)}
+                    className={`flex items-center gap-2 rounded-xl border px-3 py-3 text-left transition-all ${
+                      active ? 'border-primary bg-primary/10' : 'border-border bg-secondary/30 hover:border-primary/40'
+                    }`}>
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
+                      <Icon name={active ? 'Check' : c.icon} size={16} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-500">{c.name}</div>
+                      <div className="font-mono text-xs text-muted-foreground">{fmt(c.price)} ₽/мес</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-secondary/40 p-4">
+              <div>
+                {calc.count === 0 ? (
+                  <div className="text-sm text-muted-foreground">Выберите один или несколько каналов, чтобы увидеть стоимость</div>
+                ) : (
+                  <>
+                    <div className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                      {calc.count} канал{calc.count > 1 ? (calc.count < 5 ? 'а' : 'ов') : ''} · скидка {calc.discount}%
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      {calc.discount > 0 && (
+                        <span className="font-mono text-lg text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
+                      )}
+                      <span className="font-mono text-3xl font-700 text-primary">от {fmt(calc.finalPrice)} ₽/мес</span>
+                    </div>
+                  </>
+                )}
               </div>
               <button onClick={() => scroll('contacts')}
                 className="flex items-center gap-2 whitespace-nowrap rounded-xl bg-primary px-5 py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
-                Обсудить подключение <Icon name="ArrowRight" size={16} />
+                Посчитать медиаплан <Icon name="ArrowRight" size={16} />
               </button>
+            </div>
+
+            <div className="mt-4 flex items-center gap-2 font-mono text-xs text-muted-foreground">
+              <Icon name="Gift" size={14} className="text-primary" /> Действует для текущих клиентов Директа — скидка суммируется автоматически при подключении каждого следующего канала
             </div>
           </Card>
         </Section>
