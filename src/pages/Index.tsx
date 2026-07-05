@@ -172,7 +172,7 @@ const DimPie = ({ data, dataKey, title, unit = '', showCost = false }: {
       </ResponsiveContainer>
       <div className="mt-1 flex flex-wrap justify-center gap-2">
         {data.map((d, i) => (
-          <span key={d.name} className="flex items-center gap-1 font-mono text-[11px] text-foreground/80">
+          <span key={d.name} className="flex items-center gap-1 font-mono text-[11px]" style={{ color: '#e2e8f0' }}>
             <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
             {d.name}
           </span>
@@ -220,10 +220,8 @@ const adColumns: { key: AdMetricKey; label: string; fmt?: (v: number | null | un
   { key: 'cpa', label: 'CPA, ₽', fmt },
 ];
 
-const levelBadge: Record<string, string> = { high: 'border-red-500/40 bg-red-500/10', mid: 'border-amber-500/40 bg-amber-500/10', low: 'border-cyan-500/40 bg-cyan-500/10' };
-
 const Index = () => {
-  const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false });
+  const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false, demand: false });
   const [campaignFilter, setCampaignFilter] = useState<string>('all');
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
   const [adsGroupFilter, setAdsGroupFilter] = useState<string>('all');
@@ -333,7 +331,7 @@ const Index = () => {
                     <th className="pb-3 font-500">Параметры</th>
                     <th className="pb-3 text-right font-500">План</th>
                     <th className="pb-3 text-right font-500">Факт</th>
-                    <th className="pb-3 text-right font-500">% выполнения</th>
+                    <th className="pb-3 text-right font-500">Δ</th>
                     <th className="pb-3 text-center font-500">Статус</th>
                   </tr>
                 </thead>
@@ -349,7 +347,7 @@ const Index = () => {
                         </td>
                         <td className="py-3.5 text-right">
                           <span className="inline-flex items-center gap-1 font-mono text-sm font-bold" style={{ color: st.color }}>
-                            <Icon name="TrendingUp" size={13} />Δ {fmt1(st.pct)}%
+                            {fmt1(st.pct)}%
                           </span>
                         </td>
                         <td className="py-3.5 text-center">
@@ -685,28 +683,30 @@ const Index = () => {
             </div>
           </Card>
 
-          {/* Выводы по 3 уровням важности */}
-          <div className="mt-6 space-y-4">
-            {breakdownInsights.map((group) => (
-              <Card key={group.level} className={`border ${levelBadge[group.level]}`}>
-                <div className="mb-3 flex items-center gap-2 font-display text-base font-700 uppercase" style={{ color: group.color }}>
-                  <Icon name={group.icon} size={20} /> {group.label}
-                </div>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {group.items.map((it) => (
-                    <div key={it.title} className="rounded-xl border border-border/60 bg-secondary/30 p-4">
-                      <div className="mb-1 font-600">{it.title}</div>
-                      <p className="text-sm text-muted-foreground">{it.text}</p>
-                      <div className="mt-2 flex items-start gap-1.5 text-sm" style={{ color: group.color }}>
-                        <Icon name="ArrowRight" size={14} className="mt-0.5 shrink-0" />
-                        <span>{it.hint}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            ))}
-          </div>
+          <Card className="mt-6 border-primary/30">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
+                <Icon name="Lightbulb" size={20} /> Выводы и гипотезы по разрезам
+              </div>
+              <div className="flex flex-wrap gap-3 font-mono text-xs text-muted-foreground">
+                {breakdownInsights.map((g) => (
+                  <span key={g.level} className="flex items-center gap-1">
+                    <Icon name={g.icon} size={13} style={{ color: g.color }} /> {g.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <ul className="space-y-2 text-sm leading-relaxed text-foreground/90">
+              {breakdownInsights.flatMap((group) =>
+                group.items.map((it) => (
+                  <li key={it.title} className="flex items-start justify-between gap-3">
+                    <span><b>{it.title}:</b> {it.text} <span className="text-muted-foreground">Гипотеза: {it.hint}</span></span>
+                    <Icon name={group.icon} size={16} className="mt-0.5 shrink-0" style={{ color: group.color }} />
+                  </li>
+                ))
+              )}
+            </ul>
+          </Card>
         </Section>
 
         {/* 6. РАБОТЫ */}
@@ -740,10 +740,12 @@ const Index = () => {
         </Section>
 
         {/* 7. СПРОС */}
-        <Section id="demand" num="07" title="Спрос на следующий месяц" icon="Search" sub="Сезонность по Wordstat: 2027 (прогноз) vs 2026 vs 2025">
+        <Section id="demand" num="07" title="Спрос на следующий месяц" icon="Search" sub="Число запросов по Wordstat: 2024 / 2025 / 2026">
           <Card>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={demand}>
+            <ChartTitle title="Динамика спроса" sub="Число запросов в месяц"
+              action={<ValueToggle show={showVals.demand} setShow={(v) => setShowVals((s) => ({ ...s, demand: v }))} />} />
+            <ResponsiveContainer width="100%" height={320}>
+              <AreaChart data={demand} margin={{ top: 30 }}>
                 <defs>
                   <linearGradient id="dem" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={NEON.cyan} stopOpacity={0.4} />
@@ -755,24 +757,21 @@ const Index = () => {
                 <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
                 <Tooltip contentStyle={tipStyle} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Area type="monotone" dataKey="y26" name="Спрос 2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false} />
-                <Line type="monotone" dataKey="y25" name="Спрос 2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
-                <Line type="monotone" dataKey="y27" name="Прогноз 2027*" stroke={NEON.lime} strokeWidth={2} strokeDasharray="2 4" dot={false} />
+                <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
+                <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
+                  {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} />} />}
+                </Area>
               </AreaChart>
             </ResponsiveContainer>
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
-              По динамике Wordstat спрос на электромонтажные услуги в июле остаётся на сезонном пике — уровень 2026 года
-              стабильно выше прошлогоднего на 3-7%. Рекомендуем удерживать бюджет и позиции в спецразмещении, чтобы
-              не терять долю на растущем рынке.
+              Спрос по Wordstat в 2026 году заметно ниже 2024-2025: в среднем на 40-45% запросов меньше, чем годом ранее.
+              Сезонный рост к маю-июню сохраняется, но на суженной базе — рынок в целом сжался, а не только наш канал.
+              Рекомендуем учитывать это при планировании бюджета на июль и не ожидать роста количества заявок пропорционально прошлым годам.
             </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Badge className="bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
-                <Icon name="Image" size={12} className="mr-1" /> Место под скриншот из Wordstat — можно заменить график на ваш снимок
-              </Badge>
-              <Badge className="bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
-                <Icon name="Dices" size={12} className="mr-1" /> * Прогноз 2027 — рандомная заглушка, обновим по реальным данным
-              </Badge>
-            </div>
+            <Badge className="mt-3 bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">
+              <Icon name="Image" size={12} className="mr-1" /> Место под скриншот из Wordstat — можно заменить график на ваш снимок
+            </Badge>
           </Card>
         </Section>
 
@@ -825,7 +824,7 @@ const Index = () => {
               </div>
             </Card>
 
-            {upsellChannels.slice(1).map((c) => (
+            {upsellChannels.slice(1, 3).map((c) => (
               <Card key={c.name} className="transition-all hover:border-primary/40">
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -841,59 +840,82 @@ const Index = () => {
                 <p className="text-sm text-muted-foreground">{c.pitch}</p>
               </Card>
             ))}
+
+            {upsellChannels.slice(3).map((c) => (
+              <Card key={c.name} className="transition-all hover:border-primary/40 lg:col-span-3 lg:flex lg:items-center lg:gap-6">
+                <div className="flex items-center gap-3 lg:w-72 lg:shrink-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon name={c.icon} size={20} />
+                  </div>
+                  <div>
+                    <div className="font-display text-base font-600 uppercase">{c.name}</div>
+                    <Badge className="mt-1 bg-secondary font-mono text-xs text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-baseline gap-1.5 lg:mt-0 lg:w-56 lg:shrink-0">
+                  <span className="font-mono text-xl font-700" style={{ color: NEON.cyan }}>{c.stat}</span>
+                  <span className="text-xs text-muted-foreground">{c.statLabel}</span>
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground lg:mt-0">{c.pitch}</p>
+              </Card>
+            ))}
           </div>
 
-          {/* Калькулятор стоимости */}
+          {/* Калькулятор выгоды — вертикальная раскладка */}
           <Card className="mt-6 border-primary/40 glow-cyan">
             <div className="mb-4 flex items-center gap-2 font-display text-lg font-700 uppercase text-primary">
-              <Icon name="Calculator" size={20} /> Калькулятор медиаплана
+              <Icon name="Calculator" size={20} /> Посчитайте свою выгоду
             </div>
             <p className="mb-4 text-sm text-muted-foreground">
-              Выберите каналы — скидка {upsellDiscountPerChannel}% за каждый дополнительный канал (максимум {upsellChannels.length * upsellDiscountPerChannel - upsellDiscountPerChannel}% при подключении всех {upsellChannels.length}).
+              Выберите каналы — скидка {upsellDiscountPerChannel}% за каждый дополнительный канал (максимум {(upsellChannels.length - 1) * upsellDiscountPerChannel}% при подключении всех {upsellChannels.length}).
             </p>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+
+            <div className="flex flex-col gap-2">
               {upsellChannels.map((c) => {
                 const active = selectedChannels.includes(c.name);
                 return (
                   <button key={c.name} onClick={() => toggleChannel(c.name)}
-                    className={`flex items-center gap-2 rounded-xl border px-3 py-3 text-left transition-all ${
+                    className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
                       active ? 'border-primary bg-primary/10' : 'border-border bg-secondary/30 hover:border-primary/40'
                     }`}>
-                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
-                      <Icon name={active ? 'Check' : c.icon} size={16} />
+                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
+                      <Icon name={active ? 'Check' : c.icon} size={17} />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <div className="text-sm font-500">{c.name}</div>
                       <div className="font-mono text-xs text-muted-foreground">{fmt(c.price)} ₽/мес</div>
                     </div>
+                    {active && <Icon name="CircleCheck" size={18} className="text-primary" />}
                   </button>
                 );
               })}
             </div>
 
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border bg-secondary/40 p-4">
-              <div>
-                {calc.count === 0 ? (
-                  <div className="text-sm text-muted-foreground">Выберите один или несколько каналов, чтобы увидеть стоимость</div>
-                ) : (
-                  <>
-                    <div className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                      {calc.count} канал{calc.count > 1 ? (calc.count < 5 ? 'а' : 'ов') : ''} · скидка {calc.discount}%
-                    </div>
-                    <div className="flex items-baseline gap-2">
-                      {calc.discount > 0 && (
-                        <span className="font-mono text-lg text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
-                      )}
-                      <span className="font-mono text-3xl font-700 text-primary">от {fmt(calc.finalPrice)} ₽/мес</span>
-                    </div>
-                  </>
-                )}
-              </div>
-              <button onClick={() => scroll('contacts')}
-                className="flex items-center gap-2 whitespace-nowrap rounded-xl bg-primary px-5 py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
-                Посчитать медиаплан <Icon name="ArrowRight" size={16} />
-              </button>
+            <div className="mt-5 rounded-xl border border-border bg-secondary/40 p-4">
+              {calc.count === 0 ? (
+                <div className="text-sm text-muted-foreground">Выберите один или несколько каналов, чтобы увидеть стоимость</div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                    {calc.count} канал{calc.count > 1 ? (calc.count < 5 ? 'а' : 'ов') : ''} · скидка {calc.discount}%
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    {calc.discount > 0 && (
+                      <span className="font-mono text-lg text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
+                    )}
+                    <span className="font-mono text-3xl font-700 text-primary">от {fmt(calc.finalPrice)} ₽/мес</span>
+                  </div>
+                  {calc.discount > 0 && (
+                    <div className="font-mono text-xs" style={{ color: NEON.pos }}>Экономия {fmt(calc.base - calc.finalPrice)} ₽/мес</div>
+                  )}
+                </div>
+              )}
             </div>
+
+            <button onClick={() => scroll('contacts')}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
+              Посчитать медиаплан <Icon name="ArrowRight" size={16} />
+            </button>
 
             <div className="mt-4 flex items-center gap-2 font-mono text-xs text-muted-foreground">
               <Icon name="Gift" size={14} className="text-primary" /> Действует для текущих клиентов Директа — скидка суммируется автоматически при подключении каждого следующего канала
