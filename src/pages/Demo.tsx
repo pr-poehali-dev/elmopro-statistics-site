@@ -820,7 +820,7 @@ const Demo = () => {
         </Section>
 
         <footer className="border-t border-border pt-6 text-center font-mono text-xs text-muted-foreground">
-          {CLIENT.name} · {CLIENT.id} · Отчёт по всем кампаниям Яндекс Директ · {CLIENT.period}
+          {CLIENT.name} · Отчёт по всем кампаниям Яндекс Директ · {CLIENT.period}
         </footer>
       </div>
     </div>
