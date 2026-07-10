@@ -1,0 +1,733 @@
+import { useState, useMemo } from 'react';
+import Icon from '@/components/ui/icon';
+import {
+  ComposedChart, Area, LineChart, Line, BarChart, Bar, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
+} from 'recharts';
+import {
+  NEON, PIE_COLORS, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, yearlyInsight, demand,
+  deviceDim, genderDim, ageDim, platformDim, byGeo,
+  campaigns, campaignTotals, adsFull,
+  workDone, workPlan, nextPlan, breakdownInsights, contacts,
+} from '@/data/report-tver';
+
+const tipStyle = {
+  background: 'hsl(229,28%,9%)',
+  border: '1px solid hsl(231,22%,18%)',
+  borderRadius: 12,
+  color: '#fff',
+  fontSize: 13,
+};
+
+const fmt = (n: number | null | undefined) =>
+  n === null || n === undefined ? '—' : Math.round(n).toLocaleString('ru-RU');
+const fmt1 = (n: number | null | undefined) =>
+  n === null || n === undefined ? '—' : n.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
+
+// ── Индикатор статуса выполнения плана (>=90 зелёный, 60-89 жёлтый, <60 красный) ──
+const planStatusColor = (planNum: number, factNum: number, isCost: boolean) => {
+  const ratio = isCost ? planNum / factNum : factNum / planNum;
+  const pct = ratio * 100;
+  if (pct >= 90) return { color: NEON.pos, icon: 'CircleCheck', pct };
+  if (pct >= 60) return { color: NEON.amber, icon: 'CircleAlert', pct };
+  return { color: NEON.neg, icon: 'CircleX', pct };
+};
+
+// ── Delta для сравнения месяцев: для стоимостных метрик рост = плохо; <5% — нейтрально ──
+const MonthDelta = ({ mayNum, junNum, isCost }: { mayNum: number; junNum: number; isCost: boolean }) => {
+  const d = ((junNum - mayNum) / mayNum) * 100;
+  const up = d >= 0;
+  let color = NEON.gray;
+  if (Math.abs(d) >= 5) {
+    const good = isCost ? !up : up;
+    color = good ? NEON.pos : NEON.neg;
+  }
+  return (
+    <span className="inline-flex items-center gap-1 font-mono text-sm font-bold" style={{ color }}>
+      {Math.abs(d) >= 5 && <Icon name={up ? 'TrendingUp' : 'TrendingDown'} size={14} />}
+      {up ? '+' : ''}{d.toFixed(1)}%
+    </span>
+  );
+};
+
+const Section = ({ id, num, title, sub, icon, children }: {
+  id: string; num: string; title: string; sub?: string; icon: string; children: React.ReactNode;
+}) => (
+  <section id={id} className="scroll-mt-24 animate-rise">
+    <div className="mb-6 flex items-center gap-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
+        <Icon name={icon} size={22} />
+      </div>
+      <div>
+        <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Раздел {num}</div>
+        <h2 className="font-display text-2xl font-600 uppercase tracking-wide md:text-3xl">{title}</h2>
+        {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
+      </div>
+    </div>
+    {children}
+  </section>
+);
+
+const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
+  <div className={`rounded-2xl border border-border bg-card p-6 ${className}`}>{children}</div>
+);
+
+const ChartTitle = ({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) => (
+  <div className="mb-5 flex items-start justify-between gap-3">
+    <div>
+      <h3 className="font-display text-lg font-600 uppercase tracking-wide">{title}</h3>
+      {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
+    </div>
+    {action}
+  </div>
+);
+
+const ValueToggle = ({ show, setShow }: { show: boolean; setShow: (v: boolean) => void }) => (
+  <button onClick={() => setShow(!show)}
+    className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono text-xs transition-all ${
+      show ? 'border-primary/40 bg-primary/10 text-primary' : 'border-border text-muted-foreground'
+    }`}>
+    <Icon name="Hash" size={12} /> Цифры
+  </button>
+);
+
+// ── Общий вид метки значения на линии: тёмная плашка + белый текст, чтобы не сливалось с графиком ──
+type ValueLabelProps = { x?: number; y?: number; value?: number | string; fill?: string };
+const ValueLabel = (props: ValueLabelProps) => {
+  const { x, y, value, fill } = props;
+  if (value === null || value === undefined || x === undefined || y === undefined) return null;
+  const text = typeof value === 'number' ? fmt(value) : value;
+  const w = Math.max(28, String(text).length * 7 + 10);
+  return (
+    <g>
+      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="hsl(229,28%,9%)" stroke={fill} strokeWidth={1} opacity={0.95} />
+      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill="#fff" fontFamily="JetBrains Mono, monospace">
+        {text}
+      </text>
+    </g>
+  );
+};
+
+const nav = [
+  { id: 'about', label: 'Общая инфо' },
+  { id: 'planfact', label: 'План / Факт' },
+  { id: 'months', label: 'Май → Июнь' },
+  { id: 'trends', label: 'Тренды года' },
+  { id: 'breakdown', label: 'Разрезы' },
+  { id: 'works', label: 'Работы' },
+  { id: 'demand', label: 'Спрос' },
+  { id: 'nextplan', label: 'План месяца' },
+  { id: 'contacts', label: 'Контакты' },
+];
+
+// ── Столбчатая диаграмма разреза: клик по столбцу/легенде подсвечивает выбранные, остальные — в тени ──
+type DimRow = { name: string; [k: string]: number | string };
+type DimLabelProps = { x?: number; y?: number; width?: number; height?: number; value?: number; index?: number };
+
+const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onToggle }: {
+  data: DimRow[]; dataKey: string; title: string; unit?: string; showCost?: boolean;
+  active: string[]; onToggle: (name: string) => void;
+}) => {
+  const isDimmed = (name: string) => active.length > 0 && !active.includes(name);
+  const BarLabel = (p: DimLabelProps) => {
+    const { x, y, width, height, value, index } = p;
+    if (x === undefined || y === undefined || width === undefined || height === undefined || value === undefined || index === undefined) return null;
+    const row = data[index];
+    const costPer = showCost && value ? Number(row.cost) / value : null;
+    const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
+    const dim = isDimmed(row.name as string);
+    return (
+      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,15%,45%)' : '#fff'}>
+        {text}
+      </text>
+    );
+  };
+  return (
+    <div>
+      <div className="mb-2 text-center font-mono text-xs uppercase tracking-wide text-muted-foreground">{title}</div>
+      <ResponsiveContainer width="100%" height={Math.max(140, data.length * 40)}>
+        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 70, left: 4, bottom: 4 }}>
+          <XAxis type="number" hide />
+          <YAxis type="category" dataKey="name" width={0} hide />
+          <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)}${unit}`} />
+          <Bar dataKey={dataKey} radius={[0, 6, 6, 0]} onClick={(d: DimRow) => onToggle(d.name)} cursor="pointer" maxBarSize={26}>
+            {data.map((d, i) => (
+              <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} opacity={isDimmed(d.name) ? 0.25 : 1} />
+            ))}
+            <LabelList dataKey={dataKey} content={BarLabel} />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+      <div className="mt-1 flex flex-wrap justify-center gap-2">
+        {data.map((d, i) => (
+          <button key={d.name} onClick={() => onToggle(d.name)}
+            className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
+            style={{ color: isDimmed(d.name) ? 'hsl(220,15%,45%)' : '#e2e8f0', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
+            <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
+            {d.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const dimensions = [
+  { key: 'device', label: 'Тип устройства', data: deviceDim },
+  { key: 'gender', label: 'Пол аудитории', data: genderDim },
+  { key: 'age', label: 'Возраст', data: ageDim },
+  { key: 'platform', label: 'Тип площадки', data: platformDim },
+];
+
+type MetricKey = 'cost' | 'clicks' | 'cpc' | 'conv' | 'cr' | 'cpa';
+type MetricRow = Record<MetricKey, number | null> & { name?: string; campaign?: string; title?: string; text?: string };
+
+// Урезанный набор столбцов для таблиц кампаний/объявлений (без Показы, CTR, Ср. позиция, Отказы)
+const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | undefined) => string }[] = [
+  { key: 'cost', label: 'Расход, ₽', fmt },
+  { key: 'clicks', label: 'Клики', fmt },
+  { key: 'cpc', label: 'CPC, ₽', fmt },
+  { key: 'conv', label: 'Конверсии', fmt },
+  { key: 'cr', label: 'CR, %', fmt: fmt1 },
+  { key: 'cpa', label: 'CPA, ₽', fmt },
+];
+
+const Tver = () => {
+  const [showVals, setShowVals] = useState({ cost: false, lead: false, cpl: false, tlead: false, cptl: false, cr: false, demand: false });
+  const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
+  const [dimActive, setDimActive] = useState<Record<string, string[]>>({ device: [], gender: [], age: [], platform: [] });
+
+  const toggleDim = (dimKey: string, name: string) =>
+    setDimActive((s) => {
+      const cur = s[dimKey] || [];
+      const next = cur.includes(name) ? cur.filter((x) => x !== name) : [...cur, name];
+      return { ...s, [dimKey]: next };
+    });
+
+  const scroll = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+
+  const filteredAds = useMemo(() => {
+    return adsFull.filter((a) => adsCampaignFilter === 'all' || a.campaign === adsCampaignFilter);
+  }, [adsCampaignFilter]);
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* NAV */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
+        <div className="container mx-auto flex items-center gap-4 overflow-x-auto px-6 py-3">
+          <div className="flex shrink-0 items-center rounded-lg bg-white px-3 py-1.5">
+            <img src={AGENCY.logo} alt={AGENCY.name} className="h-5 w-auto" />
+          </div>
+          <nav className="flex gap-1">
+            {nav.map((n) => (
+              <button key={n.id} onClick={() => scroll(n.id)}
+                className="whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-xs text-muted-foreground transition-all hover:bg-secondary hover:text-foreground">
+                {n.label}
+              </button>
+            ))}
+          </nav>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <div className="relative overflow-hidden border-b border-border">
+        <div className="absolute inset-0 grid-bg opacity-60" />
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-[120px]" />
+        <div className="absolute -right-32 top-0 h-96 w-96 rounded-full bg-accent/20 blur-[120px]" />
+        <div className="container relative mx-auto px-6 py-14">
+          <div className="animate-rise">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Яндекс Директ · ежемесячный отчёт</span>
+            </div>
+            <h1 className="font-display text-5xl font-700 uppercase leading-none tracking-tight md:text-7xl">
+              {CLIENT.name}
+            </h1>
+            <h2 className="mt-1 font-display text-3xl font-600 uppercase leading-none tracking-tight text-primary text-glow md:text-5xl">
+              Отчёт {CLIENT.period}
+            </h2>
+            <p className="mt-4 max-w-xl text-muted-foreground">
+              Статистика, тренды, сравнение периодов и план на следующий месяц.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto space-y-16 px-6 py-12">
+        {/* 1. ОБЩАЯ ИНФОРМАЦИЯ */}
+        <Section id="about" num="01" title="Общая информация" icon="Info" sub="Ключевые ссылки по проекту">
+          <div className="grid gap-4 md:grid-cols-3">
+            {aboutLinks.map((l) => (
+              <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+                className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon name={l.icon} size={20} />
+                </div>
+                <div className="mb-1 font-500">{l.label}</div>
+                <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
+                <div className="flex items-center gap-1 font-mono text-sm text-primary">
+                  {l.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+              </a>
+            ))}
+          </div>
+        </Section>
+
+        {/* 2. ПЛАН / ФАКТ */}
+        <Section id="planfact" num="02" title="Сравнение план / факт" icon="Target" sub={`Динамика по ключевым показателям за ${CLIENT.period}`}>
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px]">
+                <thead>
+                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="pb-3 font-500">Параметры</th>
+                    <th className="pb-3 text-right font-500">План</th>
+                    <th className="pb-3 text-right font-500">Факт</th>
+                    <th className="pb-3 text-right font-500">Δ</th>
+                    <th className="pb-3 text-center font-500">Статус</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {planFact.map((r) => {
+                    const st = planStatusColor(r.planNum, r.factNum, r.isCost);
+                    return (
+                      <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
+                        <td className="py-3.5 font-500">{r.param}</td>
+                        <td className="py-3.5 text-right font-mono text-muted-foreground">{r.planLabel}</td>
+                        <td className="py-3.5 text-right font-mono font-700">{r.factLabel}</td>
+                        <td className="py-3.5 text-right"><MonthDelta mayNum={r.planNum} junNum={r.factNum} isCost={r.isCost} /></td>
+                        <td className="py-3.5 text-center">
+                          <Icon name={st.icon} size={18} className="inline" style={{ color: st.color }} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-4 font-mono text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><Icon name="CircleCheck" size={14} style={{ color: NEON.pos }} /> выполнение ≥ 90%</span>
+              <span className="flex items-center gap-1.5"><Icon name="CircleAlert" size={14} style={{ color: NEON.amber }} /> 60–89%</span>
+              <span className="flex items-center gap-1.5"><Icon name="CircleX" size={14} style={{ color: NEON.neg }} /> ниже 60%</span>
+            </div>
+            {planFactNotes.length > 0 && (
+              <div className="mt-4 space-y-1 font-mono text-xs text-muted-foreground">
+                {planFactNotes.map((n) => <div key={n}>{n}</div>)}
+              </div>
+            )}
+          </Card>
+        </Section>
+
+        {/* 3. МАЙ → ИЮНЬ */}
+        <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт май → факт июнь 2026">
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px]">
+                <thead>
+                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="pb-3 font-500">Параметры</th>
+                    <th className="pb-3 text-right font-500">Факт май</th>
+                    <th className="pb-3 text-right font-500">Факт июнь</th>
+                    <th className="pb-3 text-right font-500">Δ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {monthCompare.map((r) => (
+                    <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
+                      <td className="py-3.5 font-500">{r.param}</td>
+                      <td className="py-3.5 text-right font-mono text-muted-foreground">{r.mayLabel}</td>
+                      <td className="py-3.5 text-right font-mono font-700">{r.junLabel}</td>
+                      <td className="py-3.5 text-right"><MonthDelta mayNum={r.mayNum} junNum={r.junNum} isCost={r.isCost} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </Section>
+
+        {/* 4. ТРЕНДЫ ГОДА */}
+        <Section id="trends" num="04" title="Тренды за год" icon="ChartLine" sub="2026 год, помесячно · данные ведутся с апреля 2026">
+          <div className="space-y-6">
+            <Card>
+              <ChartTitle title="Расход, ₽" sub="Помесячно"
+                action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={yearly} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                  <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                  <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                  <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
+                  <Line type="monotone" dataKey="cost26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.cost && <LabelList dataKey="cost26" content={<ValueLabel fill={NEON.cyan} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <Card>
+                <ChartTitle title="Лиды" sub="Количество"
+                  action={<ValueToggle show={showVals.lead} setShow={(v) => setShowVals((s) => ({ ...s, lead: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <Tooltip contentStyle={tipStyle} />
+                    <Line type="monotone" dataKey="lead26" name="2026" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.lead && <LabelList dataKey="lead26" content={<ValueLabel fill={NEON.lime} />} />}
+                    </Line>
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+
+              <Card>
+                <ChartTitle title="CPL, ₽" sub="Стоимость лида"
+                  action={<ValueToggle show={showVals.cpl} setShow={(v) => setShowVals((s) => ({ ...s, cpl: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
+                    <Line type="monotone" dataKey="lc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.cpl && <LabelList dataKey="lc26" content={<ValueLabel fill={NEON.amber} />} />}
+                    </Line>
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+
+              <Card>
+                <ChartTitle title="Целевые лиды" sub="Количество"
+                  action={<ValueToggle show={showVals.tlead} setShow={(v) => setShowVals((s) => ({ ...s, tlead: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <Tooltip contentStyle={tipStyle} />
+                    <Line type="monotone" dataKey="qual26" name="2026" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.tlead && <LabelList dataKey="qual26" content={<ValueLabel fill={NEON.violet} />} />}
+                    </Line>
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+
+              <Card>
+                <ChartTitle title="CPTL, ₽" sub="Стоимость целевого лида"
+                  action={<ValueToggle show={showVals.cptl} setShow={(v) => setShowVals((s) => ({ ...s, cptl: v }))} />} />
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={yearly} margin={{ top: 30 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                    <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
+                    <Line type="monotone" dataKey="qc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                      {showVals.cptl && <LabelList dataKey="qc26" content={<ValueLabel fill={NEON.amber} />} />}
+                    </Line>
+                  </LineChart>
+                </ResponsiveContainer>
+              </Card>
+            </div>
+
+            <Card>
+              <ChartTitle title="CR лид → целевой, %" sub="Конверсия из лида в целевой лид"
+                action={<ValueToggle show={showVals.cr} setShow={(v) => setShowVals((s) => ({ ...s, cr: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={yearly} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                  <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                  <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt1(v)}%`} />
+                  <Line type="monotone" dataKey="cr26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.cr && <LabelList dataKey="cr26" content={<ValueLabel fill={NEON.cyan} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+          </div>
+
+          <Card className="mt-6 border-primary/30">
+            <div className="mb-3 flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
+              <Icon name="Lightbulb" size={20} /> Вывод маркетолога
+            </div>
+            <p className="text-sm leading-relaxed text-foreground/90">{yearlyInsight}</p>
+          </Card>
+        </Section>
+
+        {/* 5. РАЗРЕЗЫ */}
+        <Section id="breakdown" num="05" title="Статистика по Директу" icon="ChartPie" sub={`Разрезы за ${CLIENT.period} · период 01.06 – 30.06.2026`}>
+          {/* Столбчатые диаграммы по 4 измерениям × 2 метрики, с подсветкой выбранных сегментов */}
+          <div className="space-y-6">
+            {dimensions.map((dim) => (
+              <Card key={dim.key}>
+                <ChartTitle title={dim.label} sub="Кликните по столбцу или подписи, чтобы выделить сегмент" />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <DimBar data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽"
+                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
+                  <DimBar data={dim.data} dataKey="leads" title="Лиды" showCost
+                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* География */}
+          <Card className="mt-6">
+            <ChartTitle title="География размещения" sub="Доля трафика, объём и стоимость лида" />
+            <div className="grid gap-4 md:grid-cols-3">
+              {byGeo.map((g, i) => (
+                <div key={g.name} className="rounded-xl border border-border/60 bg-secondary/30 p-4">
+                  <div className="flex items-center gap-2">
+                    <Icon name="MapPin" size={16} className="text-primary" />
+                    <span className="font-500">{g.name}</span>
+                  </div>
+                  <div className="mt-2 font-mono text-3xl font-700" style={{ color: PIE_COLORS[i] }}>{g.share}%</div>
+                  <div className="mt-3 font-mono text-xs text-muted-foreground">
+                    Лиды: <span className="text-foreground">{g.leads}</span> · {g.leads ? `${fmt(g.cost / g.leads)} ₽` : '—'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* По кампаниям */}
+          <Card className="mt-6">
+            <ChartTitle title="Статистика по кампаниям" />
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px]">
+                <thead>
+                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="pb-3 font-500">Кампания</th>
+                    {groupColumns.map((c) => <th key={c.key} className="pb-3 text-right font-500">{c.label}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {campaignTotals.map((r) => (
+                    <tr key={r.name} className="border-b border-border/50 hover:bg-secondary/40">
+                      <td className="py-3 pr-4 font-500">{r.name}</td>
+                      {groupColumns.map((c) => (
+                        <td key={c.key} className="py-3 text-right font-mono">{c.fmt ? c.fmt((r as MetricRow)[c.key]) : (r as MetricRow)[c.key]}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          {/* Объявления с фильтром по кампании */}
+          <Card className="mt-6">
+            <ChartTitle title="Объявления" sub={`Заголовок + текст, полная статистика · ${filteredAds.length} из ${adsFull.length}`}
+              action={
+                <select value={adsCampaignFilter} onChange={(e) => setAdsCampaignFilter(e.target.value)}
+                  className="rounded-lg border border-border bg-secondary/40 px-3 py-1.5 font-mono text-xs outline-none">
+                  <option value="all">Все кампании</option>
+                  {campaigns.map((c) => <option key={c} value={c}>{c}</option>)}
+                </select>
+              } />
+            <div className="space-y-3">
+              {filteredAds.map((a, i) => (
+                <div key={i} className="rounded-xl border border-border/60 bg-secondary/30 p-4 transition-all hover:border-primary/40">
+                  <div className="mb-3 flex gap-3">
+                    {a.image && (
+                      <img src={a.image} alt={a.title} className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+                    )}
+                    <div>
+                      <div className="font-500 text-primary">{a.title}</div>
+                      <div className="mt-1 text-sm text-muted-foreground">{a.text}</div>
+                      <div className="mt-1 font-mono text-xs text-muted-foreground">Кампания: {a.campaign}</div>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+                    {groupColumns.map((c) => (
+                      <div key={c.key} className="text-center">
+                        <div className="text-[10px] uppercase text-muted-foreground">{c.label}</div>
+                        <div className="font-mono text-sm">{c.fmt ? c.fmt((a as MetricRow)[c.key]) : (a as MetricRow)[c.key]}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="mt-6 border-primary/30">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
+                <Icon name="Lightbulb" size={20} /> Выводы и гипотезы по разрезам
+              </div>
+              <div className="flex flex-wrap gap-3 font-mono text-xs text-muted-foreground">
+                {breakdownInsights.map((g) => (
+                  <span key={g.level} className="flex items-center gap-1">
+                    <Icon name={g.icon} size={13} style={{ color: g.color }} /> {g.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <ul className="space-y-3 text-sm leading-relaxed text-foreground/90">
+              {breakdownInsights.flatMap((group) =>
+                group.items.map((it) => (
+                  <li key={it.title} className="flex items-start justify-between gap-3">
+                    <span>
+                      <b>{it.title}:</b> {it.text}
+                      <br />
+                      <span className="text-muted-foreground">Гипотеза: {it.hint}</span>
+                    </span>
+                    <Icon name={group.icon} size={16} className="mt-0.5 shrink-0" style={{ color: group.color }} />
+                  </li>
+                ))
+              )}
+            </ul>
+          </Card>
+        </Section>
+
+        {/* 6. РАБОТЫ */}
+        <Section id="works" num="06" title="Работы и план" icon="ListChecks" sub="Проведено за месяц и план на следующий">
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <div className="mb-4 flex items-center gap-2 font-display text-lg font-600 uppercase">
+                <Icon name="CircleCheckBig" size={20} className="text-primary" /> Проведённые работы
+              </div>
+              <ul className="space-y-3">
+                {workDone.map((w) => (
+                  <li key={w} className="flex items-start gap-3 text-sm">
+                    <Icon name="Check" size={16} className="mt-0.5 shrink-0 text-primary" />{w}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+            <Card>
+              <div className="mb-4 flex items-center gap-2 font-display text-lg font-600 uppercase">
+                <Icon name="Rocket" size={20} className="text-accent" /> План на следующий месяц
+              </div>
+              <ul className="space-y-3">
+                {workPlan.map((w) => (
+                  <li key={w} className="flex items-start gap-3 text-sm">
+                    <Icon name="ArrowRight" size={16} className="mt-0.5 shrink-0 text-accent" />{w}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+        </Section>
+
+        {/* 7. СПРОС */}
+        <Section id="demand" num="07" title="Спрос на следующий месяц" icon="Search" sub="Число запросов по Wordstat: 2024 / 2025 / 2026">
+          <Card>
+            <ChartTitle title="Динамика спроса" sub="Число запросов в месяц"
+              action={<ValueToggle show={showVals.demand} setShow={(v) => setShowVals((s) => ({ ...s, demand: v }))} />} />
+            <ResponsiveContainer width="100%" height={320}>
+              <ComposedChart data={demand} margin={{ top: 30 }}>
+                <defs>
+                  <linearGradient id="dem" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={NEON.cyan} stopOpacity={0.4} />
+                    <stop offset="100%" stopColor={NEON.cyan} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
+                <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
+                <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                <Tooltip contentStyle={tipStyle} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
+                <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
+                  {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} />} />}
+                </Area>
+              </ComposedChart>
+            </ResponsiveContainer>
+            <p className="mt-4 text-sm leading-relaxed text-foreground/90">
+              Спрос по Wordstat в 2026 году (в среднем ~69,4 тыс. запросов за первые полгода) восстановился примерно на 12% относительно
+              провального 2025 года (~62,1 тыс.), но остаётся ниже допандемийного уровня 2024 года (~78,8 тыс.) — примерно на 12%.
+              Пик спроса пришёлся на апрель, к маю-июню наблюдается небольшое сезонное снижение.
+              Рекомендуем учитывать это при планировании бюджета на июль — рынок восстанавливается, но постепенно.
+            </p>
+          </Card>
+        </Section>
+
+        {/* 8. ПЛАН МЕСЯЦА */}
+        <Section id="nextplan" num="08" title="План на новый месяц" icon="Flag" sub="Плановые показатели">
+          <Card>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[420px]">
+                <thead>
+                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="pb-3 font-500">Параметры</th>
+                    <th className="pb-3 text-right font-500">План</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nextPlan.map((r) => (
+                    <tr key={r.param} className="border-b border-border/50 hover:bg-secondary/40">
+                      <td className="py-3.5 font-500">{r.param}</td>
+                      <td className="py-3.5 text-right font-mono font-700 text-primary">{r.plan}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </Section>
+
+        {/* 9. КОНТАКТЫ + ФОРМА */}
+        <Section id="contacts" num="09" title="Остались вопросы?" icon="MessageCircle" sub="Свяжитесь удобным способом">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <p className="mb-6 text-sm text-muted-foreground">
+                Если у вас остались вопросы или предложения по форме или содержанию ежемесячного отчёта — свяжитесь удобным способом.
+              </p>
+              <div className="space-y-4">
+                {[
+                  { icon: 'Phone', label: 'Телефон', value: contacts.phone },
+                  { icon: 'Mail', label: 'Почта', value: contacts.email },
+                  { icon: 'MapPin', label: 'Офис', value: contacts.office },
+                ].map((c) => (
+                  <div key={c.label} className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Icon name={c.icon} size={18} />
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-muted-foreground">{c.label}</div>
+                      <div className="font-mono">{c.value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card>
+              <div className="mb-4 font-display text-lg font-600 uppercase">Написать нам</div>
+              <div className="space-y-3">
+                <input placeholder="Ваше имя" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
+                <input placeholder="Телефон или email" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
+                <textarea placeholder="Ваш вопрос" rows={3} className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
+                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
+                  <Icon name="Send" size={16} /> Отправить заявку
+                </button>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {[
+                  { icon: 'Send', label: 'Telegram' },
+                  { icon: 'MessageCircle', label: 'WhatsApp' },
+                  { icon: 'MessagesSquare', label: 'Макс' },
+                ].map((m) => (
+                  <button key={m.label} className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/10 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20">
+                    <Icon name={m.icon} size={14} /> {m.label}
+                  </button>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </Section>
+
+        <footer className="border-t border-border pt-6 text-center font-mono text-xs text-muted-foreground">
+          {CLIENT.name} · Отчёт по всем кампаниям Яндекс Директ · {CLIENT.period}
+        </footer>
+      </div>
+    </div>
+  );
+};
+
+export default Tver;
