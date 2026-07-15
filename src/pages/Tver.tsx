@@ -7,7 +7,7 @@ import {
 import {
   NEON, PIE_COLORS, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, yearlyInsight, demand,
   deviceDim, genderDim, ageDim, platformDim, byGeo,
-  campaigns, campaignTotals, adsFull,
+  campaigns, campaignTotals, adsFull, creativeInsights,
   workDone, workPlan, nextPlan, breakdownInsights, contacts,
 } from '@/data/report-tver';
 
@@ -196,6 +196,7 @@ const Tver = () => {
   const [showVals, setShowVals] = useState({ cost: false, lead: false, cpl: false, tlead: false, cptl: false, cr: false, demand: false });
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
   const [dimActive, setDimActive] = useState<Record<string, string[]>>({ device: [], gender: [], age: [], platform: [] });
+  const [previewImage, setPreviewImage] = useState<{ src: string; title: string } | null>(null);
 
   const toggleDim = (dimKey: string, name: string) =>
     setDimActive((s) => {
@@ -532,7 +533,13 @@ const Tver = () => {
                 <div key={i} className="rounded-xl border border-border/60 bg-secondary/30 p-4 transition-all hover:border-primary/40">
                   <div className="mb-3 flex gap-3">
                     {a.image && (
-                      <img src={a.image} alt={a.title} className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+                      <button onClick={() => setPreviewImage({ src: a.image!, title: a.title })}
+                        className="group relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
+                        <img src={a.image} alt={a.title} className="h-16 w-16 object-cover transition-transform group-hover:scale-110" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
+                          <Icon name="ZoomIn" size={16} className="text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                        </div>
+                      </button>
                     )}
                     <div>
                       <div className="font-500 text-primary">{a.title}</div>
@@ -550,6 +557,39 @@ const Tver = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </Card>
+
+          {/* Лучшие/худшие креативы */}
+          <Card className="mt-6">
+            <ChartTitle title="Лучшие и худшие креативы" sub="По итогам июня 2026" />
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide" style={{ color: NEON.pos }}>
+                  <Icon name="TrendingUp" size={14} /> Лучшие
+                </div>
+                <div className="space-y-2">
+                  {creativeInsights.best.map((c) => (
+                    <div key={c.title} className="rounded-xl border p-3 text-sm" style={{ borderColor: 'hsl(152,70%,50%,0.3)' }}>
+                      <div className="font-500">{c.title}</div>
+                      <div className="mt-1 text-muted-foreground">{c.text}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div className="mb-2 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wide" style={{ color: NEON.neg }}>
+                  <Icon name="TrendingDown" size={14} /> Худшие
+                </div>
+                <div className="space-y-2">
+                  {creativeInsights.worst.map((c) => (
+                    <div key={c.title} className="rounded-xl border p-3 text-sm" style={{ borderColor: 'hsl(355,80%,62%,0.3)' }}>
+                      <div className="font-500">{c.title}</div>
+                      <div className="mt-1 text-muted-foreground">{c.text}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </Card>
 
@@ -726,6 +766,21 @@ const Tver = () => {
           {CLIENT.name} · Отчёт по всем кампаниям Яндекс Директ · {CLIENT.period}
         </footer>
       </div>
+
+      {/* Модальное окно предпросмотра креатива */}
+      {previewImage && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-6 backdrop-blur-sm"
+          onClick={() => setPreviewImage(null)}>
+          <div className="relative max-h-[85vh] max-w-2xl" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setPreviewImage(null)}
+              className="absolute -top-10 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
+              <Icon name="X" size={18} />
+            </button>
+            <img src={previewImage.src} alt={previewImage.title} className="max-h-[75vh] w-full rounded-xl object-contain" />
+            <div className="mt-3 text-center font-mono text-sm text-white/80">{previewImage.title}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
