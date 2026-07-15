@@ -142,11 +142,18 @@ export const campaignTotals = [
   { name: campaigns[2], cost: 10073.88, impressions: 31623, clicks: 178, ctr: 0.56, cpc: 56.59, avgPos: 3.14, bounce: 33.95, conv: 2, cr: 1.12, cpa: 5036.94 },
 ];
 
-// ── Объявления: заголовки/тексты и картинки будут добавлены после загрузки файла с креативами ──
-export const adsFull: { campaign: string; title: string; text: string; image?: string; cost: number; clicks: number; cpc: number; conv: number; cr: number; cpa: number }[] = [
-  { campaign: campaigns[0], title: 'Семейная ипотека', text: 'Заголовок и текст объявления будут добавлены после загрузки файла с креативами.', cost: 120567.11, clicks: 1336, cpc: 90.24, conv: 12, cr: 0.90, cpa: 10047.26 },
-  { campaign: campaigns[1], title: 'Семейные ключи', text: 'Заголовок и текст объявления будут добавлены после загрузки файла с креативами.', cost: 32589.62, clicks: 589, cpc: 55.33, conv: 3, cr: 0.51, cpa: 10863.21 },
-  { campaign: campaigns[2], title: 'Платёж по ипотеке', text: 'Заголовок и текст объявления будут добавлены после загрузки файла с креативами.', cost: 10073.88, clicks: 178, cpc: 56.59, conv: 2, cr: 1.12, cpa: 5036.94 },
+// ── Объявления: реальные заголовки, статистика и картинки из отчёта по заголовкам/изображениям (июнь 2026) ──
+export const adsFull: { campaign: string; title: string; text: string; image?: string; cost: number; clicks: number; cpc: number | null; conv: number; cr: number; cpa: number | null }[] = [
+  { campaign: campaigns[0], title: 'ПСК 17,8%-18,6%. ЖК «Новая Тверь» — ипотека 6% для семей', text: 'Семейная ипотека 6% на квартиры в ЖК «Новая Тверь»', image: '/ads/tver/img0.jpg', cost: 64215.4, clicks: 544, cpc: 118.04, conv: 9, cr: 1.65, cpa: 7135.04 },
+  { campaign: campaigns[0], title: 'ПСК 17,8%-18,6%. Выгодная ипотека 6% в современном ЖК', text: 'Выгодная ипотека 6% в современном жилом комплексе', image: '/ads/tver/img4.jpg', cost: 26576.57, clicks: 545, cpc: 48.76, conv: 2, cr: 0.37, cpa: 13288.29 },
+  { campaign: campaigns[1], title: 'Квартиры от застройщика в ЖК «Новая Тверь». Сдача в 2026', text: 'Квартиры от застройщика, сдача в 2026 году', image: '/ads/tver/img6.jpg', cost: 18872.96, clicks: 354, cpc: 53.31, conv: 1, cr: 0.28, cpa: 18872.96 },
+  { campaign: campaigns[0], title: 'Квартиры комфорт-класса с выгодными условиями по ипотеке', text: 'Квартиры комфорт-класса с выгодной ипотекой', image: '/ads/tver/img4.jpg', cost: 14183.16, clicks: 108, cpc: 131.33, conv: 0, cr: 0, cpa: null },
+  { campaign: campaigns[1], title: 'Забронируйте квартиру в ЖК «Новая Тверь» уже сегодня', text: 'Бронирование квартиры уже сегодня', image: '/ads/tver/img1.jpg', cost: 8123.44, clicks: 114, cpc: 71.26, conv: 2, cr: 1.75, cpa: 4061.72 },
+  { campaign: campaigns[0], title: 'ПСК 17,8%-18,6%. Подберите квартиру с ипотекой под 6%!', text: 'Подберите квартиру с ипотекой под 6%', image: '/ads/tver/img4.jpg', cost: 5563.06, clicks: 60, cpc: 92.72, conv: 0, cr: 0, cpa: null },
+  { campaign: campaigns[0], title: 'ПСК 17,8%-18,6%. Квартира для семьи — ипотека 6%', text: 'Квартира для семьи с ипотекой 6%', image: '/ads/tver/img5.jpg', cost: 4464.17, clicks: 53, cpc: 84.23, conv: 1, cr: 1.89, cpa: 4464.17 },
+  { campaign: campaigns[2], title: 'Ваш новый дом в ЖК «Новая Тверь» уже ждёт вас', text: 'Ваш новый дом уже ждёт вас', image: '/ads/tver/img2.jpg', cost: 4449.44, clicks: 69, cpc: 64.48, conv: 1, cr: 1.45, cpa: 4449.44 },
+  { campaign: campaigns[2], title: 'Квартиры комфорт-класса в Твери - ЖК «Новая Тверь»', text: 'Квартиры комфорт-класса в Твери', image: '/ads/tver/img7.jpg', cost: 2424.09, clicks: 44, cpc: 55.09, conv: 0, cr: 0, cpa: null },
+  { campaign: campaigns[2], title: 'Современные квартиры в Твери с комфортным платежом', text: 'Современные квартиры с комфортным платежом', image: '/ads/tver/img3.jpg', cost: 2150.37, clicks: 48, cpc: 44.80, conv: 1, cr: 2.08, cpa: 2150.37 },
 ];
 
 // ── Работы ──
