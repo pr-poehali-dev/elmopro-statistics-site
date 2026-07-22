@@ -13,11 +13,12 @@ import {
 } from '@/data/report';
 
 const tipStyle = {
-  background: 'hsl(229,28%,9%)',
-  border: '1px solid hsl(231,22%,18%)',
+  background: '#ffffff',
+  border: '1px solid hsl(220,20%,89%)',
   borderRadius: 12,
-  color: '#fff',
+  color: 'hsl(222,25%,14%)',
   fontSize: 13,
+  boxShadow: '0 8px 30px -8px rgba(0,0,0,0.15)',
 };
 
 const fmt = (n: number | null | undefined) =>
@@ -74,7 +75,7 @@ const Section = ({ id, num, title, sub, icon, children }: {
 );
 
 const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`rounded-2xl border border-border bg-card p-6 ${className}`}>{children}</div>
+  <div className={`rounded-2xl border border-border bg-card p-6 shadow-sm ${className}`}>{children}</div>
 );
 
 const ChartTitle = ({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) => (
@@ -96,7 +97,7 @@ const ValueToggle = ({ show, setShow }: { show: boolean; setShow: (v: boolean) =
   </button>
 );
 
-// ── Общий вид метки значения на линии: тёмная плашка + белый текст, чтобы не сливалось с графиком ──
+// ── Общий вид метки значения на линии: светлая плашка + тёмный текст ──
 type ValueLabelProps = { x?: number; y?: number; value?: number | string; fill?: string };
 const ValueLabel = (props: ValueLabelProps) => {
   const { x, y, value, fill } = props;
@@ -105,8 +106,8 @@ const ValueLabel = (props: ValueLabelProps) => {
   const w = Math.max(28, String(text).length * 7 + 10);
   return (
     <g>
-      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="hsl(229,28%,9%)" stroke={fill} strokeWidth={1} opacity={0.95} />
-      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill="#fff" fontFamily="JetBrains Mono, monospace">
+      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="#ffffff" stroke={fill} strokeWidth={1} opacity={0.98} />
+      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill="hsl(222,25%,14%)" fontFamily="JetBrains Mono, monospace">
         {text}
       </text>
     </g>
@@ -143,7 +144,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
     const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
     const dim = isDimmed(row.name as string);
     return (
-      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,15%,45%)' : '#fff'}>
+      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,10%,60%)' : 'hsl(222,25%,14%)'}>
         {text}
       </text>
     );
@@ -168,7 +169,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
         {data.map((d, i) => (
           <button key={d.name} onClick={() => onToggle(d.name)}
             className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
-            style={{ color: isDimmed(d.name) ? 'hsl(220,15%,45%)' : '#e2e8f0', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
+            style={{ color: isDimmed(d.name) ? 'hsl(220,10%,55%)' : 'hsl(222,25%,20%)', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
             <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
             {d.name}
           </button>
@@ -198,7 +199,7 @@ const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | u
   { key: 'cpa', label: 'CPA, ₽', fmt },
 ];
 
-const Index = () => {
+const V2 = () => {
   const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false, demand: false });
   const [campaignFilter, setCampaignFilter] = useState<string>('all');
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
@@ -245,11 +246,11 @@ const Index = () => {
   }, [selectedChannels]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="theme-light-report min-h-screen bg-background text-foreground">
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="container mx-auto flex items-center gap-4 overflow-x-auto px-6 py-3">
-          <div className="flex shrink-0 items-center rounded-lg bg-white px-3 py-1.5">
+          <div className="flex shrink-0 items-center rounded-lg bg-white px-3 py-1.5 shadow-sm">
             <img src={AGENCY.logo} alt={AGENCY.name} className="h-5 w-auto" />
           </div>
           <nav className="flex gap-1">
@@ -265,9 +266,9 @@ const Index = () => {
 
       {/* HERO */}
       <div className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 grid-bg opacity-60" />
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-[120px]" />
-        <div className="absolute -right-32 top-0 h-96 w-96 rounded-full bg-accent/20 blur-[120px]" />
+        <div className="absolute inset-0 grid-bg opacity-40" />
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute -right-32 top-0 h-96 w-96 rounded-full bg-accent/10 blur-[120px]" />
         <div className="container relative mx-auto px-6 py-14">
           <div className="animate-rise">
             <div className="mb-3 flex items-center gap-2">
@@ -276,7 +277,7 @@ const Index = () => {
             <h1 className="font-display text-5xl font-700 uppercase leading-none tracking-tight md:text-7xl">
               Эльмопро
             </h1>
-            <h2 className="mt-1 font-display text-3xl font-600 uppercase leading-none tracking-tight text-primary text-glow md:text-5xl">
+            <h2 className="mt-1 font-display text-3xl font-600 uppercase leading-none tracking-tight text-primary md:text-5xl">
               Отчёт {CLIENT.period}
             </h2>
             <p className="mt-4 max-w-xl text-muted-foreground">
@@ -292,7 +293,7 @@ const Index = () => {
           <div className="grid gap-4 md:grid-cols-3">
             {aboutLinks.map((l) => (
               <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
-                className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
+                className="group rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Icon name={l.icon} size={20} />
                 </div>
@@ -392,8 +393,8 @@ const Index = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={yearly} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                  <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                  <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                  <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                  <YAxis stroke="hsl(220,10%,45%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="cost25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
@@ -411,8 +412,8 @@ const Index = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,10%,45%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="clk25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -429,8 +430,8 @@ const Index = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,10%,45%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="cpc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -447,8 +448,8 @@ const Index = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,10%,45%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="lead25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -465,8 +466,8 @@ const Index = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                    <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,10%,45%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="lc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -483,8 +484,8 @@ const Index = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,10%,45%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="qual25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -501,8 +502,8 @@ const Index = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                    <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                    <YAxis stroke="hsl(220,10%,45%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="qc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -731,19 +732,19 @@ const Index = () => {
             <ResponsiveContainer width="100%" height={320}>
               <ComposedChart data={demand} margin={{ top: 30 }}>
                 <defs>
-                  <linearGradient id="dem" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={NEON.cyan} stopOpacity={0.4} />
+                  <linearGradient id="dem2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={NEON.cyan} stopOpacity={0.3} />
                     <stop offset="100%" stopColor={NEON.cyan} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                <XAxis dataKey="m" stroke="hsl(220,10%,45%)" fontSize={12} />
+                <YAxis stroke="hsl(220,10%,45%)" fontSize={11} />
                 <Tooltip contentStyle={tipStyle} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
                 <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
-                <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
+                <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem2)" connectNulls={false}>
                   {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} />} />}
                 </Area>
               </ComposedChart>
@@ -802,7 +803,7 @@ const Index = () => {
           </div>
 
           {/* Посчитайте свою выгоду — слева список каналов, справа сумма */}
-          <Card className="mt-6 border-primary/40 glow-cyan">
+          <Card className="mt-6 border-primary/40">
             <div className="mb-4 flex items-center gap-2 font-display text-lg font-700 uppercase text-primary">
               <Icon name="Calculator" size={20} /> Посчитайте свою выгоду
             </div>
@@ -924,4 +925,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default V2;
