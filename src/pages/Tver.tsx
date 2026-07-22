@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import {
   ComposedChart, Area, LineChart, Line, BarChart, Bar, Cell,
@@ -10,13 +10,24 @@ import {
   campaigns, campaignTotals, adsFull, creativeInsights,
   workDone, workPlan, nextPlan, breakdownInsights, contacts,
 } from '@/data/report-tver';
+import { useReportTheme } from '@/hooks/use-report-theme';
+import ReportToolbar from '@/components/ReportToolbar';
 
-const tipStyle = {
+const tipStyleDark = {
   background: 'hsl(229,28%,9%)',
   border: '1px solid hsl(231,22%,18%)',
   borderRadius: 12,
   color: '#fff',
   fontSize: 13,
+};
+
+const tipStyleLight = {
+  background: '#ffffff',
+  border: '1px solid hsl(220,20%,89%)',
+  borderRadius: 12,
+  color: 'hsl(222,25%,14%)',
+  fontSize: 13,
+  boxShadow: '0 8px 30px -8px rgba(0,0,0,0.15)',
 };
 
 const fmt = (n: number | null | undefined) =>
@@ -91,17 +102,17 @@ const ValueToggle = ({ show, setShow }: { show: boolean; setShow: (v: boolean) =
   </button>
 );
 
-// ── Общий вид метки значения на линии: тёмная плашка + белый текст, чтобы не сливалось с графиком ──
-type ValueLabelProps = { x?: number; y?: number; value?: number | string; fill?: string };
+// ── Общий вид метки значения на линии: плашка в цвет карточки + контрастный текст, чтобы не сливалось с графиком ──
+type ValueLabelProps = { x?: number; y?: number; value?: number | string; fill?: string; isLight?: boolean };
 const ValueLabel = (props: ValueLabelProps) => {
-  const { x, y, value, fill } = props;
+  const { x, y, value, fill, isLight } = props;
   if (value === null || value === undefined || x === undefined || y === undefined) return null;
   const text = typeof value === 'number' ? fmt(value) : value;
   const w = Math.max(28, String(text).length * 7 + 10);
   return (
     <g>
-      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="hsl(229,28%,9%)" stroke={fill} strokeWidth={1} opacity={0.95} />
-      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill="#fff" fontFamily="JetBrains Mono, monospace">
+      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill={isLight ? '#ffffff' : 'hsl(229,28%,9%)'} stroke={fill} strokeWidth={1} opacity={0.97} />
+      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill={isLight ? 'hsl(222,25%,14%)' : '#fff'} fontFamily="JetBrains Mono, monospace">
         {text}
       </text>
     </g>
@@ -124,11 +135,12 @@ const nav = [
 type DimRow = { name: string; [k: string]: number | string };
 type DimLabelProps = { x?: number; y?: number; width?: number; height?: number; value?: number; index?: number };
 
-const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onToggle }: {
+const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onToggle, isLight }: {
   data: DimRow[]; dataKey: string; title: string; unit?: string; showCost?: boolean;
-  active: string[]; onToggle: (name: string) => void;
+  active: string[]; onToggle: (name: string) => void; isLight: boolean;
 }) => {
   const isDimmed = (name: string) => active.length > 0 && !active.includes(name);
+  const tip = isLight ? tipStyleLight : tipStyleDark;
   const BarLabel = (p: DimLabelProps) => {
     const { x, y, width, height, value, index } = p;
     if (x === undefined || y === undefined || width === undefined || height === undefined || value === undefined || index === undefined) return null;
@@ -136,8 +148,9 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
     const costPer = showCost && value ? Number(row.cost) / value : null;
     const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
     const dim = isDimmed(row.name as string);
+    const activeColor = isLight ? 'hsl(222,25%,14%)' : '#fff';
     return (
-      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,15%,45%)' : '#fff'}>
+      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,15%,45%)' : activeColor}>
         {text}
       </text>
     );
@@ -149,7 +162,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
         <BarChart data={data} layout="vertical" margin={{ top: 4, right: 70, left: 4, bottom: 4 }}>
           <XAxis type="number" hide />
           <YAxis type="category" dataKey="name" width={0} hide />
-          <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)}${unit}`} />
+          <Tooltip contentStyle={tip} formatter={(v: number) => `${fmt(v)}${unit}`} />
           <Bar dataKey={dataKey} radius={[0, 6, 6, 0]} onClick={(d: DimRow) => onToggle(d.name)} cursor="pointer" maxBarSize={26}>
             {data.map((d, i) => (
               <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} opacity={isDimmed(d.name) ? 0.25 : 1} />
@@ -162,7 +175,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
         {data.map((d, i) => (
           <button key={d.name} onClick={() => onToggle(d.name)}
             className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
-            style={{ color: isDimmed(d.name) ? 'hsl(220,15%,45%)' : '#e2e8f0', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
+            style={{ color: isDimmed(d.name) ? 'hsl(220,15%,45%)' : (isLight ? 'hsl(222,25%,20%)' : '#e2e8f0'), opacity: isDimmed(d.name) ? 0.6 : 1 }}>
             <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
             {d.name}
           </button>
@@ -193,6 +206,11 @@ const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | u
 ];
 
 const Tver = () => {
+  const { toggle: toggleTheme, isLight } = useReportTheme('report-theme-tver', 'dark');
+  const reportRef = useRef<HTMLDivElement>(null);
+  const tipStyle = isLight ? tipStyleLight : tipStyleDark;
+  const axisColor = isLight ? 'hsl(220,10%,45%)' : 'hsl(220,15%,60%)';
+
   const [showVals, setShowVals] = useState({ cost: false, lead: false, cpl: false, tlead: false, cptl: false, cr: false, demand: false });
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
   const [dimActive, setDimActive] = useState<Record<string, string[]>>({ device: [], gender: [], age: [], platform: [] });
@@ -213,7 +231,8 @@ const Tver = () => {
   }, [adsCampaignFilter]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div ref={reportRef} className={`min-h-screen bg-background text-foreground ${isLight ? 'theme-light-report' : ''}`}>
+      <ReportToolbar isLight={isLight} onToggleTheme={toggleTheme} targetRef={reportRef} filename={`${CLIENT.name}-отчет-${CLIENT.period}.pdf`} />
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="container mx-auto flex items-center gap-4 overflow-x-auto px-6 py-3">
@@ -356,11 +375,11 @@ const Tver = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={yearly} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                  <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                  <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Line type="monotone" dataKey="cost26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                    {showVals.cost && <LabelList dataKey="cost26" content={<ValueLabel fill={NEON.cyan} />} />}
+                    {showVals.cost && <LabelList dataKey="cost26" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
@@ -373,11 +392,11 @@ const Tver = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                    <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Line type="monotone" dataKey="lead26" name="2026" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.lead && <LabelList dataKey="lead26" content={<ValueLabel fill={NEON.lime} />} />}
+                      {showVals.lead && <LabelList dataKey="lead26" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
@@ -389,11 +408,11 @@ const Tver = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                    <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Line type="monotone" dataKey="lc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.cpl && <LabelList dataKey="lc26" content={<ValueLabel fill={NEON.amber} />} />}
+                      {showVals.cpl && <LabelList dataKey="lc26" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
@@ -405,11 +424,11 @@ const Tver = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                    <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Line type="monotone" dataKey="qual26" name="2026" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.tlead && <LabelList dataKey="qual26" content={<ValueLabel fill={NEON.violet} />} />}
+                      {showVals.tlead && <LabelList dataKey="qual26" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
@@ -421,11 +440,11 @@ const Tver = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                    <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                    <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Line type="monotone" dataKey="qc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.cptl && <LabelList dataKey="qc26" content={<ValueLabel fill={NEON.amber} />} />}
+                      {showVals.cptl && <LabelList dataKey="qc26" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
@@ -438,11 +457,11 @@ const Tver = () => {
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={yearly} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                  <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                  <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt1(v)}%`} />
                   <Line type="monotone" dataKey="cr26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                    {showVals.cr && <LabelList dataKey="cr26" content={<ValueLabel fill={NEON.cyan} />} />}
+                    {showVals.cr && <LabelList dataKey="cr26" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
@@ -465,9 +484,9 @@ const Tver = () => {
               <Card key={dim.key}>
                 <ChartTitle title={dim.label} sub="Кликните по столбцу или подписи, чтобы выделить сегмент" />
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <DimBar data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽"
+                  <DimBar data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽" isLight={isLight}
                     active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
-                  <DimBar data={dim.data} dataKey="leads" title="Лиды" showCost
+                  <DimBar data={dim.data} dataKey="leads" title="Лиды" showCost isLight={isLight}
                     active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
                 </div>
               </Card>
@@ -667,14 +686,14 @@ const Tver = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                 <Tooltip contentStyle={tipStyle} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
                 <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
                 <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
-                  {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} />} />}
+                  {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                 </Area>
               </ComposedChart>
             </ResponsiveContainer>
