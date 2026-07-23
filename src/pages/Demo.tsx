@@ -12,8 +12,8 @@ import {
 } from '@/data/report-demo';
 
 const tipStyle = {
-  background: 'hsl(229,28%,9%)',
-  border: '1px solid hsl(231,22%,18%)',
+  background: 'hsl(0,0%,11%)',
+  border: '1px solid hsl(0,0%,22%)',
   borderRadius: 12,
   color: '#fff',
   fontSize: 13,
@@ -64,7 +64,7 @@ const Section = ({ id, num, title, sub, icon, children }: {
       </div>
       <div>
         <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Раздел {num}</div>
-        <h2 className="font-display text-2xl font-600 uppercase tracking-wide md:text-3xl">{title}</h2>
+        <h2 className="font-display text-2xl font-semibold md:text-3xl">{title}</h2>
         {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
       </div>
     </div>
@@ -79,7 +79,7 @@ const Card = ({ children, className = '' }: { children: React.ReactNode; classNa
 const ChartTitle = ({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) => (
   <div className="mb-5 flex items-start justify-between gap-3">
     <div>
-      <h3 className="font-display text-lg font-600 uppercase tracking-wide">{title}</h3>
+      <h3 className="font-display text-lg font-semibold">{title}</h3>
       {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
     </div>
     {action}
@@ -104,7 +104,7 @@ const ValueLabel = (props: ValueLabelProps) => {
   const w = Math.max(28, String(text).length * 7 + 10);
   return (
     <g>
-      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="hsl(229,28%,9%)" stroke={fill} strokeWidth={1} opacity={0.95} />
+      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill="hsl(0,0%,11%)" stroke={fill} strokeWidth={1} opacity={0.95} />
       <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill="#fff" fontFamily="JetBrains Mono, monospace">
         {text}
       </text>
@@ -141,7 +141,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
     const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
     const dim = isDimmed(row.name as string);
     return (
-      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,15%,45%)' : '#fff'}>
+      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(240,4%,55%)' : '#fff'}>
         {text}
       </text>
     );
@@ -166,7 +166,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
         {data.map((d, i) => (
           <button key={d.name} onClick={() => onToggle(d.name)}
             className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
-            style={{ color: isDimmed(d.name) ? 'hsl(220,15%,45%)' : '#e2e8f0', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
+            style={{ color: isDimmed(d.name) ? 'hsl(240,4%,55%)' : '#f0f0f0', opacity: isDimmed(d.name) ? 0.6 : 1 }}>
             <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
             {d.name}
           </button>
@@ -259,10 +259,10 @@ const Demo = () => {
             <div className="mb-3 flex items-center gap-2">
               <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Яндекс Директ · ежемесячный отчёт</span>
             </div>
-            <h1 className="font-display text-5xl font-700 uppercase leading-none tracking-tight md:text-7xl">
+            <h1 className="font-display text-4xl font-semibold leading-tight md:text-[58px] md:leading-[1.03]">
               Название проекта
             </h1>
-            <h2 className="mt-1 font-display text-3xl font-600 uppercase leading-none tracking-tight text-primary text-glow md:text-5xl">
+            <h2 className="mt-2 font-display text-2xl font-semibold leading-tight text-primary md:text-4xl">
               Отчёт {CLIENT.period}
             </h2>
             <p className="mt-4 max-w-xl text-muted-foreground">
@@ -315,7 +315,7 @@ const Demo = () => {
                       <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
                         <td className="py-3.5 font-500">{r.param}</td>
                         <td className="py-3.5 text-right font-mono text-muted-foreground">{r.planLabel}</td>
-                        <td className="py-3.5 text-right font-mono font-700">
+                        <td className="py-3.5 text-right font-mono font-bold">
                           {r.factLabel}{r.factNote && <Sup>{r.factNote}</Sup>}
                         </td>
                         <td className="py-3.5 text-right"><MonthDelta mayNum={r.planNum} junNum={r.factNum} isCost={r.isCost} /></td>
@@ -359,7 +359,7 @@ const Demo = () => {
                       <td className="py-3.5 text-right font-mono text-muted-foreground">
                         {r.mayLabel}{r.mayNote && <Sup>{r.mayNote}</Sup>}
                       </td>
-                      <td className="py-3.5 text-right font-mono font-700">
+                      <td className="py-3.5 text-right font-mono font-bold">
                         {r.junLabel}{r.junNote && <Sup>{r.junNote}</Sup>}
                       </td>
                       <td className="py-3.5 text-right"><MonthDelta mayNum={r.mayNum} junNum={r.junNum} isCost={r.isCost} /></td>
@@ -380,8 +380,8 @@ const Demo = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={yearly} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                  <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                  <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                  <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                  <YAxis stroke="hsl(240,4%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Line type="monotone" dataKey="cost25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
@@ -399,8 +399,8 @@ const Demo = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(240,4%,60%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="clk25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -417,8 +417,8 @@ const Demo = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(240,4%,60%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="cpc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -435,8 +435,8 @@ const Demo = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(240,4%,60%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="lead25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -453,8 +453,8 @@ const Demo = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                    <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(240,4%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="lc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -471,8 +471,8 @@ const Demo = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                    <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(240,4%,60%)" fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="qual25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -489,8 +489,8 @@ const Demo = () => {
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                    <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                    <YAxis stroke="hsl(220,15%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                    <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                    <YAxis stroke="hsl(240,4%,60%)" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                     <Legend wrapperStyle={{ fontSize: 12 }} />
                     <Line type="monotone" dataKey="qc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
@@ -504,7 +504,7 @@ const Demo = () => {
           </div>
 
           <Card className="mt-6 border-primary/30">
-            <div className="mb-3 flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
+            <div className="mb-3 flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
@@ -546,7 +546,7 @@ const Demo = () => {
                     <Icon name="MapPin" size={16} className="text-primary" />
                     <span className="font-500">{g.name}</span>
                   </div>
-                  <div className="mt-2 font-mono text-3xl font-700" style={{ color: PIE_COLORS[i] }}>{g.share}%</div>
+                  <div className="mt-2 font-mono text-3xl font-bold" style={{ color: PIE_COLORS[i] }}>{g.share}%</div>
                   <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground">
                     <div>Уники: <span className="text-foreground">{g.leads}</span> · {fmt(g.cost / g.leads)} ₽</div>
                     <div>Квалы: <span className="text-foreground">{g.quals}</span> · {g.quals ? `${fmt(g.cost / g.quals)} ₽` : '—'}</div>
@@ -653,7 +653,7 @@ const Demo = () => {
 
           <Card className="mt-6 border-primary/30">
             <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
+              <div className="flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
                 <Icon name="Lightbulb" size={20} /> Выводы и гипотезы по разрезам
               </div>
               <div className="flex flex-wrap gap-3 font-mono text-xs text-muted-foreground">
@@ -685,7 +685,7 @@ const Demo = () => {
         <Section id="works" num="06" title="Работы и план" icon="ListChecks" sub="Проведено за месяц и план на следующий">
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
-              <div className="mb-4 flex items-center gap-2 font-display text-lg font-600 uppercase">
+              <div className="mb-4 flex items-center gap-2 font-display text-lg font-semibold uppercase">
                 <Icon name="CircleCheckBig" size={20} className="text-primary" /> Проведённые работы
               </div>
               <ul className="space-y-3">
@@ -697,7 +697,7 @@ const Demo = () => {
               </ul>
             </Card>
             <Card>
-              <div className="mb-4 flex items-center gap-2 font-display text-lg font-600 uppercase">
+              <div className="mb-4 flex items-center gap-2 font-display text-lg font-semibold uppercase">
                 <Icon name="Rocket" size={20} className="text-accent" /> План на следующий месяц
               </div>
               <ul className="space-y-3">
@@ -725,8 +725,8 @@ const Demo = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
-                <XAxis dataKey="m" stroke="hsl(220,15%,60%)" fontSize={12} />
-                <YAxis stroke="hsl(220,15%,60%)" fontSize={11} />
+                <XAxis dataKey="m" stroke="hsl(240,4%,60%)" fontSize={12} />
+                <YAxis stroke="hsl(240,4%,60%)" fontSize={11} />
                 <Tooltip contentStyle={tipStyle} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
@@ -759,7 +759,7 @@ const Demo = () => {
                   {nextPlan.map((r) => (
                     <tr key={r.param} className="border-b border-border/50 hover:bg-secondary/40">
                       <td className="py-3.5 font-500">{r.param}</td>
-                      <td className="py-3.5 text-right font-mono font-700 text-primary">{r.plan}</td>
+                      <td className="py-3.5 text-right font-mono font-bold text-primary">{r.plan}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -795,12 +795,12 @@ const Demo = () => {
             </Card>
 
             <Card>
-              <div className="mb-4 font-display text-lg font-600 uppercase">Написать нам</div>
+              <div className="mb-4 font-display text-lg font-semibold uppercase">Написать нам</div>
               <div className="space-y-3">
                 <input placeholder="Ваше имя" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
                 <input placeholder="Телефон или email" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
                 <textarea placeholder="Ваш вопрос" rows={3} className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
-                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
+                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-mono text-sm font-bold text-primary-foreground transition-all hover:opacity-90">
                   <Icon name="Send" size={16} /> Отправить заявку
                 </button>
               </div>
