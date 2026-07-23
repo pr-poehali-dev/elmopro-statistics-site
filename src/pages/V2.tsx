@@ -16,16 +16,16 @@ import ReportToolbar from '@/components/ReportToolbar';
 
 const tipStyleLight = {
   background: '#ffffff',
-  border: '1px solid hsl(0,0%,90%)',
+  border: '1px solid hsl(220,20%,89%)',
   borderRadius: 12,
-  color: '#000000',
+  color: 'hsl(222,25%,14%)',
   fontSize: 13,
   boxShadow: '0 8px 30px -8px rgba(0,0,0,0.15)',
 };
 
 const tipStyleDark = {
-  background: 'hsl(0,0%,11%)',
-  border: '1px solid hsl(0,0%,22%)',
+  background: 'hsl(229,28%,9%)',
+  border: '1px solid hsl(231,22%,18%)',
   borderRadius: 12,
   color: '#fff',
   fontSize: 13,
@@ -76,7 +76,7 @@ const Section = ({ id, num, title, sub, icon, children }: {
       </div>
       <div>
         <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">Раздел {num}</div>
-        <h2 className="font-display text-2xl font-semibold md:text-3xl">{title}</h2>
+        <h2 className="font-display text-2xl font-600 uppercase tracking-wide md:text-3xl">{title}</h2>
         {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
       </div>
     </div>
@@ -91,7 +91,7 @@ const Card = ({ children, className = '' }: { children: React.ReactNode; classNa
 const ChartTitle = ({ title, sub, action }: { title: string; sub?: string; action?: React.ReactNode }) => (
   <div className="mb-5 flex items-start justify-between gap-3">
     <div>
-      <h3 className="font-display text-lg font-semibold">{title}</h3>
+      <h3 className="font-display text-lg font-600 uppercase tracking-wide">{title}</h3>
       {sub && <p className="text-sm text-muted-foreground">{sub}</p>}
     </div>
     {action}
@@ -116,8 +116,8 @@ const ValueLabel = (props: ValueLabelProps) => {
   const w = Math.max(28, String(text).length * 7 + 10);
   return (
     <g>
-      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill={isLight ? '#ffffff' : 'hsl(0,0%,11%)'} stroke={fill} strokeWidth={1} opacity={0.98} />
-      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill={isLight ? '#000000' : '#fff'} fontFamily="JetBrains Mono, monospace">
+      <rect x={x - w / 2} y={y - 24} width={w} height={18} rx={5} fill={isLight ? '#ffffff' : 'hsl(229,28%,9%)'} stroke={fill} strokeWidth={1} opacity={0.98} />
+      <text x={x} y={y - 11} textAnchor="middle" fontSize={11} fontWeight={700} fill={isLight ? 'hsl(222,25%,14%)' : '#fff'} fontFamily="JetBrains Mono, monospace">
         {text}
       </text>
     </g>
@@ -154,9 +154,9 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
     const costPer = showCost && value ? Number(row.cost) / value : null;
     const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
     const dim = isDimmed(row.name as string);
-    const activeColor = isLight ? '#000000' : '#fff';
+    const activeColor = isLight ? 'hsl(222,25%,14%)' : '#fff';
     return (
-      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(240,4%,55%)' : activeColor}>
+      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(220,10%,60%)' : activeColor}>
         {text}
       </text>
     );
@@ -181,7 +181,7 @@ const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onT
         {data.map((d, i) => (
           <button key={d.name} onClick={() => onToggle(d.name)}
             className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
-            style={{ color: isDimmed(d.name) ? 'hsl(240,4%,55%)' : (isLight ? '#000000' : '#f0f0f0'), opacity: isDimmed(d.name) ? 0.6 : 1 }}>
+            style={{ color: isDimmed(d.name) ? 'hsl(220,10%,55%)' : (isLight ? 'hsl(222,25%,20%)' : '#e2e8f0'), opacity: isDimmed(d.name) ? 0.6 : 1 }}>
             <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
             {d.name}
           </button>
@@ -215,7 +215,7 @@ const V2 = () => {
   const { toggle: toggleTheme, isLight } = useReportTheme('report-theme-v2', 'light');
   const reportRef = useRef<HTMLDivElement>(null);
   const tipStyle = isLight ? tipStyleLight : tipStyleDark;
-  const axisColor = isLight ? 'hsl(240,4%,45%)' : 'hsl(240,4%,60%)';
+  const axisColor = isLight ? 'hsl(220,10%,45%)' : 'hsl(220,15%,60%)';
 
   const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false, demand: false });
   const [campaignFilter, setCampaignFilter] = useState<string>('all');
@@ -292,10 +292,10 @@ const V2 = () => {
             <div className="mb-3 flex items-center gap-2">
               <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Яндекс Директ · ежемесячный отчёт</span>
             </div>
-            <h1 className="font-display text-4xl font-semibold leading-tight md:text-[58px] md:leading-[1.03]">
+            <h1 className="font-display text-5xl font-700 uppercase leading-none tracking-tight md:text-7xl">
               Эльмопро
             </h1>
-            <h2 className="mt-2 font-display text-2xl font-semibold leading-tight text-primary md:text-4xl">
+            <h2 className="mt-1 font-display text-3xl font-600 uppercase leading-none tracking-tight text-primary md:text-5xl">
               Отчёт {CLIENT.period}
             </h2>
             <p className="mt-4 max-w-xl text-muted-foreground">
@@ -346,7 +346,7 @@ const V2 = () => {
                       <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
                         <td className="py-3.5 font-500">{r.param}</td>
                         <td className="py-3.5 text-right font-mono text-muted-foreground">{r.planLabel}</td>
-                        <td className="py-3.5 text-right font-mono font-bold">
+                        <td className="py-3.5 text-right font-mono font-700">
                           {r.factLabel}{r.factNote && <Sup>{r.factNote}</Sup>}
                         </td>
                         <td className="py-3.5 text-right"><MonthDelta mayNum={r.planNum} junNum={r.factNum} isCost={r.isCost} /></td>
@@ -390,7 +390,7 @@ const V2 = () => {
                       <td className="py-3.5 text-right font-mono text-muted-foreground">
                         {r.mayLabel}{r.mayNote && <Sup>{r.mayNote}</Sup>}
                       </td>
-                      <td className="py-3.5 text-right font-mono font-bold">
+                      <td className="py-3.5 text-right font-mono font-700">
                         {r.junLabel}{r.junNote && <Sup>{r.junNote}</Sup>}
                       </td>
                       <td className="py-3.5 text-right"><MonthDelta mayNum={r.mayNum} junNum={r.junNum} isCost={r.isCost} /></td>
@@ -410,7 +410,7 @@ const V2 = () => {
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={yearly} margin={{ top: 30 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
@@ -429,7 +429,7 @@ const V2 = () => {
                   action={<ValueToggle show={showVals.clk} setShow={(v) => setShowVals((s) => ({ ...s, clk: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                     <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
@@ -447,7 +447,7 @@ const V2 = () => {
                   action={<ValueToggle show={showVals.cpc} setShow={(v) => setShowVals((s) => ({ ...s, cpc: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                     <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
@@ -465,7 +465,7 @@ const V2 = () => {
                   action={<ValueToggle show={showVals.lead} setShow={(v) => setShowVals((s) => ({ ...s, lead: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                     <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
@@ -483,7 +483,7 @@ const V2 = () => {
                   action={<ValueToggle show={showVals.lc} setShow={(v) => setShowVals((s) => ({ ...s, lc: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                     <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
@@ -501,7 +501,7 @@ const V2 = () => {
                   action={<ValueToggle show={showVals.qual} setShow={(v) => setShowVals((s) => ({ ...s, qual: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                     <YAxis stroke={axisColor} fontSize={11} />
                     <Tooltip contentStyle={tipStyle} />
@@ -519,7 +519,7 @@ const V2 = () => {
                   action={<ValueToggle show={showVals.qc} setShow={(v) => setShowVals((s) => ({ ...s, qc: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                     <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                     <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                     <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
@@ -535,7 +535,7 @@ const V2 = () => {
           </div>
 
           <Card className="mt-6 border-primary/30">
-            <div className="mb-3 flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
+            <div className="mb-3 flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
@@ -577,7 +577,7 @@ const V2 = () => {
                     <Icon name="MapPin" size={16} className="text-primary" />
                     <span className="font-500">{g.name}</span>
                   </div>
-                  <div className="mt-2 font-mono text-3xl font-bold" style={{ color: PIE_COLORS[i] }}>{g.share}%</div>
+                  <div className="mt-2 font-mono text-3xl font-700" style={{ color: PIE_COLORS[i] }}>{g.share}%</div>
                   <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground">
                     <div>Уники: <span className="text-foreground">{g.leads}</span> · {fmt(g.cost / g.leads)} ₽</div>
                     <div>Квалы: <span className="text-foreground">{g.quals}</span> · {g.quals ? `${fmt(g.cost / g.quals)} ₽` : '—'}</div>
@@ -684,7 +684,7 @@ const V2 = () => {
 
           <Card className="mt-6 border-primary/30">
             <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
+              <div className="flex items-center gap-2 font-display text-lg font-600 uppercase text-primary">
                 <Icon name="Lightbulb" size={20} /> Выводы и гипотезы по разрезам
               </div>
               <div className="flex flex-wrap gap-3 font-mono text-xs text-muted-foreground">
@@ -716,7 +716,7 @@ const V2 = () => {
         <Section id="works" num="06" title="Работы и план" icon="ListChecks" sub="Проведено за месяц и план на следующий">
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
-              <div className="mb-4 flex items-center gap-2 font-display text-lg font-semibold uppercase">
+              <div className="mb-4 flex items-center gap-2 font-display text-lg font-600 uppercase">
                 <Icon name="CircleCheckBig" size={20} className="text-primary" /> Проведённые работы
               </div>
               <ul className="space-y-3">
@@ -728,7 +728,7 @@ const V2 = () => {
               </ul>
             </Card>
             <Card>
-              <div className="mb-4 flex items-center gap-2 font-display text-lg font-semibold uppercase">
+              <div className="mb-4 flex items-center gap-2 font-display text-lg font-600 uppercase">
                 <Icon name="Rocket" size={20} className="text-accent" /> План на следующий месяц
               </div>
               <ul className="space-y-3">
@@ -755,7 +755,7 @@ const V2 = () => {
                     <stop offset="100%" stopColor={NEON.cyan} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                <CartesianGrid strokeDasharray="3 3" stroke={NEON.grid} />
                 <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                 <YAxis stroke={axisColor} fontSize={11} />
                 <Tooltip contentStyle={tipStyle} />
@@ -790,7 +790,7 @@ const V2 = () => {
                   {nextPlan.map((r) => (
                     <tr key={r.param} className="border-b border-border/50 hover:bg-secondary/40">
                       <td className="py-3.5 font-500">{r.param}</td>
-                      <td className="py-3.5 text-right font-mono font-bold text-primary">{r.plan}</td>
+                      <td className="py-3.5 text-right font-mono font-700 text-primary">{r.plan}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -810,9 +810,9 @@ const V2 = () => {
                   </div>
                   <Badge className="bg-secondary font-mono text-[11px] text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
                 </div>
-                <div className="mb-1.5 font-display text-sm font-semibold uppercase leading-tight">{c.name}</div>
+                <div className="mb-1.5 font-display text-sm font-600 uppercase leading-tight">{c.name}</div>
                 <div className="mb-1.5 flex items-baseline gap-1.5">
-                  <span className="font-mono text-lg font-bold" style={{ color: NEON.cyan }}>{c.stat}</span>
+                  <span className="font-mono text-lg font-700" style={{ color: NEON.cyan }}>{c.stat}</span>
                   <span className="text-[11px] text-muted-foreground">{c.statLabel}</span>
                 </div>
                 <p className="text-xs leading-relaxed text-muted-foreground">{c.pitch}</p>
@@ -822,7 +822,7 @@ const V2 = () => {
 
           {/* Посчитайте свою выгоду — слева список каналов, справа сумма */}
           <Card className="mt-6 border-primary/40">
-            <div className="mb-4 flex items-center gap-2 font-display text-lg font-bold uppercase text-primary">
+            <div className="mb-4 flex items-center gap-2 font-display text-lg font-700 uppercase text-primary">
               <Icon name="Calculator" size={20} /> Посчитайте свою выгоду
             </div>
             <p className="mb-4 text-sm text-muted-foreground">
@@ -862,7 +862,7 @@ const V2 = () => {
                     {calc.discount > 0 && (
                       <span className="mt-2 font-mono text-base text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
                     )}
-                    <span className="mt-1 font-mono text-4xl font-bold leading-tight text-primary">от {fmt(calc.finalPrice)} ₽</span>
+                    <span className="mt-1 font-mono text-4xl font-700 leading-tight text-primary">от {fmt(calc.finalPrice)} ₽</span>
                     <span className="font-mono text-sm text-muted-foreground">в месяц</span>
                     {calc.discount > 0 && (
                       <div className="mt-3 rounded-full bg-primary/10 px-3 py-1 font-mono text-xs" style={{ color: NEON.pos }}>
@@ -872,7 +872,7 @@ const V2 = () => {
                   </>
                 )}
                 <button onClick={() => scroll('contacts')}
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-mono text-sm font-bold text-primary-foreground transition-all hover:opacity-90">
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
                   Посчитать медиаплан <Icon name="ArrowRight" size={16} />
                 </button>
               </div>
@@ -911,12 +911,12 @@ const V2 = () => {
             </Card>
 
             <Card>
-              <div className="mb-4 font-display text-lg font-semibold uppercase">Написать нам</div>
+              <div className="mb-4 font-display text-lg font-600 uppercase">Написать нам</div>
               <div className="space-y-3">
                 <input placeholder="Ваше имя" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
                 <input placeholder="Телефон или email" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
                 <textarea placeholder="Ваш вопрос" rows={3} className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
-                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-mono text-sm font-bold text-primary-foreground transition-all hover:opacity-90">
+                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-mono text-sm font-700 text-primary-foreground transition-all hover:opacity-90">
                   <Icon name="Send" size={16} /> Отправить заявку
                 </button>
               </div>

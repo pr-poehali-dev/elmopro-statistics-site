@@ -4,7 +4,97 @@
 
 @layer base {
   :root {
-    /* ── Tolka Digital design system — тёмная тема отчёта ── */
+    --background: 230 30% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 229 28% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 229 28% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 175 84% 52%;
+    --primary-foreground: 230 30% 6%;
+
+    --secondary: 231 25% 14%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 231 25% 14%;
+    --muted-foreground: 220 15% 60%;
+
+    --accent: 265 84% 66%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 231 22% 18%;
+    --input: 231 22% 18%;
+    --ring: 175 84% 52%;
+
+    --radius: 0.75rem;
+
+    --neon-cyan: 175 84% 52%;
+    --neon-violet: 265 84% 66%;
+    --neon-lime: 88 80% 55%;
+    --pos: 152 70% 50%;
+    --neg: 355 80% 62%;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .theme-light-report {
+    --background: 0 0% 100%;
+    --foreground: 222 25% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 25% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 25% 14%;
+
+    --primary: 175 74% 34%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 30% 96%;
+    --secondary-foreground: 222 25% 14%;
+
+    --muted: 210 30% 96%;
+    --muted-foreground: 220 10% 42%;
+
+    --accent: 265 60% 52%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 355 74% 48%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 89%;
+    --input: 220 20% 89%;
+    --ring: 175 74% 34%;
+
+    --neon-cyan: 175 74% 34%;
+    --neon-violet: 265 60% 52%;
+    --neon-lime: 88 55% 40%;
+    --pos: 152 60% 36%;
+    --neg: 355 70% 48%;
+  }
+
+  /* ── Tolka Digital design system — используется только на /design2, не влияет на остальные страницы ── */
+  .theme-tolka {
     --background: 0 0% 7%;
     --foreground: 0 0% 100%;
 
@@ -33,33 +123,16 @@
     --input: 0 0% 20%;
     --ring: 3.6 65.5% 54.5%;
 
-    --radius: 0.75rem;
-
     --neon-cyan: 208.8 100% 60%;
     --neon-violet: 12.8 69.4% 61.6%;
     --neon-lime: 83.6 82.9% 45%;
     --pos: 83.6 82.9% 45%;
     --neg: 3.6 65.5% 54.5%;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    font-family: "Google Sans", sans-serif;
   }
 
-  .theme-light-report {
-    /* ── Tolka Digital design system — светлая тема отчёта ── */
+  .theme-tolka.theme-light-report {
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
 
@@ -141,13 +214,13 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Google Sans", sans-serif;
+    font-family: "Golos Text", sans-serif;
   }
 }
 
 @layer utilities {
   .font-display {
-    font-family: "Google Sans", sans-serif;
+    font-family: "Oswald", sans-serif;
   }
   .font-mono-num {
     font-family: "JetBrains Mono", monospace;
@@ -155,17 +228,40 @@
 
   .grid-bg {
     background-image:
-      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
+      linear-gradient(hsl(var(--border) / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.4) 1px, transparent 1px);
     background-size: 44px 44px;
   }
   .glow-cyan {
-    box-shadow: 0 8px 24px -8px hsl(var(--neon-cyan) / 0.25);
+    box-shadow:
+      0 0 0 1px hsl(var(--neon-cyan) / 0.3),
+      0 8px 40px -12px hsl(var(--neon-cyan) / 0.35);
   }
   .glow-violet {
-    box-shadow: 0 8px 24px -8px hsl(var(--neon-violet) / 0.25);
+    box-shadow:
+      0 0 0 1px hsl(var(--neon-violet) / 0.3),
+      0 8px 40px -12px hsl(var(--neon-violet) / 0.35);
   }
   .text-glow {
+    text-shadow: 0 0 24px hsl(var(--neon-cyan) / 0.5);
+  }
+
+  /* ── Tolka Digital design system — переопределения только для /design2 ── */
+  .theme-tolka .font-display {
+    font-family: "Google Sans", sans-serif;
+  }
+  .theme-tolka .grid-bg {
+    background-image:
+      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
+  }
+  .theme-tolka .glow-cyan {
+    box-shadow: 0 8px 24px -8px hsl(var(--neon-cyan) / 0.25);
+  }
+  .theme-tolka .glow-violet {
+    box-shadow: 0 8px 24px -8px hsl(var(--neon-violet) / 0.25);
+  }
+  .theme-tolka .text-glow {
     text-shadow: none;
   }
 }

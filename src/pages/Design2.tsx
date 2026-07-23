@@ -10,7 +10,7 @@ import {
   deviceDim, genderDim, ageDim, targetingDim, byGeo,
   campaigns, campaignTotals, byGroupFull, adsFull,
   workDone, workPlan, nextPlan, upsellChannels, upsellDiscountPerChannel, breakdownInsights, contacts,
-} from '@/data/report';
+} from '@/data/report-design2';
 import { useReportTheme } from '@/hooks/use-report-theme';
 import ReportToolbar from '@/components/ReportToolbar';
 
@@ -263,7 +263,7 @@ const Design2 = () => {
   }, [selectedChannels]);
 
   return (
-    <div ref={reportRef} className={`min-h-screen bg-background text-foreground ${isLight ? 'theme-light-report' : ''}`}>
+    <div ref={reportRef} className={`theme-tolka min-h-screen bg-background text-foreground ${isLight ? 'theme-light-report' : ''}`}>
       <ReportToolbar isLight={isLight} onToggleTheme={toggleTheme} targetRef={reportRef} filename={`${CLIENT.name}-отчет-${CLIENT.period}.pdf`} />
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">

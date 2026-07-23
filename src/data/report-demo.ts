@@ -1,16 +1,15 @@
-// ── Палитра Tolka Digital design system ──
 export const NEON = {
-  cyan: 'hsl(208.8, 100%, 60%)',   // #339dff синий
-  violet: 'hsl(12.8, 69.4%, 61.6%)', // #e17659 акцент (градиент)
-  lime: 'hsl(83.6, 82.9%, 39%)',   // #75b611 зелёный
-  amber: 'hsl(12.8, 69.4%, 61.6%)',
-  grid: 'hsl(0, 0%, 20%)',
-  pos: 'hsl(83.6, 82.9%, 39%)',
-  neg: 'hsl(3.6, 65.5%, 54.5%)',
-  gray: 'hsl(240, 4%, 65%)',
+  cyan: 'hsl(175, 84%, 52%)',
+  violet: 'hsl(265, 84%, 66%)',
+  lime: 'hsl(88, 80%, 55%)',
+  amber: 'hsl(38, 92%, 58%)',
+  grid: 'hsl(231, 22%, 18%)',
+  pos: 'hsl(152,70%,50%)',
+  neg: 'hsl(355,80%,62%)',
+  gray: 'hsl(220,10%,55%)',
 };
 
-export const PIE_COLORS = [NEON.cyan, 'hsl(3.6, 65.5%, 54.5%)', NEON.violet, NEON.lime, 'hsl(240,4%,65%)', 'hsl(280,50%,60%)'];
+export const PIE_COLORS = [NEON.cyan, NEON.violet, NEON.amber, NEON.lime, 'hsl(210,10%,50%)', 'hsl(340,70%,60%)'];
 
 export const CLIENT = {
   name: 'Название проекта',
