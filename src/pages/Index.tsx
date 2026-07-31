@@ -1,6 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
 import Icon from '@/components/ui/icon';
-import { Badge } from '@/components/ui/badge';
 import {
   ComposedChart, Area, LineChart, Line, BarChart, Bar, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
@@ -9,7 +8,7 @@ import {
   NEON, PIE_COLORS, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, demand,
   deviceDim, genderDim, ageDim, targetingDim, byGeo,
   campaigns, campaignTotals, byGroupFull, adsFull,
-  workDone, workPlan, nextPlan, upsellChannels, upsellDiscountPerChannel, breakdownInsights, contacts,
+  workDone, workPlan, nextPlan, upsellChannels, breakdownInsights,
 } from '@/data/report';
 import ReportToolbar from '@/components/ReportToolbar';
 
@@ -133,7 +132,6 @@ const nav = [
   { id: 'demand', label: 'Спрос' },
   { id: 'nextplan', label: 'План месяца' },
   { id: 'upsell', label: 'Другие каналы' },
-  { id: 'contacts', label: 'Контакты' },
 ];
 
 // ── Столбчатая диаграмма разреза: клик по столбцу/легенде подсвечивает выбранные, остальные — в тени ──
@@ -210,6 +208,10 @@ const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | u
   { key: 'cpa', label: 'CPA, ₽', fmt },
 ];
 
+// Раздел 05 «Статистика по Директу» временно скрыт с сайта по запросу клиента.
+// Код сохранён — часть клиентов захочет посмотреть эти разрезы, переключить обратно можно значением true.
+const SHOW_BREAKDOWN_SECTION = false;
+
 const Index = () => {
   const isLight = true;
   const reportRef = useRef<HTMLDivElement>(null);
@@ -220,7 +222,6 @@ const Index = () => {
   const [campaignFilter, setCampaignFilter] = useState<string>('all');
   const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
   const [adsGroupFilter, setAdsGroupFilter] = useState<string>('all');
-  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [dimActive, setDimActive] = useState<Record<string, string[]>>({ device: [], gender: [], age: [], targeting: [] });
 
   const toggleDim = (dimKey: string, name: string) =>
@@ -250,16 +251,6 @@ const Index = () => {
     );
   }, [adsCampaignFilter, adsGroupFilter]);
 
-  const toggleChannel = (name: string) =>
-    setSelectedChannels((s) => (s.includes(name) ? s.filter((x) => x !== name) : [...s, name]));
-
-  const calc = useMemo(() => {
-    const chosen = upsellChannels.filter((c) => selectedChannels.includes(c.name));
-    const base = chosen.reduce((s, c) => s + c.price, 0);
-    const discount = chosen.length > 1 ? (chosen.length - 1) * upsellDiscountPerChannel : 0;
-    const finalPrice = Math.round(base * (1 - discount / 100));
-    return { base, discount, finalPrice, count: chosen.length };
-  }, [selectedChannels]);
 
   return (
     <div ref={reportRef} className="min-h-screen bg-background text-foreground">
@@ -271,7 +262,7 @@ const Index = () => {
             <img src={AGENCY.logo} alt={AGENCY.name} className="h-5 w-auto" />
           </div>
           <nav className="flex gap-1">
-            {nav.map((n) => (
+            {nav.filter((n) => SHOW_BREAKDOWN_SECTION || n.id !== 'breakdown').map((n) => (
               <button key={n.id} onClick={() => scroll(n.id)}
                 className="whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-xs text-muted-foreground transition-all hover:bg-secondary hover:text-foreground">
                 {n.label}
@@ -424,7 +415,7 @@ const Index = () => {
 
             <div className="grid gap-6 lg:grid-cols-2">
               <Card>
-                <ChartTitle title="Клики" sub="Количество кликов"
+                <ChartTitle title="Клики" sub="Количество"
                   action={<ValueToggle show={showVals.clk} setShow={(v) => setShowVals((s) => ({ ...s, clk: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
@@ -442,7 +433,7 @@ const Index = () => {
               </Card>
 
               <Card>
-                <ChartTitle title="CPC, ₽" sub="Цена клика"
+                <ChartTitle title="Цена клика, ₽"
                   action={<ValueToggle show={showVals.cpc} setShow={(v) => setShowVals((s) => ({ ...s, cpc: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
                   <LineChart data={yearly} margin={{ top: 30 }}>
@@ -538,16 +529,17 @@ const Index = () => {
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
-              За 2026 год расход растёт при заметном удорожании трафика: <b>CPC в июне 643 ₽</b> против 259 ₽ год назад —
+              За 2026 год расход растёт при заметном удорожании трафика: <b>цена клика в июне выросла до 643 ₽</b> против 259 ₽ год назад —
               рост в 2,5 раза. Одновременно падает число кликов (298 против 381) и уникальных лидов (24 против 36),
               а стоимость уникального лида выросла с ~2 700 ₽ до <b>~7 990 ₽</b>. Ключевая причина — усиление аукциона
               и ставка на дорогие высокочастотные фразы. Рекомендация: сместить фокус с «выкупа объёма» на результативные
-              связки, усилить минусацию и корректировки, а бюджетный рост направлять в сегменты с CPA ниже плана (45-54, десктоп).
+              связки, усилить минусацию и корректировки, а бюджетный рост направлять в сегменты, где заявки обходятся дешевле плана (45-54, десктоп).
             </p>
           </Card>
         </Section>
 
-        {/* 5. РАЗРЕЗЫ */}
+        {/* 5. РАЗРЕЗЫ — скрыт с сайта (SHOW_BREAKDOWN_SECTION), код сохранён по запросу клиента */}
+        {SHOW_BREAKDOWN_SECTION && (
         <Section id="breakdown" num="05" title="Статистика по Директу" icon="ChartPie" sub={`Разрезы за ${CLIENT.period} · период 01.06 – 30.06.2026`}>
           {/* Столбчатые диаграммы по 4 измерениям × 3 метрики, с подсветкой выбранных сегментов */}
           <div className="space-y-6">
@@ -710,6 +702,7 @@ const Index = () => {
             </ul>
           </Card>
         </Section>
+        )}
 
         {/* 6. РАБОТЫ */}
         <Section id="works" num="06" title="Работы и план" icon="ListChecks" sub="Проведено за месяц и план на следующий">
@@ -807,7 +800,6 @@ const Index = () => {
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon name={c.icon} size={18} />
                   </div>
-                  <Badge className="bg-secondary font-mono text-[11px] text-muted-foreground hover:bg-secondary">от {fmt(c.price)} ₽/мес</Badge>
                 </div>
                 <div className="mb-1.5 font-display text-sm font-semibold uppercase leading-tight">{c.name}</div>
                 <div className="mb-1.5 flex items-baseline gap-1.5">
@@ -817,120 +809,6 @@ const Index = () => {
                 <p className="text-xs leading-relaxed text-muted-foreground">{c.pitch}</p>
               </Card>
             ))}
-          </div>
-
-          {/* Посчитайте свою выгоду — слева список каналов, справа сумма */}
-          <Card className="mt-6 border-primary/40 glow-cyan">
-            <div className="mb-4 flex items-center gap-2 font-display text-lg font-bold uppercase text-primary">
-              <Icon name="Calculator" size={20} /> Посчитайте свою выгоду
-            </div>
-            <p className="mb-4 text-sm text-muted-foreground">
-              Выберите каналы — скидка {upsellDiscountPerChannel}% за каждый дополнительный канал (максимум {(upsellChannels.length - 1) * upsellDiscountPerChannel}% при подключении всех {upsellChannels.length}).
-            </p>
-
-            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-              <div className="flex flex-col gap-2">
-                {upsellChannels.map((c) => {
-                  const active = selectedChannels.includes(c.name);
-                  return (
-                    <button key={c.name} onClick={() => toggleChannel(c.name)}
-                      className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
-                        active ? 'border-primary bg-primary/10' : 'border-border bg-secondary/30 hover:border-primary/40'
-                      }`}>
-                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground'}`}>
-                        <Icon name={active ? 'Check' : c.icon} size={17} />
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm font-500">{c.name}</div>
-                        <div className="font-mono text-xs text-muted-foreground">{fmt(c.price)} ₽/мес</div>
-                      </div>
-                      {active && <Icon name="CircleCheck" size={18} className="text-primary" />}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex flex-col items-center justify-center rounded-xl border border-primary/30 bg-secondary/40 p-6 text-center">
-                {calc.count === 0 ? (
-                  <div className="text-sm text-muted-foreground">Выберите один или несколько каналов слева, чтобы увидеть стоимость</div>
-                ) : (
-                  <>
-                    <div className="font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                      {calc.count} канал{calc.count > 1 ? (calc.count < 5 ? 'а' : 'ов') : ''} · скидка {calc.discount}%
-                    </div>
-                    {calc.discount > 0 && (
-                      <span className="mt-2 font-mono text-base text-muted-foreground line-through">{fmt(calc.base)} ₽</span>
-                    )}
-                    <span className="mt-1 font-mono text-4xl font-bold leading-tight text-primary">от {fmt(calc.finalPrice)} ₽</span>
-                    <span className="font-mono text-sm text-muted-foreground">в месяц</span>
-                    {calc.discount > 0 && (
-                      <div className="mt-3 rounded-full bg-primary/10 px-3 py-1 font-mono text-xs" style={{ color: NEON.pos }}>
-                        Экономия {fmt(calc.base - calc.finalPrice)} ₽/мес
-                      </div>
-                    )}
-                  </>
-                )}
-                <button onClick={() => scroll('contacts')}
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-mono text-sm font-bold text-primary-foreground transition-all hover:opacity-90">
-                  Посчитать медиаплан <Icon name="ArrowRight" size={16} />
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4 flex items-center gap-2 font-mono text-xs text-muted-foreground">
-              <Icon name="Gift" size={14} className="text-primary" /> Действует для текущих клиентов Директа — скидка суммируется автоматически при подключении каждого следующего канала
-            </div>
-          </Card>
-        </Section>
-
-        {/* 10. КОНТАКТЫ + ФОРМА */}
-        <Section id="contacts" num="10" title="Остались вопросы?" icon="MessageCircle" sub="Свяжитесь удобным способом">
-          <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
-              <p className="mb-6 text-sm text-muted-foreground">
-                Если у вас остались вопросы или предложения по форме или содержанию ежемесячного отчёта — свяжитесь удобным способом.
-              </p>
-              <div className="space-y-4">
-                {[
-                  { icon: 'Phone', label: 'Телефон', value: contacts.phone },
-                  { icon: 'Mail', label: 'Почта', value: contacts.email },
-                  { icon: 'MapPin', label: 'Офис', value: contacts.office },
-                ].map((c) => (
-                  <div key={c.label} className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Icon name={c.icon} size={18} />
-                    </div>
-                    <div>
-                      <div className="text-xs uppercase tracking-wide text-muted-foreground">{c.label}</div>
-                      <div className="font-mono">{c.value}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            <Card>
-              <div className="mb-4 font-display text-lg font-semibold uppercase">Написать нам</div>
-              <div className="space-y-3">
-                <input placeholder="Ваше имя" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
-                <input placeholder="Телефон или email" className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
-                <textarea placeholder="Ваш вопрос" rows={3} className="w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-all focus:border-primary/50" />
-                <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 font-mono text-sm font-bold text-primary-foreground transition-all hover:opacity-90">
-                  <Icon name="Send" size={16} /> Отправить заявку
-                </button>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {[
-                  { icon: 'Send', label: 'Telegram' },
-                  { icon: 'MessageCircle', label: 'WhatsApp' },
-                  { icon: 'MessagesSquare', label: 'Макс' },
-                ].map((m) => (
-                  <button key={m.label} className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/10 py-2.5 font-mono text-xs text-primary transition-all hover:bg-primary/20">
-                    <Icon name={m.icon} size={14} /> {m.label}
-                  </button>
-                ))}
-              </div>
-            </Card>
           </div>
         </Section>
 
