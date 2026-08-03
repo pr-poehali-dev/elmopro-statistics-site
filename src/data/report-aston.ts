@@ -117,15 +117,7 @@ export const accounts = {
     geo: withMetrics([
       { name: 'Новосибирск', cost: 814184.92, clicks: 40479, conv: 22 },
       { name: 'Искитим', cost: 10792.85, clicks: 79, conv: 0 },
-      { name: 'Не определено', cost: 8051.06, clicks: 497, conv: 0 },
-      { name: 'Татарск', cost: 5805.36, clicks: 30, conv: 0 },
-      { name: 'Бердск', cost: 2204.58, clicks: 37, conv: 0 },
-      { name: 'Кемерово', cost: 1244.17, clicks: 63, conv: 0 },
-      { name: 'Тогучин', cost: 884.4, clicks: 13, conv: 0 },
-      { name: 'Купино', cost: 879.68, clicks: 25, conv: 0 },
-      { name: 'Красноярск', cost: 864.1, clicks: 54, conv: 0 },
-      { name: 'Барнаул', cost: 724.05, clicks: 26, conv: 0 },
-      { name: 'Прочее', cost: 7316.77, clicks: 578, conv: 0 },
+      { name: 'Прочее', cost: 27974.17, clicks: 1323, conv: 0 },
     ]),
     campaigns: withMetrics([
       { name: 'Сети / РСЯ - astondom.ru / Новосибирск', cost: 276323.89, clicks: 34193, conv: 0 },
@@ -183,15 +175,7 @@ export const accounts = {
     geo: withMetrics([
       { name: 'Новосибирск', cost: 864027.43, clicks: 26515, conv: 33 },
       { name: 'Не определено', cost: 12672.57, clicks: 162, conv: 0 },
-      { name: 'Татарск', cost: 969.26, clicks: 2, conv: 0 },
-      { name: 'Ростов-на-Дону', cost: 964.6, clicks: 5, conv: 0 },
-      { name: 'Магадан', cost: 711.92, clicks: 1, conv: 0 },
-      { name: 'Ангарск', cost: 662.92, clicks: 1, conv: 0 },
-      { name: 'Бердск', cost: 621.45, clicks: 14, conv: 0 },
-      { name: 'Волгоград', cost: 587.87, clicks: 1, conv: 1 },
-      { name: 'Москва', cost: 540.34, clicks: 11, conv: 0 },
-      { name: 'Ялта', cost: 500.16, clicks: 1, conv: 0 },
-      { name: 'Прочее', cost: 4757.86, clicks: 133, conv: 1 },
+      { name: 'Прочее', cost: 10316.38, clicks: 169, conv: 2 },
     ]),
     campaigns: withMetrics([
       { name: 'SODA|ЕПК|Сети|Квиз|Ключи|Новосибирск|Квартиры с отделкой', cost: 166668.43, clicks: 2498, conv: 14 },

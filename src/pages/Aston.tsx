@@ -425,7 +425,7 @@ const Aston = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="География" sub="Топ-10 городов по расходу, остальные — «Прочее»" />
+              <ChartTitle title="География" sub="Топ-2 города по расходу, остальные — «Прочее»" />
               <div className="grid gap-4 md:grid-cols-3">
                 {data.geo.map((g, i) => (
                   <div key={g.name} className="rounded-xl border border-border/60 bg-secondary/30 p-4">
