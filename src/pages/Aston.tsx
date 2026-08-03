@@ -224,6 +224,7 @@ const Aston = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   const data = accounts[account];
+  const geoTotalCost = data.geo.reduce((s, g) => s + g.cost, 0);
 
   return (
     <div ref={reportRef} className="min-h-screen bg-background text-foreground">
@@ -425,13 +426,25 @@ const Aston = () => {
 
             <Card>
               <ChartTitle title="География" sub="Топ-10 городов по расходу, остальные — «Прочее»" />
-              <div className="grid gap-4 sm:grid-cols-3">
-                <DimBar data={data.geo} dataKey="cost" title="Расход, ₽" unit=" ₽"
-                  active={dimActive.geo} onToggle={(name) => toggleDim('geo', name)} />
-                <DimBar data={data.geo} dataKey="clicks" title="Клики"
-                  active={dimActive.geo} onToggle={(name) => toggleDim('geo', name)} />
-                <DimBar data={data.geo} dataKey="conv" title="Конверсии" showCost
-                  active={dimActive.geo} onToggle={(name) => toggleDim('geo', name)} />
+              <div className="grid gap-4 md:grid-cols-3">
+                {data.geo.map((g, i) => (
+                  <div key={g.name} className="rounded-xl border border-border/60 bg-secondary/30 p-4">
+                    <div className="flex items-center gap-2">
+                      <Icon name="MapPin" size={16} className="text-primary" />
+                      <span className="font-500">{g.name}</span>
+                    </div>
+                    <div className="mt-2 font-mono text-3xl font-bold" style={{ color: PIE_COLORS[i % PIE_COLORS.length] }}>
+                      {fmt1((g.cost / geoTotalCost) * 100)}%
+                    </div>
+                    <div className="text-xs text-muted-foreground">доля расхода</div>
+                    <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground">
+                      <div>Расход: <span className="text-foreground">{fmt(g.cost)} ₽</span></div>
+                      <div>Клики: <span className="text-foreground">{fmt(g.clicks)}</span></div>
+                      <div>Конверсии: <span className="text-foreground">{g.conv}</span></div>
+                      <div>CPA: <span className="text-foreground">{g.cpa ? `${fmt(g.cpa)} ₽` : '—'}</span></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </Card>
           </div>
