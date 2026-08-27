@@ -1,14 +1,12 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import {
-  ComposedChart, Area, LineChart, Line, BarChart, Bar, Cell,
+  ComposedChart, Area, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
 } from 'recharts';
 import {
-  NEON, PIE_COLORS, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, demand,
-  deviceDim, genderDim, ageDim, targetingDim, byGeo,
-  campaigns, campaignTotals, byGroupFull, adsFull,
-  workDone, workPlan, nextPlan, upsellChannels, breakdownInsights,
+  NEON, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, demand,
+  workDone, workPlan, nextPlan,
 } from '@/data/report';
 import ReportToolbar from '@/components/ReportToolbar';
 
@@ -31,8 +29,6 @@ const tipStyleLight = {
 
 const fmt = (n: number | null | undefined) =>
   n === null || n === undefined ? '—' : Math.round(n).toLocaleString('ru-RU');
-const fmt1 = (n: number | null | undefined) =>
-  n === null || n === undefined ? '—' : n.toLocaleString('ru-RU', { maximumFractionDigits: 1 });
 
 // ── Индикатор статуса выполнения плана (>=90 зелёный, 60-89 жёлтый, <60 красный) ──
 const planStatusColor = (planNum: number, factNum: number, isCost: boolean) => {
@@ -127,90 +123,10 @@ const nav = [
   { id: 'planfact', label: 'План / Факт' },
   { id: 'months', label: 'Май → Июнь' },
   { id: 'trends', label: 'Тренды года' },
-  { id: 'breakdown', label: 'Разрезы' },
   { id: 'works', label: 'Работы' },
   { id: 'demand', label: 'Спрос' },
   { id: 'nextplan', label: 'План месяца' },
-  { id: 'upsell', label: 'Другие каналы' },
 ];
-
-// ── Столбчатая диаграмма разреза: клик по столбцу/легенде подсвечивает выбранные, остальные — в тени ──
-type DimRow = { name: string; [k: string]: number | string };
-type DimLabelProps = { x?: number; y?: number; width?: number; height?: number; value?: number; index?: number };
-
-const DimBar = ({ data, dataKey, title, unit = '', showCost = false, active, onToggle, isLight }: {
-  data: DimRow[]; dataKey: string; title: string; unit?: string; showCost?: boolean;
-  active: string[]; onToggle: (name: string) => void; isLight: boolean;
-}) => {
-  const isDimmed = (name: string) => active.length > 0 && !active.includes(name);
-  const tip = isLight ? tipStyleLight : tipStyleDark;
-  const BarLabel = (p: DimLabelProps) => {
-    const { x, y, width, height, value, index } = p;
-    if (x === undefined || y === undefined || width === undefined || height === undefined || value === undefined || index === undefined) return null;
-    const row = data[index];
-    const costPer = showCost && value ? Number(row.cost) / value : null;
-    const text = `${fmt(value)}${unit}${costPer !== null ? ` · ${fmt(costPer)} ₽` : ''}`;
-    const dim = isDimmed(row.name as string);
-    const activeColor = isLight ? '#000000' : '#fff';
-    return (
-      <text x={x + width + 6} y={y + height / 2} dominantBaseline="central" fontSize={11} fontWeight={700} fill={dim ? 'hsl(240,4%,55%)' : activeColor}>
-        {text}
-      </text>
-    );
-  };
-  return (
-    <div>
-      <div className="mb-2 text-center font-mono text-xs uppercase tracking-wide text-muted-foreground">{title}</div>
-      <ResponsiveContainer width="100%" height={Math.max(140, data.length * 40)}>
-        <BarChart data={data} layout="vertical" margin={{ top: 4, right: 70, left: 4, bottom: 4 }}>
-          <XAxis type="number" hide />
-          <YAxis type="category" dataKey="name" width={0} hide />
-          <Tooltip contentStyle={tip} formatter={(v: number) => `${fmt(v)}${unit}`} />
-          <Bar dataKey={dataKey} radius={[0, 6, 6, 0]} onClick={(d: DimRow) => onToggle(d.name)} cursor="pointer" maxBarSize={26}>
-            {data.map((d, i) => (
-              <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} opacity={isDimmed(d.name) ? 0.25 : 1} />
-            ))}
-            <LabelList dataKey={dataKey} content={BarLabel} />
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-      <div className="mt-1 flex flex-wrap justify-center gap-2">
-        {data.map((d, i) => (
-          <button key={d.name} onClick={() => onToggle(d.name)}
-            className="flex items-center gap-1 rounded-full px-1.5 py-0.5 font-mono text-[11px] transition-opacity"
-            style={{ color: isDimmed(d.name) ? 'hsl(240,4%,55%)' : (isLight ? '#000000' : '#f0f0f0'), opacity: isDimmed(d.name) ? 0.6 : 1 }}>
-            <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
-            {d.name}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const dimensions = [
-  { key: 'device', label: 'Тип устройства', data: deviceDim },
-  { key: 'gender', label: 'Пол аудитории', data: genderDim },
-  { key: 'age', label: 'Возраст', data: ageDim },
-  { key: 'targeting', label: 'Условие показа', data: targetingDim },
-];
-
-type MetricKey = 'cost' | 'clicks' | 'cpc' | 'conv' | 'cr' | 'cpa';
-type MetricRow = Record<MetricKey, number | null> & { name?: string; campaign?: string; group?: string; title?: string; text?: string };
-
-// Урезанный набор столбцов для таблиц кампаний/групп (без Показы, CTR, Ср. объём трафика, Ср. позиция, Отказы)
-const groupColumns: { key: MetricKey; label: string; fmt?: (v: number | null | undefined) => string }[] = [
-  { key: 'cost', label: 'Расход, ₽', fmt },
-  { key: 'clicks', label: 'Клики', fmt },
-  { key: 'cpc', label: 'CPC, ₽', fmt },
-  { key: 'conv', label: 'Уникальные лиды', fmt },
-  { key: 'cr', label: 'CR, %', fmt: fmt1 },
-  { key: 'cpa', label: 'CPA, ₽', fmt },
-];
-
-// Раздел 05 «Статистика по Директу» временно скрыт с сайта по запросу клиента.
-// Код сохранён — часть клиентов захочет посмотреть эти разрезы, переключить обратно можно значением true.
-const SHOW_BREAKDOWN_SECTION = false;
 
 const Index = () => {
   const isLight = true;
@@ -219,38 +135,9 @@ const Index = () => {
   const axisColor = isLight ? 'hsl(240,4%,45%)' : 'hsl(240,4%,60%)';
 
   const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false, demand: false });
-  const [campaignFilter, setCampaignFilter] = useState<string>('all');
-  const [adsCampaignFilter, setAdsCampaignFilter] = useState<string>('all');
-  const [adsGroupFilter, setAdsGroupFilter] = useState<string>('all');
-  const [dimActive, setDimActive] = useState<Record<string, string[]>>({ device: [], gender: [], age: [], targeting: [] });
-
-  const toggleDim = (dimKey: string, name: string) =>
-    setDimActive((s) => {
-      const cur = s[dimKey] || [];
-      const next = cur.includes(name) ? cur.filter((x) => x !== name) : [...cur, name];
-      return { ...s, [dimKey]: next };
-    });
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-
-  const filteredGroups = useMemo(() => {
-    const rows = campaignFilter === 'all' ? byGroupFull : byGroupFull.filter((g) => g.campaign === campaignFilter);
-    return [...rows].sort((a, b) => b.cost - a.cost).slice(0, 10);
-  }, [campaignFilter]);
-
-  const groupsInAdsCampaign = useMemo(() => {
-    const rows = adsCampaignFilter === 'all' ? byGroupFull : byGroupFull.filter((g) => g.campaign === adsCampaignFilter);
-    return Array.from(new Set(rows.map((r) => r.name)));
-  }, [adsCampaignFilter]);
-
-  const filteredAds = useMemo(() => {
-    return adsFull.filter((a) =>
-      (adsCampaignFilter === 'all' || a.campaign === adsCampaignFilter) &&
-      (adsGroupFilter === 'all' || a.group === adsGroupFilter)
-    );
-  }, [adsCampaignFilter, adsGroupFilter]);
-
 
   return (
     <div ref={reportRef} className="min-h-screen bg-background text-foreground">
@@ -262,7 +149,7 @@ const Index = () => {
             <img src={AGENCY.logo} alt={AGENCY.name} className="h-5 w-auto" />
           </div>
           <nav className="flex gap-1">
-            {nav.filter((n) => SHOW_BREAKDOWN_SECTION || n.id !== 'breakdown').map((n) => (
+            {nav.map((n) => (
               <button key={n.id} onClick={() => scroll(n.id)}
                 className="whitespace-nowrap rounded-lg px-3 py-1.5 font-mono text-xs text-muted-foreground transition-all hover:bg-secondary hover:text-foreground">
                 {n.label}
@@ -538,174 +425,8 @@ const Index = () => {
           </Card>
         </Section>
 
-        {/* 5. РАЗРЕЗЫ — скрыт с сайта (SHOW_BREAKDOWN_SECTION), код сохранён по запросу клиента */}
-        {SHOW_BREAKDOWN_SECTION && (
-        <Section id="breakdown" num="05" title="Статистика по Директу" icon="ChartPie" sub={`Разрезы за ${CLIENT.period} · период 01.06 – 30.06.2026`}>
-          {/* Столбчатые диаграммы по 4 измерениям × 3 метрики, с подсветкой выбранных сегментов */}
-          <div className="space-y-6">
-            {dimensions.map((dim) => (
-              <Card key={dim.key}>
-                <ChartTitle title={dim.label} sub="Кликните по столбцу или подписи, чтобы выделить сегмент" />
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <DimBar data={dim.data} dataKey="cost" title="Расход, ₽" unit=" ₽" isLight={isLight}
-                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
-                  <DimBar data={dim.data} dataKey="leads" title="Уникальные лиды" showCost isLight={isLight}
-                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
-                  <DimBar data={dim.data} dataKey="quals" title="Квал. лиды" showCost isLight={isLight}
-                    active={dimActive[dim.key]} onToggle={(name) => toggleDim(dim.key, name)} />
-                </div>
-              </Card>
-            ))}
-          </div>
-
-          {/* География */}
-          <Card className="mt-6">
-            <ChartTitle title="География размещения" sub="Доля трафика, объём и стоимость лидов" />
-            <div className="grid gap-4 md:grid-cols-3">
-              {byGeo.map((g, i) => (
-                <div key={g.name} className="rounded-xl border border-border/60 bg-secondary/30 p-4">
-                  <div className="flex items-center gap-2">
-                    <Icon name="MapPin" size={16} className="text-primary" />
-                    <span className="font-500">{g.name}</span>
-                  </div>
-                  <div className="mt-2 font-mono text-3xl font-bold" style={{ color: PIE_COLORS[i] }}>{g.share}%</div>
-                  <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-xs text-muted-foreground">
-                    <div>Уники: <span className="text-foreground">{g.leads}</span> · {fmt(g.cost / g.leads)} ₽</div>
-                    <div>Квалы: <span className="text-foreground">{g.quals}</span> · {g.quals ? `${fmt(g.cost / g.quals)} ₽` : '—'}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          {/* По кампаниям */}
-          <Card className="mt-6">
-            <ChartTitle title="Статистика по кампаниям" />
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px]">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    <th className="pb-3 font-500">Кампания</th>
-                    {groupColumns.map((c) => <th key={c.key} className="pb-3 text-right font-500">{c.label}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {campaignTotals.map((r) => (
-                    <tr key={r.name} className="border-b border-border/50 hover:bg-secondary/40">
-                      <td className="py-3 pr-4 font-500">{r.name}</td>
-                      {groupColumns.map((c) => (
-                        <td key={c.key} className="py-3 text-right font-mono">{c.fmt ? c.fmt((r as MetricRow)[c.key]) : (r as MetricRow)[c.key]}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
-          {/* Кампания-группа с фильтром */}
-          <Card className="mt-6">
-            <ChartTitle title="Кампания — группа" sub="Топ-10 групп внутри выбранной кампании"
-              action={
-                <select value={campaignFilter} onChange={(e) => setCampaignFilter(e.target.value)}
-                  className="rounded-lg border border-border bg-secondary/40 px-3 py-1.5 font-mono text-xs outline-none">
-                  <option value="all">Все кампании</option>
-                  {campaigns.map((c) => <option key={c} value={c}>{c}</option>)}
-                </select>
-              } />
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px]">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    <th className="pb-3 font-500">Группа</th>
-                    {groupColumns.map((c) => <th key={c.key} className="pb-3 text-right font-500">{c.label}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredGroups.map((r) => (
-                    <tr key={r.name} className="border-b border-border/50 hover:bg-secondary/40">
-                      <td className="py-3 pr-4 font-500">{r.name}</td>
-                      {groupColumns.map((c) => (
-                        <td key={c.key} className="py-3 text-right font-mono">{c.fmt ? c.fmt((r as MetricRow)[c.key]) : (r as MetricRow)[c.key]}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
-          {/* Объявления с фильтрами */}
-          <Card className="mt-6">
-            <ChartTitle title="Объявления" sub={`Заголовок + текст, полная статистика · ${filteredAds.length} из ${adsFull.length}`}
-              action={
-                <div className="flex gap-2">
-                  <select value={adsCampaignFilter} onChange={(e) => { setAdsCampaignFilter(e.target.value); setAdsGroupFilter('all'); }}
-                    className="rounded-lg border border-border bg-secondary/40 px-3 py-1.5 font-mono text-xs outline-none">
-                    <option value="all">Все кампании</option>
-                    {campaigns.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
-                  <select value={adsGroupFilter} onChange={(e) => setAdsGroupFilter(e.target.value)}
-                    className="rounded-lg border border-border bg-secondary/40 px-3 py-1.5 font-mono text-xs outline-none">
-                    <option value="all">Все группы</option>
-                    {groupsInAdsCampaign.map((g) => <option key={g} value={g}>{g}</option>)}
-                  </select>
-                </div>
-              } />
-            <div className="space-y-3">
-              {filteredAds.map((a, i) => (
-                <div key={i} className="rounded-xl border border-border/60 bg-secondary/30 p-4 transition-all hover:border-primary/40">
-                  <div className="mb-3">
-                    <div className="font-500 text-primary">{a.title}</div>
-                    <div className="mt-1 text-sm text-muted-foreground">{a.text}</div>
-                    <div className="mt-1 font-mono text-xs text-muted-foreground">Группа: {a.group}</div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-                    {groupColumns.map((c) => (
-                      <div key={c.key} className="text-center">
-                        <div className="text-[10px] uppercase text-muted-foreground">{c.label}</div>
-                        <div className="font-mono text-sm">{c.fmt ? c.fmt((a as MetricRow)[c.key]) : (a as MetricRow)[c.key]}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card className="mt-6 border-primary/30">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
-                <Icon name="Lightbulb" size={20} /> Выводы и гипотезы по разрезам
-              </div>
-              <div className="flex flex-wrap gap-3 font-mono text-xs text-muted-foreground">
-                {breakdownInsights.map((g) => (
-                  <span key={g.level} className="flex items-center gap-1">
-                    <Icon name={g.icon} size={13} style={{ color: g.color }} /> {g.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <ul className="space-y-3 text-sm leading-relaxed text-foreground/90">
-              {breakdownInsights.flatMap((group) =>
-                group.items.map((it) => (
-                  <li key={it.title} className="flex items-start justify-between gap-3">
-                    <span>
-                      <b>{it.title}:</b> {it.text}
-                      <br />
-                      <span className="text-muted-foreground">Гипотеза: {it.hint}</span>
-                    </span>
-                    <Icon name={group.icon} size={16} className="mt-0.5 shrink-0" style={{ color: group.color }} />
-                  </li>
-                ))
-              )}
-            </ul>
-          </Card>
-        </Section>
-        )}
-
-        {/* 6. РАБОТЫ */}
-        <Section id="works" num="06" title="Работы и план" icon="ListChecks" sub="Проведено за месяц и план на следующий">
+        {/* 5. РАБОТЫ */}
+        <Section id="works" num="05" title="Работы и план" icon="ListChecks" sub="Проведено за месяц и план на следующий">
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <div className="mb-4 flex items-center gap-2 font-display text-lg font-semibold uppercase">
@@ -734,8 +455,8 @@ const Index = () => {
           </div>
         </Section>
 
-        {/* 7. СПРОС */}
-        <Section id="demand" num="07" title="Спрос на следующий месяц" icon="Search" sub="Число запросов по Wordstat: 2024 / 2025 / 2026">
+        {/* 6. СПРОС */}
+        <Section id="demand" num="06" title="Спрос на следующий месяц" icon="Search" sub="Число запросов по Wordstat: 2024 / 2025 / 2026">
           <Card>
             <ChartTitle title="Динамика спроса" sub="Число запросов в месяц"
               action={<ValueToggle show={showVals.demand} setShow={(v) => setShowVals((s) => ({ ...s, demand: v }))} />} />
@@ -767,8 +488,8 @@ const Index = () => {
           </Card>
         </Section>
 
-        {/* 8. ПЛАН МЕСЯЦА */}
-        <Section id="nextplan" num="08" title="План на новый месяц" icon="Flag" sub="Плановые показатели">
+        {/* 7. ПЛАН МЕСЯЦА */}
+        <Section id="nextplan" num="07" title="План на новый месяц" icon="Flag" sub="Плановые показатели">
           <Card>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[420px]">
@@ -789,27 +510,6 @@ const Index = () => {
               </table>
             </div>
           </Card>
-        </Section>
-
-        {/* UPSELL — компактный продающий блок, помещается на один разворот десктопа */}
-        <Section id="upsell" num="09" title="Расширьте охват" icon="Sparkles" sub="Дополнительные каналы трафика для стабильного потока заявок">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {upsellChannels.map((c, i) => (
-              <Card key={c.name} className={`transition-all hover:border-primary/40 ${i === 0 ? 'border-primary/40' : ''}`}>
-                <div className="mb-2 flex items-center justify-between">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon name={c.icon} size={18} />
-                  </div>
-                </div>
-                <div className="mb-1.5 font-display text-sm font-semibold uppercase leading-tight">{c.name}</div>
-                <div className="mb-1.5 flex items-baseline gap-1.5">
-                  <span className="font-mono text-lg font-bold" style={{ color: NEON.cyan }}>{c.stat}</span>
-                  <span className="text-[11px] text-muted-foreground">{c.statLabel}</span>
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">{c.pitch}</p>
-              </Card>
-            ))}
-          </div>
         </Section>
 
         <footer className="border-t border-border pt-6 text-center font-mono text-xs text-muted-foreground">
