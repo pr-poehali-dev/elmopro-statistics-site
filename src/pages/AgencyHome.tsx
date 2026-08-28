@@ -15,10 +15,10 @@ const AgencyHome = () => {
           Performance-маркетинг
         </div>
         <h1 className="animate-rise font-display text-5xl font-semibold leading-tight md:text-7xl">
-          Апекс Орбита
+          Tolka Digital
         </h1>
         <p className="animate-rise mt-5 max-w-xl text-lg text-muted-foreground">
-          Управляем рекламными кампаниями клиентов и приносим измеримый рост заявок.
+          Агентство интернет маркетинга
         </p>
       </div>
     </div>
