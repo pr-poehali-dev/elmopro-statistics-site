@@ -14,9 +14,7 @@ const AgencyHome = () => {
         <div className="animate-rise mb-3 font-mono text-xs uppercase tracking-[0.3em] text-primary">
           Performance-маркетинг
         </div>
-        <h1 className="animate-rise font-display text-5xl font-semibold leading-tight md:text-7xl">
-          Tolka Digital
-        </h1>
+        <h1 className="animate-rise font-display text-5xl font-semibold leading-tight md:text-7xl">TolkaDigital</h1>
         <p className="animate-rise mt-5 max-w-xl text-lg text-muted-foreground">
           Агентство интернет маркетинга
         </p>
