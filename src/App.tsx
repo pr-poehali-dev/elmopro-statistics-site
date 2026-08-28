@@ -21,7 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<AgencyHome />} />
           <Route path="/elmopro" element={<Elmopro />} />
-          <Route path="/elmopro/iyun" element={<PasswordGate><ElmoproIyun /></PasswordGate>} />
+          <Route path="/elmopro/iyun" element={<PasswordGate project="elmopro"><ElmoproIyun /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

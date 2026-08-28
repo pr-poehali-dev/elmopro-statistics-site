@@ -1,14 +1,15 @@
 import { useState, useEffect, FormEvent } from 'react';
 import Icon from '@/components/ui/icon';
 
-const AUTH_KEY = 'report-auth';
 const CHECK_PASSWORD_URL = 'https://functions.poehali.dev/ed9ca07e-254c-406f-9528-1dd2ae001695';
 
 interface PasswordGateProps {
+  project: string;
   children: React.ReactNode;
 }
 
-const PasswordGate = ({ children }: PasswordGateProps) => {
+const PasswordGate = ({ project, children }: PasswordGateProps) => {
+  const authKey = `report-auth-${project}`;
   const [unlocked, setUnlocked] = useState(false);
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState('');
@@ -16,11 +17,9 @@ const PasswordGate = ({ children }: PasswordGateProps) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(AUTH_KEY) === '1') {
-      setUnlocked(true);
-    }
+    setUnlocked(sessionStorage.getItem(authKey) === '1');
     setChecking(false);
-  }, []);
+  }, [authKey]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -31,11 +30,11 @@ const PasswordGate = ({ children }: PasswordGateProps) => {
       const res = await fetch(CHECK_PASSWORD_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ project, password }),
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        sessionStorage.setItem(AUTH_KEY, '1');
+        sessionStorage.setItem(authKey, '1');
         setUnlocked(true);
       } else {
         setError(data.error || 'Неверный пароль');

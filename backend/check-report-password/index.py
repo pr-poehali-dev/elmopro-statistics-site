@@ -1,9 +1,15 @@
 import json
 import os
 
+# Каждый клиентский проект имеет свой пароль в отдельном секрете.
+# При добавлении нового проекта: завести секрет REPORT_PASSWORD_<PROJECT> и добавить строку сюда.
+PROJECT_ENV_MAP = {
+    'elmopro': 'REPORT_PASSWORD',
+}
+
 
 def handler(event: dict, context) -> dict:
-    """Проверяет пароль доступа к клиентским отчётам (POST {password: string})"""
+    """Проверяет пароль доступа к отчётам конкретного клиентского проекта (POST {project: string, password: string})"""
     method = event.get('httpMethod', 'GET')
 
     if method == 'OPTIONS':
@@ -28,8 +34,14 @@ def handler(event: dict, context) -> dict:
     except json.JSONDecodeError:
         return {'statusCode': 400, 'headers': headers, 'body': json.dumps({'error': 'Bad request'})}
 
+    project = body.get('project', '')
     password = body.get('password', '')
-    correct = os.environ.get('REPORT_PASSWORD', '')
+
+    env_name = PROJECT_ENV_MAP.get(project)
+    if not env_name:
+        return {'statusCode': 400, 'headers': headers, 'body': json.dumps({'error': 'Unknown project'})}
+
+    correct = os.environ.get(env_name, '')
 
     if not correct:
         return {'statusCode': 500, 'headers': headers, 'body': json.dumps({'error': 'Password not configured'})}
