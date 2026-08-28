@@ -8,6 +8,7 @@ import AgencyHome from "./pages/AgencyHome";
 import Elmopro from "./pages/Elmopro";
 import ElmoproIyun from "./pages/ElmoproIyun";
 import NotFound from "./pages/NotFound";
+import PasswordGate from "./components/PasswordGate";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<AgencyHome />} />
           <Route path="/elmopro" element={<Elmopro />} />
-          <Route path="/elmopro/iyun" element={<ElmoproIyun />} />
+          <Route path="/elmopro/iyun" element={<PasswordGate><ElmoproIyun /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
