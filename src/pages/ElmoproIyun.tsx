@@ -128,7 +128,7 @@ const nav = [
   { id: 'nextplan', label: 'План месяца' },
 ];
 
-const Index = () => {
+const ElmoproIyun = () => {
   const isLight = true;
   const reportRef = useRef<HTMLDivElement>(null);
   const tipStyle = isLight ? tipStyleLight : tipStyleDark;
@@ -520,4 +520,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default ElmoproIyun;
