@@ -5,7 +5,7 @@ import { CLIENT } from '@/data/report';
 import { reportsByYear } from '@/data/reports';
 
 const Elmopro = () => {
-  const [openYear, setOpenYear] = useState<number | null>(reportsByYear[0]?.year ?? null);
+  const [openYear, setOpenYear] = useState<number | null>(null);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
