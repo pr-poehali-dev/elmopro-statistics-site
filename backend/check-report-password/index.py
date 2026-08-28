@@ -5,6 +5,7 @@ import os
 # При добавлении нового проекта: завести секрет REPORT_PASSWORD_<PROJECT> и добавить строку сюда.
 PROJECT_ENV_MAP = {
     'elmopro': 'REPORT_PASSWORD',
+    'alyumika': 'REPORT_PASSWORD_ALYUMIKA',
 }
 
 

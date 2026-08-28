@@ -7,3 +7,13 @@ export const reportsByYear = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту Алюмика: год → месяцы со ссылками ──
+export const reportsByYearAlyumika = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Август', href: '/alyumika/2026/avgust' },
+    ],
+  },
+];
