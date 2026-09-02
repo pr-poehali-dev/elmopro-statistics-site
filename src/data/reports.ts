@@ -17,3 +17,13 @@ export const reportsByYearAlyumika = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту Химсервис: год → месяцы со ссылками ──
+export const reportsByYearXimservis = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Август', href: '/ximservis/2026/avgust' },
+    ],
+  },
+];

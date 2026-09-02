@@ -6,6 +6,7 @@ import os
 PROJECT_ENV_MAP = {
     'elmopro': 'REPORT_PASSWORD',
     'alyumika': 'REPORT_PASSWORD_ALYUMIKA',
+    'ximservis': 'REPORT_PASSWORD_XIMSERVIS',
 }
 
 

@@ -9,6 +9,8 @@ import Elmopro from "./pages/Elmopro";
 import ElmoproIyun from "./pages/ElmoproIyun";
 import Alyumika from "./pages/Alyumika";
 import AlyumikaAvgust from "./pages/AlyumikaAvgust";
+import Ximservis from "./pages/Ximservis";
+import XimservisAvgust from "./pages/XimservisAvgust";
 import NotFound from "./pages/NotFound";
 import PasswordGate from "./components/PasswordGate";
 
@@ -28,6 +30,9 @@ const App = () => (
           <Route path="/alyumika" element={<Alyumika />} />
           <Route path="/alyumika/:year" element={<Navigate to="/alyumika" replace />} />
           <Route path="/alyumika/2026/avgust" element={<PasswordGate project="alyumika"><AlyumikaAvgust /></PasswordGate>} />
+          <Route path="/ximservis" element={<Ximservis />} />
+          <Route path="/ximservis/:year" element={<Navigate to="/ximservis" replace />} />
+          <Route path="/ximservis/2026/avgust" element={<PasswordGate project="ximservis"><XimservisAvgust /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
