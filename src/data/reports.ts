@@ -27,3 +27,13 @@ export const reportsByYearXimservis = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту Zetaprint: год → месяцы со ссылками ──
+export const reportsByYearZetaprint = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Август', href: '/zetaprint/2026/avgust' },
+    ],
+  },
+];
