@@ -9,7 +9,7 @@ export const CLIENT = {
   site: 'https://himservise.ru/',
   period: 'Август 2026',
   weeklyStats: 'https://docs.google.com/spreadsheets/d/1eeiIiNMeyxe6XB-O3DRwpjCqodwiQODFuIRhTppRKNA/edit?usp=sharing',
-  paybackFunnel: 'https://docs.google.com/spreadsheets/d/1eeiIiNMeyxe6XB-O3DRwpjCqodwiQODFuIRhTppRKNA/edit?usp=sharing',
+  paybackFunnel: 'https://docs.google.com/spreadsheets/d/1eeiIiNMeyxe6XB-O3DRwpjCqodwiQODFuIRhTppRKNA/edit?gid=798063211#gid=798063211',
 };
 
 export const aboutLinks = [
@@ -22,12 +22,12 @@ export const aboutLinks = [
 export const planFact = [
   { param: 'Бюджет, с НДС', planNum: 145500, factNum: 157163, planLabel: '145 500 ₽', factLabel: '157 163 ₽', isCost: false },
   { param: 'Уникальные лиды, ед.', planNum: 66, factNum: 49, planLabel: '66', factLabel: '49', isCost: false },
-  { param: 'Стоимость заявки, с НДС', planNum: 2200, factNum: 3207, planLabel: '2 200 ₽', factLabel: '3 207 ₽', isCost: true },
+  { param: 'Стоимость уникального лида, с НДС', planNum: 2200, factNum: 3207, planLabel: '2 200 ₽', factLabel: '3 207 ₽', isCost: true },
   { param: '% чистых заявок от общего числа', planNum: 80, factNum: 63.27, planLabel: '80%', factLabel: '63,27%', isCost: false },
   { param: 'Чистые уник. лиды, ед.', planNum: 53, factNum: 31, planLabel: '53', factLabel: '31', isCost: false },
-  { param: 'Стоимость чистой заявки, с НДС', planNum: 2756, factNum: 5070, planLabel: '2 756 ₽', factLabel: '5 070 ₽', isCost: true },
+  { param: 'Стоимость чистого лида, с НДС', planNum: 2756, factNum: 5070, planLabel: '2 756 ₽', factLabel: '5 070 ₽', isCost: true },
   { param: 'Квалифицированные лиды, ед.', planNum: 32, factNum: 20, planLabel: '32', factLabel: '20', isCost: false },
-  { param: 'Стоимость квал. заявки, с НДС', planNum: 4279, factNum: 7858, planLabel: '4 279 ₽', factLabel: '7 858 ₽', isCost: true },
+  { param: 'Стоимость квалифицированных лидов, с НДС', planNum: 4279, factNum: 7858, planLabel: '4 279 ₽', factLabel: '7 858 ₽', isCost: true },
 ];
 
 export const planFactNotes = [
@@ -39,12 +39,12 @@ export const planFactNotes = [
 export const monthCompare = [
   { param: 'Рекламный бюджет, руб.', mayNum: 152408, junNum: 157163, mayLabel: '152 408 ₽', junLabel: '157 163 ₽', isCost: false },
   { param: 'Заявки, ед.', mayNum: 68, junNum: 49, mayLabel: '68', junLabel: '49', isCost: false },
-  { param: 'Стоимость заявки (с НДС), руб.', mayNum: 2241, junNum: 3207, mayLabel: '2 241 ₽', junLabel: '3 207 ₽', isCost: true },
+  { param: 'Стоимость уникального лида, с НДС', mayNum: 2241, junNum: 3207, mayLabel: '2 241 ₽', junLabel: '3 207 ₽', isCost: true },
   { param: '% чистых заявок от общего числа', mayNum: 76.47, junNum: 63.27, mayLabel: '76,47%', junLabel: '63,27%', isCost: false },
   { param: 'Чистые заявки, ед.', mayNum: 52, junNum: 31, mayLabel: '52', junLabel: '31', isCost: false },
-  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 2931, junNum: 3421, mayLabel: '2 931 ₽', junLabel: '3 421 ₽', isCost: true },
+  { param: 'Стоимость чистого лида, с НДС', mayNum: 2931, junNum: 3421, mayLabel: '2 931 ₽', junLabel: '3 421 ₽', isCost: true },
   { param: 'Квалифицированные лиды, ед.', mayNum: 30, junNum: 20, mayLabel: '30', junLabel: '20', isCost: false },
-  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 5080, junNum: 7858, mayLabel: '5 080 ₽', junLabel: '7 858 ₽', isCost: true },
+  { param: 'Стоимость квалифицированных лидов, с НДС', mayNum: 5080, junNum: 7858, mayLabel: '5 080 ₽', junLabel: '7 858 ₽', isCost: true },
 ];
 
 // ── Блок: помесячная динамика — работы ведутся с января 2026 ──
@@ -57,6 +57,7 @@ export const monthlyTrend = [
   { m: 'Июн', cost: 166618, leads: 64, cpl: 2603, clean: 54, ccpl: 3086, cleanPct: 84.38, qual: 37, qcpl: 4503 },
   { m: 'Июл', cost: 152408, leads: 68, cpl: 2241, clean: 52, ccpl: 2931, cleanPct: 76.47, qual: 30, qcpl: 5080 },
   { m: 'Авг', cost: 157163, leads: 49, cpl: 3207, clean: 31, ccpl: 5070, cleanPct: 63.27, qual: 20, qcpl: 7858 },
+  { m: 'Сен', cost: 145500, leads: 41, cpl: 3500, clean: 27, ccpl: 5460, cleanPct: 65, qual: 17, qcpl: 8559 },
 ];
 
 // ── Работы ──
@@ -85,10 +86,10 @@ export const workPlan = [
 export const nextPlan = [
   { param: 'Бюджет, с НДС', plan: '145 500' },
   { param: 'Заявки, ед.', plan: '41' },
-  { param: 'Стоимость заявки, с НДС', plan: '3 500' },
+  { param: 'Стоимость уникального лида, с НДС', plan: '3 500' },
   { param: '% чистых заявок от общего числа', plan: '65%' },
   { param: 'Чистые заявки, ед.', plan: '247' },
-  { param: 'Стоимость чистой заявки, с НДС', plan: '5 460' },
+  { param: 'Стоимость чистого лида, с НДС', plan: '5 460' },
   { param: 'Квалифицированные лиды, ед.', plan: '17' },
-  { param: 'Стоимость квал. заявки, с НДС', plan: '8 559' },
+  { param: 'Стоимость квалифицированных лидов, с НДС', plan: '8 559' },
 ];

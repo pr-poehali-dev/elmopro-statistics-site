@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 import {
   LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList,
 } from 'recharts';
 import {
   NEON, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, monthlyTrend,
@@ -118,7 +118,7 @@ const XimservisAvgust = () => {
   const tipStyle = tipStyleLight;
   const axisColor = 'hsl(240,4%,45%)';
 
-  const [showVals, setShowVals] = useState({ cost: false, leads: false, cpl: false, clean: false, ccpl: false, qual: false, qcpl: false });
+  const [showVals, setShowVals] = useState({ cost: false, uniq: false, cpl: false, clean: false, ccpl: false, qual: false, qcpl: false });
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -257,60 +257,11 @@ const XimservisAvgust = () => {
           </Card>
         </Section>
 
-        {/* 4. ТРЕНДЫ С ЯНВАРЯ */}
-        <Section id="trends" num="04" title="Тренды с начала работ" icon="ChartLine" sub="Проект в работе с января 2026 — динамика по месяцам">
-          <Card className="mb-6">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px]">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    <th className="pb-3 font-500">Параметры</th>
-                    {monthlyTrend.map((r) => (
-                      <th key={r.m} className="pb-3 text-right font-500">{r.m}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Рекламный бюджет, руб.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.cost)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Заявки, ед.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.leads}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Стоимость заявки, с НДС</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.cpl)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">% чистых заявок</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.cleanPct === null ? '—' : `${r.cleanPct.toFixed(2).replace('.', ',')}%`}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Чистые заявки, ед.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.clean}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Стоимость чистой заявки, с НДС</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.ccpl)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Квалифицированные лиды, ед.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.qual}</td>)}
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 font-500">Стоимость квал. заявки, с НДС</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono font-bold">{fmt(r.qcpl)} ₽</td>)}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
+        {/* 4. ТРЕНДЫ С НАЧАЛА ГОДА */}
+        <Section id="trends" num="04" title="Тренды с начала года" icon="ChartLine" sub="Проект в работе с января 2026 — динамика по месяцам">
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
-              <ChartTitle title="Рекламный бюджет, ₽" sub="Январь — Август"
+              <ChartTitle title="Рекламный бюджет, ₽" sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -326,26 +277,23 @@ const XimservisAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Заявки, ед." sub="Всего / чистые / квал."
-                action={<ValueToggle show={showVals.leads} setShow={(v) => setShowVals((s) => ({ ...s, leads: v }))} />} />
+              <ChartTitle title="Уникальные лиды, ед." sub="Январь — Сентябрь"
+                action={<ValueToggle show={showVals.uniq} setShow={(v) => setShowVals((s) => ({ ...s, uniq: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="leads" name="Всего заявок" stroke={NEON.violet} strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="clean" name="Чистые заявки" stroke={NEON.lime} strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="qual" name="Квал. заявки" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
-                    {showVals.leads && <LabelList dataKey="qual" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
+                  <Line type="monotone" dataKey="leads" name="Уникальные лиды" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }}>
+                    {showVals.uniq && <LabelList dataKey="leads" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость заявки, ₽"
+              <ChartTitle title="Стоимость уникального лида, ₽"
                 action={<ValueToggle show={showVals.cpl} setShow={(v) => setShowVals((s) => ({ ...s, cpl: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -353,7 +301,7 @@ const XimservisAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="cpl" name="Стоимость заявки" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="cpl" name="Стоимость уник. лида" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
                     {showVals.cpl && <LabelList dataKey="cpl" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
@@ -361,7 +309,55 @@ const XimservisAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость чистой / квал. заявки, ₽"
+              <ChartTitle title="Чистые лиды, ед." sub="Январь — Сентябрь"
+                action={<ValueToggle show={showVals.clean} setShow={(v) => setShowVals((s) => ({ ...s, clean: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={monthlyTrend} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} />
+                  <Line type="monotone" dataKey="clean" name="Чистые лиды" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }}>
+                    {showVals.clean && <LabelList dataKey="clean" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Стоимость чистого лида, ₽"
+                action={<ValueToggle show={showVals.ccpl} setShow={(v) => setShowVals((s) => ({ ...s, ccpl: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={monthlyTrend} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
+                  <Line type="monotone" dataKey="ccpl" name="Стоимость чист. лида" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }}>
+                    {showVals.ccpl && <LabelList dataKey="ccpl" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Квалифицированные лиды, ед." sub="Январь — Сентябрь"
+                action={<ValueToggle show={showVals.qual} setShow={(v) => setShowVals((s) => ({ ...s, qual: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={monthlyTrend} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} />
+                  <Line type="monotone" dataKey="qual" name="Квал. лиды" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
+                    {showVals.qual && <LabelList dataKey="qual" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Стоимость квалифицированных лидов, ₽"
                 action={<ValueToggle show={showVals.qcpl} setShow={(v) => setShowVals((s) => ({ ...s, qcpl: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -369,9 +365,7 @@ const XimservisAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="ccpl" name="Чистая заявка" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="qcpl" name="Квал. заявка" stroke={NEON.neg} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="qcpl" name="Стоимость квал. лида" stroke={NEON.neg} strokeWidth={2.5} dot={{ r: 3 }}>
                     {showVals.qcpl && <LabelList dataKey="qcpl" content={<ValueLabel fill={NEON.neg} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
