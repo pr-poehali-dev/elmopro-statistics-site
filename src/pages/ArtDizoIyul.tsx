@@ -232,16 +232,16 @@ const ArtDizoIyul = () => {
           </Card>
         </Section>
 
-        {/* 3. ИЮЛЬ → АВГУСТ */}
-        <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт июль → факт август 2026">
+        {/* 3. ИЮНЬ → ИЮЛЬ */}
+        <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт июнь → факт июль 2026">
           <Card>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
                     <th className="pb-3 font-500">Параметры</th>
+                    <th className="pb-3 text-right font-500">Факт июнь</th>
                     <th className="pb-3 text-right font-500">Факт июль</th>
-                    <th className="pb-3 text-right font-500">Факт август</th>
                     <th className="pb-3 text-right font-500">Δ</th>
                   </tr>
                 </thead>

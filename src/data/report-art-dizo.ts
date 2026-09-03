@@ -7,7 +7,7 @@ export const CLIENT = {
   name: 'Art-Dizo',
   id: 'porg-nckmeu3n',
   site: 'https://art-dizo.ru',
-  period: 'Июль-Август 2026',
+  period: 'Июль 2026',
   weeklyStats: 'https://docs.google.com/spreadsheets/d/1a8xktBFGY9LQ3JmvH2xFAFDej5prR-FpDy-fOOWfyIM/edit?usp=sharing',
   paybackFunnel: 'https://docs.google.com/spreadsheets/d/1a8xktBFGY9LQ3JmvH2xFAFDej5prR-FpDy-fOOWfyIM/edit?usp=sharing',
 };
@@ -77,7 +77,6 @@ export const workPlan = [
 
 // ── План на новый месяц (август 2026) ──
 export const nextPlan = [
-  { param: 'Инвестиции / период', plan: 'с 01.08.2026' },
   { param: 'Рекламный бюджет, с НДС', plan: '120 000 ₽' },
   { param: 'Заявки, ед.', plan: '56' },
   { param: 'Стоимость заявки, с НДС', plan: '1 700 ₽' },
