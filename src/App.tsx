@@ -13,6 +13,8 @@ import Ximservis from "./pages/Ximservis";
 import XimservisAvgust from "./pages/XimservisAvgust";
 import Zetaprint from "./pages/Zetaprint";
 import ZetaprintAvgust from "./pages/ZetaprintAvgust";
+import ArtDizo from "./pages/ArtDizo";
+import ArtDizoIyul from "./pages/ArtDizoIyul";
 import NotFound from "./pages/NotFound";
 import PasswordGate from "./components/PasswordGate";
 
@@ -38,6 +40,9 @@ const App = () => (
           <Route path="/zetaprint" element={<Zetaprint />} />
           <Route path="/zetaprint/:year" element={<Navigate to="/zetaprint" replace />} />
           <Route path="/zetaprint/2026/avgust" element={<PasswordGate project="zetaprint"><ZetaprintAvgust /></PasswordGate>} />
+          <Route path="/art-dizo" element={<ArtDizo />} />
+          <Route path="/art-dizo/:year" element={<Navigate to="/art-dizo" replace />} />
+          <Route path="/art-dizo/2026/iyul" element={<PasswordGate project="art-dizo"><ArtDizoIyul /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

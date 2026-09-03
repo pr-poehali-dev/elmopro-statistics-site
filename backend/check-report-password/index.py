@@ -8,6 +8,7 @@ PROJECT_ENV_MAP = {
     'alyumika': 'REPORT_PASSWORD_ALYUMIKA',
     'ximservis': 'REPORT_PASSWORD_XIMSERVIS',
     'zetaprint': 'REPORT_PASSWORD_ZETAPRINT',
+    'art-dizo': 'REPORT_PASSWORD_ART_DIZO',
 }
 
 

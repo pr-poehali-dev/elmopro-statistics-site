@@ -37,3 +37,13 @@ export const reportsByYearZetaprint = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту Art-Dizo: год → месяцы со ссылками ──
+export const reportsByYearArtDizo = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Июль', href: '/art-dizo/2026/iyul' },
+    ],
+  },
+];
