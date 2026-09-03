@@ -51,6 +51,10 @@ export const monthCompare = [
 export const monthlyTrend = [
   { m: 'Июл', cost: 51644, leads: 49, cpl: 1054, clean: 38, ccpl: 1359, cleanPct: 77.55, qual: 26, qcpl: 1986 },
   { m: 'Авг', cost: 129249, leads: 117, cpl: 1105, clean: 112, ccpl: 1154, cleanPct: 95.73, qual: 73, qcpl: 1771 },
+  { m: 'Сен', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
+  { m: 'Окт', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
+  { m: 'Ноя', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
+  { m: 'Дек', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
 ];
 
 // ── Работы ──
