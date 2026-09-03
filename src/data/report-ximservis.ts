@@ -57,7 +57,7 @@ export const monthlyTrend = [
   { m: 'Июн', cost: 166618, leads: 64, cpl: 2603, clean: 54, ccpl: 3086, cleanPct: 84.38, qual: 37, qcpl: 4503 },
   { m: 'Июл', cost: 152408, leads: 68, cpl: 2241, clean: 52, ccpl: 2931, cleanPct: 76.47, qual: 30, qcpl: 5080 },
   { m: 'Авг', cost: 157163, leads: 49, cpl: 3207, clean: 31, ccpl: 5070, cleanPct: 63.27, qual: 20, qcpl: 7858 },
-  { m: 'Сен', cost: 145500, leads: 41, cpl: 3500, clean: 27, ccpl: 5460, cleanPct: 65, qual: 17, qcpl: 8559 },
+  { m: 'Сен', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
 ];
 
 // ── Работы ──

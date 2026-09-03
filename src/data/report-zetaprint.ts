@@ -16,14 +16,15 @@ export const CLIENT = {
 export const aboutLinks = [
   { icon: 'CalendarRange', label: 'Понедельная статистика', desc: 'Расход, заявки и стоимость лида по неделям месяца.', href: CLIENT.weeklyStats, cta: 'Открыть таблицу' },
   { icon: 'TrendingUp', label: 'Воронка окупаемости', desc: 'Путь от лида до сделки и юнит-экономика проекта.', href: CLIENT.paybackFunnel, cta: 'Открыть таблицу' },
-  { icon: 'Globe', label: 'Сайт', desc: 'Основной сайт и лендинг с Яндекс Картами.', href: CLIENT.site, cta: 'zetaprint.ru / cards.zetaprint.ru' },
+  { icon: 'Globe', label: 'Сайт', desc: 'Основной сайт, на который ведёт реклама.', href: CLIENT.site, cta: 'zetaprint.ru' },
+  { icon: 'Spade', label: 'Сайт с Картами', desc: 'Лендинг с Яндекс Картами.', href: CLIENT.siteCards, cta: 'cards.zetaprint.ru' },
 ];
 
 // ── Сегменты рекламы ──
 export const segments = [
   { key: 'notbrand', label: 'Не Бренд', icon: 'Search' },
   { key: 'brand', label: 'Бренд', icon: 'Star' },
-  { key: 'cards', label: 'Карты', icon: 'MapPin' },
+  { key: 'cards', label: 'Карты', icon: 'Spade' },
 ] as const;
 
 export type SegmentKey = typeof segments[number]['key'];
@@ -97,7 +98,7 @@ export const monthCompareBySegment: Record<SegmentKey, Array<{ param: string; ma
 };
 
 // ── Блок: помесячная динамика с января 2026 по сегментам ──
-export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: number; clicks: number; uniq: number; costUniq: number; clean: number; costClean: number; qual: number; costQual: number }>> = {
+export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: number | null; clicks: number | null; uniq: number | null; costUniq: number | null; clean: number | null; costClean: number | null; qual: number | null; costQual: number | null }>> = {
   notbrand: [
     { m: 'Янв', cost: 293788.96, clicks: 23022, uniq: 170, costUniq: 1728.17, clean: 160, costClean: 1836.18, qual: 40, costQual: 7344.72 },
     { m: 'Фев', cost: 263745.65, clicks: 54935, uniq: 107, costUniq: 2464.91, clean: 101, costClean: 2611.34, qual: 31, costQual: 8507.92 },
@@ -107,6 +108,7 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Июн', cost: 502227.92, clicks: 16211, uniq: 225, costUniq: 2232.12, clean: 204, costClean: 2461.90, qual: 55, costQual: 9131.42 },
     { m: 'Июл', cost: 439373.90, clicks: 21792, uniq: 167, costUniq: 2630.98, clean: 162, costClean: 2712.18, qual: 44, costQual: 9985.77 },
     { m: 'Авг', cost: 432952.81, clicks: 22296, uniq: 193, costUniq: 2243.28, clean: 172, costClean: 2517.17, qual: 56, costQual: 7731.30 },
+    { m: 'Сен', cost: null, clicks: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
   ],
   brand: [
     { m: 'Янв', cost: 8110.96, clicks: 131, uniq: 21, costUniq: 386.24, clean: 15, costClean: 540.73, qual: 3, costQual: 2703.65 },
@@ -117,6 +119,7 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Июн', cost: 15078.26, clicks: 190, uniq: 24, costUniq: 628.26, clean: 24, costClean: 628.26, qual: 10, costQual: 1507.83 },
     { m: 'Июл', cost: 12691.25, clicks: 164, uniq: 9, costUniq: 1410.14, clean: 9, costClean: 1410.14, qual: 2, costQual: 6345.63 },
     { m: 'Авг', cost: 7339.23, clicks: 148, uniq: 13, costUniq: 564.56, clean: 13, costClean: 564.56, qual: 2, costQual: 3669.62 },
+    { m: 'Сен', cost: null, clicks: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
   ],
   cards: [
     { m: 'Янв', cost: 114746.67, clicks: 6276, uniq: 56, costUniq: 2049.05, clean: 50, costClean: 2294.93, qual: 20, costQual: 5737.33 },
@@ -127,19 +130,24 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Июн', cost: 156422.23, clicks: 10292, uniq: 63, costUniq: 2482.89, clean: 60, costClean: 2607.04, qual: 16, costQual: 9776.39 },
     { m: 'Июл', cost: 161886.55, clicks: 25590, uniq: 89, costUniq: 1818.95, clean: 83, costClean: 1950.44, qual: 30, costQual: 5396.22 },
     { m: 'Авг', cost: 135286.44, clicks: 42580, uniq: 111, costUniq: 1218.80, clean: 91, costClean: 1486.66, qual: 29, costQual: 4665.05 },
+    { m: 'Сен', cost: null, clicks: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
   ],
 };
 
-// ── Спрос по Wordstat: помесячно с января 2024 по август 2026 ──
+// ── Спрос по Wordstat: помесячно, 2024 / 2025 / 2026 на одном графике ──
 export const demand = [
-  { m: 'янв 24', v: 15637 }, { m: 'фев 24', v: 20446 }, { m: 'мар 24', v: 19831 }, { m: 'апр 24', v: 18647 },
-  { m: 'май 24', v: 17844 }, { m: 'июн 24', v: 14896 }, { m: 'июл 24', v: 14245 }, { m: 'авг 24', v: 15370 },
-  { m: 'сен 24', v: 17043 }, { m: 'окт 24', v: 20610 }, { m: 'ноя 24', v: 21690 }, { m: 'дек 24', v: 28704 },
-  { m: 'янв 25', v: 21961 }, { m: 'фев 25', v: 20357 }, { m: 'мар 25', v: 20299 }, { m: 'апр 25', v: 17516 },
-  { m: 'май 25', v: 18488 }, { m: 'июн 25', v: 15631 }, { m: 'июл 25', v: 17393 }, { m: 'авг 25', v: 17669 },
-  { m: 'сен 25', v: 17786 }, { m: 'окт 25', v: 22448 }, { m: 'ноя 25', v: 17698 }, { m: 'дек 25', v: 17208 },
-  { m: 'янв 26', v: 12956 }, { m: 'фев 26', v: 14560 }, { m: 'мар 26', v: 19788 }, { m: 'апр 26', v: 17808 },
-  { m: 'май 26', v: 15977 }, { m: 'июн 26', v: 13294 }, { m: 'июл 26', v: 11321 }, { m: 'авг 26', v: 11327 },
+  { m: 'Янв', y24: 15637, y25: 21961, y26: 12956 },
+  { m: 'Фев', y24: 20446, y25: 20357, y26: 14560 },
+  { m: 'Мар', y24: 19831, y25: 20299, y26: 19788 },
+  { m: 'Апр', y24: 18647, y25: 17516, y26: 17808 },
+  { m: 'Май', y24: 17844, y25: 18488, y26: 15977 },
+  { m: 'Июн', y24: 14896, y25: 15631, y26: 13294 },
+  { m: 'Июл', y24: 14245, y25: 17393, y26: 11321 },
+  { m: 'Авг', y24: 15370, y25: 17669, y26: 11327 },
+  { m: 'Сен', y24: 17043, y25: 17786, y26: null },
+  { m: 'Окт', y24: 20610, y25: 22448, y26: null },
+  { m: 'Ноя', y24: 21690, y25: 17698, y26: null },
+  { m: 'Дек', y24: 28704, y25: 17208, y26: null },
 ];
 
 // ── Работы ──

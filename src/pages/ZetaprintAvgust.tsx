@@ -190,7 +190,7 @@ const ZetaprintAvgust = () => {
       <div className="container mx-auto space-y-16 px-6 py-12">
         {/* 1. ОБЩАЯ ИНФОРМАЦИЯ */}
         <Section id="about" num="01" title="Общая информация" icon="Info" sub="Ключевые ссылки по проекту">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {aboutLinks.map((l) => (
               <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
                 className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
@@ -277,61 +277,13 @@ const ZetaprintAvgust = () => {
           </Card>
         </Section>
 
-        {/* 4. ТРЕНДЫ С ЯНВАРЯ */}
-        <Section id="trends" num="04" title="Тренды с начала работ" icon="ChartLine" sub="Проект в работе с января 2026 — динамика по месяцам">
+        {/* 4. ТРЕНДЫ С НАЧАЛА ГОДА */}
+        <Section id="trends" num="04" title="Тренды с начала года" icon="ChartLine" sub="Проект в работе с января 2026 — динамика по месяцам">
           <SegmentTabs value={segTrends} onChange={setSegTrends} />
-          <Card className="mb-6">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[720px]">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    <th className="pb-3 font-500">Параметры</th>
-                    {trendData.map((r) => (
-                      <th key={r.m} className="pb-3 text-right font-500">{r.m}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Бюджет, руб.</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.cost)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Клики</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.clicks)}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Уникальные лиды, ед.</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.uniq}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Стоимость уник. лида</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.costUniq)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Чистые лиды, ед.</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.clean}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Стоимость чистого лида</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.costClean)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Квалифицированные лиды, ед.</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.qual}</td>)}
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 font-500">Стоимость квал. лида</td>
-                    {trendData.map((r) => <td key={r.m} className="py-3.5 text-right font-mono font-bold">{fmt(r.costQual)} ₽</td>)}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </Card>
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
-              <ChartTitle title="Бюджет, ₽" sub="Январь — Август"
+              <ChartTitle title="Бюджет, ₽" sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -339,7 +291,7 @@ const ZetaprintAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="cost" name="Бюджет" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="cost" name="Бюджет" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.cost && <LabelList dataKey="cost" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
@@ -347,7 +299,7 @@ const ZetaprintAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Лиды, ед." sub="Уникальные / чистые / квал."
+              <ChartTitle title="Уникальные лиды, ед." sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.uniq} setShow={(v) => setShowVals((s) => ({ ...s, uniq: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -355,18 +307,15 @@ const ZetaprintAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="uniq" name="Уникальные" stroke={NEON.violet} strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="clean" name="Чистые" stroke={NEON.lime} strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="qual" name="Квал." stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
-                    {showVals.uniq && <LabelList dataKey="qual" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
+                  <Line type="monotone" dataKey="uniq" name="Уникальные лиды" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.uniq && <LabelList dataKey="uniq" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость уник. лида, ₽"
+              <ChartTitle title="Стоимость уникального лида, ₽"
                 action={<ValueToggle show={showVals.costUniq} setShow={(v) => setShowVals((s) => ({ ...s, costUniq: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -374,7 +323,7 @@ const ZetaprintAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="costUniq" name="Стоимость уник. лида" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="costUniq" name="Стоимость уник. лида" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.costUniq && <LabelList dataKey="costUniq" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
@@ -382,7 +331,55 @@ const ZetaprintAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость квал. лида, ₽"
+              <ChartTitle title="Чистые лиды, ед." sub="Январь — Сентябрь"
+                action={<ValueToggle show={showVals.clean} setShow={(v) => setShowVals((s) => ({ ...s, clean: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={trendData} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} />
+                  <Line type="monotone" dataKey="clean" name="Чистые лиды" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.clean && <LabelList dataKey="clean" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Стоимость чистого лида, ₽"
+                action={<ValueToggle show={showVals.costClean} setShow={(v) => setShowVals((s) => ({ ...s, costClean: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={trendData} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
+                  <Line type="monotone" dataKey="costClean" name="Стоимость чист. лида" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.costClean && <LabelList dataKey="costClean" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Квалифицированные лиды, ед." sub="Январь — Сентябрь"
+                action={<ValueToggle show={showVals.qual} setShow={(v) => setShowVals((s) => ({ ...s, qual: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={trendData} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} />
+                  <Line type="monotone" dataKey="qual" name="Квал. лиды" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.qual && <LabelList dataKey="qual" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Стоимость квалифицированного лида, ₽"
                 action={<ValueToggle show={showVals.costQual} setShow={(v) => setShowVals((s) => ({ ...s, costQual: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -390,8 +387,8 @@ const ZetaprintAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="costQual" name="Стоимость квал. лида" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }}>
-                    {showVals.costQual && <LabelList dataKey="costQual" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
+                  <Line type="monotone" dataKey="costQual" name="Стоимость квал. лида" stroke={NEON.neg} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.costQual && <LabelList dataKey="costQual" content={<ValueLabel fill={NEON.neg} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
@@ -446,7 +443,7 @@ const ZetaprintAvgust = () => {
         </Section>
 
         {/* 6. СПРОС */}
-        <Section id="demand" num="06" title="Спрос" icon="Search" sub="Число запросов по Wordstat: январь 2024 — август 2026">
+        <Section id="demand" num="06" title="Спрос" icon="Search" sub="Число запросов по Wordstat: 2024 / 2025 / 2026">
           <Card>
             <ChartTitle title="Динамика спроса" sub="Число запросов в месяц"
               action={<ValueToggle show={showVals.demand} setShow={(v) => setShowVals((s) => ({ ...s, demand: v }))} />} />
@@ -459,11 +456,14 @@ const ZetaprintAvgust = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
-                <XAxis dataKey="m" stroke={axisColor} fontSize={11} interval={2} />
+                <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                 <YAxis stroke={axisColor} fontSize={11} />
                 <Tooltip contentStyle={tipStyle} />
-                <Area type="monotone" dataKey="v" name="Запросов" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)">
-                  {showVals.demand && <LabelList dataKey="v" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
+                <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
+                  {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                 </Area>
               </ComposedChart>
             </ResponsiveContainer>
