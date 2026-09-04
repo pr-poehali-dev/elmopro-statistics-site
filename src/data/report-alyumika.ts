@@ -20,27 +20,27 @@ export const aboutLinks = [
 
 // ── Блок: план / факт за август 2026 ──
 export const planFact = [
-  { param: 'Бюджет, с НДС', planNum: 80000, factNum: 71845, planLabel: '80 000 ₽', factLabel: '71 845 ₽', isCost: false },
-  { param: 'Уникальные лиды, ед.', planNum: 44, factNum: 37, planLabel: '44', factLabel: '37', isCost: false },
-  { param: 'Стоимость заявки, с НДС', planNum: 1800, factNum: 1942, planLabel: '1 800 ₽', factLabel: '1 942 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', planNum: 68, factNum: 56.76, planLabel: '68%', factLabel: '56,76%', isCost: false },
+  { param: 'Бюджет, с НДС', planNum: 80000, factNum: 91200, planLabel: '80 000 ₽', factLabel: '91 200 ₽', isCost: false },
+  { param: 'Уникальные лиды, ед.', planNum: 44, factNum: 46, planLabel: '44', factLabel: '46', isCost: false },
+  { param: 'Стоимость заявки, с НДС', planNum: 1800, factNum: 1983, planLabel: '1 800 ₽', factLabel: '1 983 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', planNum: 68, factNum: 45.65, planLabel: '68%', factLabel: '45,65%', isCost: false },
   { param: 'Чистые уник. лиды, ед.', planNum: 30, factNum: 21, planLabel: '30', factLabel: '21', isCost: false },
-  { param: 'Стоимость чистой заявки, с НДС', planNum: 2674, factNum: 3421, planLabel: '2 674 ₽', factLabel: '3 421 ₽', isCost: true },
+  { param: 'Стоимость чистой заявки, с НДС', planNum: 2674, factNum: 4343, planLabel: '2 674 ₽', factLabel: '4 343 ₽', isCost: true },
 ];
 
 export const planFactNotes = [
   '* Период: 01.08.2026 – 31.08.2026',
-  '* Необработанных заявок за август — 15',
+  '* Необработанных заявок за август — 21',
 ];
 
 // ── Блок: факт июль vs факт август ──
 export const monthCompare = [
-  { param: 'Рекламный бюджет, руб.', mayNum: 148041, junNum: 71845, mayLabel: '148 041 ₽', junLabel: '71 845 ₽', isCost: false },
-  { param: 'Заявки, ед.', mayNum: 60, junNum: 37, mayLabel: '60', junLabel: '37', isCost: false },
-  { param: 'Стоимость заявки (с НДС), руб.', mayNum: 2467, junNum: 1942, mayLabel: '2 467 ₽', junLabel: '1 942 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', mayNum: 55.00, junNum: 56.76, mayLabel: '55,00%', junLabel: '56,76%', isCost: false },
+  { param: 'Рекламный бюджет, руб.', mayNum: 148041, junNum: 91200, mayLabel: '148 041 ₽', junLabel: '91 200 ₽', isCost: false },
+  { param: 'Заявки, ед.', mayNum: 60, junNum: 46, mayLabel: '60', junLabel: '46', isCost: false },
+  { param: 'Стоимость заявки (с НДС), руб.', mayNum: 2467, junNum: 1983, mayLabel: '2 467 ₽', junLabel: '1 983 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', mayNum: 55.00, junNum: 45.65, mayLabel: '55,00%', junLabel: '45,65%', isCost: false },
   { param: 'Чистые заявки, ед.', mayNum: 33, junNum: 21, mayLabel: '33', junLabel: '21', isCost: false },
-  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 4486, junNum: 3421, mayLabel: '4 486 ₽', junLabel: '3 421 ₽', isCost: true },
+  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 4486, junNum: 4343, mayLabel: '4 486 ₽', junLabel: '4 343 ₽', isCost: true },
 ];
 
 // ── Блок: помесячная динамика — работы ведутся с апреля 2026 ──
@@ -49,19 +49,24 @@ export const monthlyTrend = [
   { m: 'Май', cost: 204525, leads: 54, cpl: 3788, clean: 27, ccpl: 7575, cleanPct: null },
   { m: 'Июн', cost: 183590, leads: 53, cpl: 3464, clean: 45, ccpl: 4080, cleanPct: 84.91 },
   { m: 'Июл', cost: 148041, leads: 60, cpl: 2467, clean: 33, ccpl: 4486, cleanPct: 55.00 },
-  { m: 'Авг', cost: 71845, leads: 37, cpl: 1942, clean: 21, ccpl: 3421, cleanPct: 56.76 },
+  { m: 'Авг', cost: 91200, leads: 46, cpl: 1983, clean: 21, ccpl: 4343, cleanPct: 45.65 },
+  { m: 'Сен', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null },
 ];
 
-// ── Спрос по Wordstat: помесячно с января 2024 по июль 2026 ──
+// ── Спрос по Wordstat: помесячно, 2024 / 2025 / 2026 на одном графике ──
 export const demand = [
-  { m: 'янв 24', v: 4680 }, { m: 'фев 24', v: 5267 }, { m: 'мар 24', v: 5494 }, { m: 'апр 24', v: 6205 },
-  { m: 'май 24', v: 5516 }, { m: 'июн 24', v: 4849 }, { m: 'июл 24', v: 5076 }, { m: 'авг 24', v: 4604 },
-  { m: 'сен 24', v: 5128 }, { m: 'окт 24', v: 6499 }, { m: 'ноя 24', v: 6979 }, { m: 'дек 24', v: 7305 },
-  { m: 'янв 25', v: 5633 }, { m: 'фев 25', v: 7454 }, { m: 'мар 25', v: 7215 }, { m: 'апр 25', v: 6901 },
-  { m: 'май 25', v: 5539 }, { m: 'июн 25', v: 6294 }, { m: 'июл 25', v: 6447 }, { m: 'авг 25', v: 5768 },
-  { m: 'сен 25', v: 6712 }, { m: 'окт 25', v: 8098 }, { m: 'ноя 25', v: 7112 }, { m: 'дек 25', v: 6507 },
-  { m: 'янв 26', v: 4661 }, { m: 'фев 26', v: 5630 }, { m: 'мар 26', v: 6630 }, { m: 'апр 26', v: 6914 },
-  { m: 'май 26', v: 5719 }, { m: 'июн 26', v: 6917 }, { m: 'июл 26', v: 6511 },
+  { m: 'Янв', y24: 4680, y25: 5633, y26: 4661 },
+  { m: 'Фев', y24: 5267, y25: 7454, y26: 5630 },
+  { m: 'Мар', y24: 5494, y25: 7215, y26: 6630 },
+  { m: 'Апр', y24: 6205, y25: 6901, y26: 6914 },
+  { m: 'Май', y24: 5516, y25: 5539, y26: 5719 },
+  { m: 'Июн', y24: 4849, y25: 6294, y26: 6917 },
+  { m: 'Июл', y24: 5076, y25: 6447, y26: 6511 },
+  { m: 'Авг', y24: 4604, y25: 5768, y26: null },
+  { m: 'Сен', y24: 5128, y25: 6712, y26: null },
+  { m: 'Окт', y24: 6499, y25: 8098, y26: null },
+  { m: 'Ноя', y24: 6979, y25: 7112, y26: null },
+  { m: 'Дек', y24: 7305, y25: 6507, y26: null },
 ];
 
 // ── Работы ──

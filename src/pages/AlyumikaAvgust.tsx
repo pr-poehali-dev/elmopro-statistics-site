@@ -260,50 +260,9 @@ const AlyumikaAvgust = () => {
 
         {/* 4. ТРЕНДЫ С АПРЕЛЯ */}
         <Section id="trends" num="04" title="Тренды с начала работ" icon="ChartLine" sub="Проект в работе с апреля 2026 — динамика по месяцам">
-          <Card className="mb-6">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px]">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    <th className="pb-3 font-500">Параметры</th>
-                    {monthlyTrend.map((r) => (
-                      <th key={r.m} className="pb-3 text-right font-500">{r.m}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Рекламный бюджет, руб.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.cost)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Заявки, ед.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.leads}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Стоимость заявки, с НДС</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{fmt(r.cpl)} ₽</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">% чистых заявок</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.cleanPct === null ? '—' : `${r.cleanPct.toFixed(2).replace('.', ',')}%`}</td>)}
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-3.5 font-500">Чистые заявки, ед.</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono">{r.clean}</td>)}
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 font-500">Стоимость чистой заявки, с НДС</td>
-                    {monthlyTrend.map((r) => <td key={r.m} className="py-3.5 text-right font-mono font-bold">{fmt(r.ccpl)} ₽</td>)}
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </Card>
-
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
-              <ChartTitle title="Рекламный бюджет, ₽" sub="Апрель — Август"
+              <ChartTitle title="Рекламный бюджет, ₽" sub="Апрель — Сентябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -311,7 +270,7 @@ const AlyumikaAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="cost" name="Бюджет" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="cost" name="Бюджет" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.cost && <LabelList dataKey="cost" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
@@ -319,7 +278,7 @@ const AlyumikaAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Заявки, ед." sub="Всего / чистые"
+              <ChartTitle title="Заявки, ед." sub="Апрель — Сентябрь"
                 action={<ValueToggle show={showVals.leads} setShow={(v) => setShowVals((s) => ({ ...s, leads: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -327,17 +286,31 @@ const AlyumikaAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Line type="monotone" dataKey="leads" name="Всего заявок" stroke={NEON.violet} strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="clean" name="Чистые заявки" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }}>
-                    {showVals.leads && <LabelList dataKey="clean" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
+                  <Line type="monotone" dataKey="leads" name="Заявки" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.leads && <LabelList dataKey="leads" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
               </ResponsiveContainer>
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость заявки, ₽"
+              <ChartTitle title="Чистые заявки, ед." sub="Апрель — Сентябрь"
+                action={<ValueToggle show={showVals.clean} setShow={(v) => setShowVals((s) => ({ ...s, clean: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={monthlyTrend} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} />
+                  <Line type="monotone" dataKey="clean" name="Чистые заявки" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
+                    {showVals.clean && <LabelList dataKey="clean" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Стоимость заявки, ₽" sub="Апрель — Сентябрь"
                 action={<ValueToggle show={showVals.cpl} setShow={(v) => setShowVals((s) => ({ ...s, cpl: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -345,7 +318,7 @@ const AlyumikaAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="cpl" name="Стоимость заявки" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="cpl" name="Стоимость заявки" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.cpl && <LabelList dataKey="cpl" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
@@ -353,7 +326,7 @@ const AlyumikaAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость чистой заявки, ₽"
+              <ChartTitle title="Стоимость чистой заявки, ₽" sub="Апрель — Сентябрь"
                 action={<ValueToggle show={showVals.ccpl} setShow={(v) => setShowVals((s) => ({ ...s, ccpl: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -361,7 +334,7 @@ const AlyumikaAvgust = () => {
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                   <YAxis stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                  <Line type="monotone" dataKey="ccpl" name="Стоимость чистой заявки" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }}>
+                  <Line type="monotone" dataKey="ccpl" name="Стоимость чистой заявки" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.ccpl && <LabelList dataKey="ccpl" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
                   </Line>
                 </LineChart>
@@ -416,7 +389,7 @@ const AlyumikaAvgust = () => {
         </Section>
 
         {/* 6. СПРОС */}
-        <Section id="demand" num="06" title="Спрос" icon="Search" sub="Число запросов по Wordstat: январь 2024 — июль 2026">
+        <Section id="demand" num="06" title="Спрос" icon="Search" sub="Число запросов по Wordstat: 2024 / 2025 / 2026">
           <Card>
             <ChartTitle title="Динамика спроса" sub="Число запросов в месяц"
               action={<ValueToggle show={showVals.demand} setShow={(v) => setShowVals((s) => ({ ...s, demand: v }))} />} />
@@ -429,20 +402,23 @@ const AlyumikaAvgust = () => {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
-                <XAxis dataKey="m" stroke={axisColor} fontSize={11} interval={2} />
+                <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
                 <YAxis stroke={axisColor} fontSize={11} />
                 <Tooltip contentStyle={tipStyle} />
-                <Area type="monotone" dataKey="v" name="Запросов" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)">
-                  {showVals.demand && <LabelList dataKey="v" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.7} />
+                <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} />
+                <Area type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} fill="url(#dem)" connectNulls={false}>
+                  {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
                 </Area>
               </ComposedChart>
             </ResponsiveContainer>
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
               Спрос по направлению стабилен и растёт: пиковые значения приходятся на осенне-зимний период
               (октябрь-декабрь 2025 — до 8 098 запросов в октябре), а в 2026 году после весеннего провала в январе
-              (4 661 запрос) спрос уверенно восстанавливается — к июню 2026 достигнуто 6 917 запросов, что выше
-              показателей июня 2025 (6 294). Сезонность стоит учитывать при планировании бюджета на осень —
-              традиционно спрос растёт к концу года.
+              (4 661 запрос) спрос уверенно восстанавливается — к июню-июлю 2026 достигнуто 6 500-6 900 запросов,
+              что выше показателей аналогичного периода 2025 года. Сезонность стоит учитывать при планировании
+              бюджета на осень — традиционно спрос растёт к концу года.
             </p>
           </Card>
         </Section>
