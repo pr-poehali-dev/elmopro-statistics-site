@@ -58,3 +58,13 @@ export const reportsByYearPkZapad = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту Выкуп Автобумс МСК: год → месяцы со ссылками ──
+export const reportsByYearVikupMsk = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Август', href: '/vikup_msk/2026/avgust' },
+    ],
+  },
+];
