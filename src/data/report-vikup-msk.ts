@@ -22,9 +22,9 @@ export const aboutLinks = [
     label: 'Сайты',
     desc: 'Посадочные страницы по направлениям МСК1, МСК2 и МСК3, на которые ведёт реклама.',
     links: [
-      { href: CLIENT.site1, cta: 'выкуп-авто-мск.рф' },
+      { href: CLIENT.site1, cta: '1.выкуп-авто-мск.рф' },
       { href: CLIENT.site2, cta: 'центр-выкупа-авто-мск.рф' },
-      { href: CLIENT.site3, cta: 'выкуп-авто-срочно-мск.рф' },
+      { href: CLIENT.site3, cta: '2.выкуп-авто-срочно-мск.рф' },
     ],
   },
 ];
@@ -80,7 +80,7 @@ export const planFactBySegment: Record<SegmentKey, Array<{ param: string; planNu
     { param: 'Конверсия из чистой в квал. заявку, %', planNum: 80, factNum: 63.25, planLabel: '80%', factLabel: '63,25%', isCost: false },
     { param: 'Квал. заявки, ед.', planNum: 108, factNum: 105, planLabel: '108', factLabel: '105', isCost: false },
     { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 2703, factNum: 2920, planLabel: '2 703 ₽', factLabel: '2 920 ₽', isCost: true },
-    { param: 'Продажи (выкупы), ед.', planNum: 6, factNum: 5, planLabel: '6', factLabel: '5', isCost: false },
+    { param: 'Продажи (выкупы), ед.', planNum: 6, factNum: 4, planLabel: '6', factLabel: '4', isCost: false },
   ],
 };
 
@@ -126,7 +126,7 @@ export const monthCompareBySegment: Record<SegmentKey, Array<{ param: string; ma
     { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 87.78, junNum: 63.25, mayLabel: '87,78%', junLabel: '63,25%', isCost: false },
     { param: 'Квал. заявки, ед.', mayNum: 79, junNum: 105, mayLabel: '79', junLabel: '105', isCost: false },
     { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 3368, junNum: 2920, mayLabel: '3 368 ₽', junLabel: '2 920 ₽', isCost: true },
-    { param: 'Продажи (выкупы), ед.', mayNum: 4, junNum: 5, mayLabel: '4', junLabel: '5', isCost: false },
+    { param: 'Продажи (выкупы), ед.', mayNum: 4, junNum: 4, mayLabel: '4', junLabel: '4', isCost: false },
   ],
 };
 
@@ -162,7 +162,7 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Май', cost: 365321, uniq: 222, costUniq: 1646, clean: 181, costClean: 2018, qual: 42, costQual: 8698, sales: 7 },
     { m: 'Июн', cost: 292922, uniq: 165, costUniq: 1775, clean: 138, costClean: 2123, qual: 11, costQual: 26629, sales: 6 },
     { m: 'Июл', cost: 266091, uniq: 125, costUniq: 2129, clean: 90, costClean: 2957, qual: 79, costQual: 3368, sales: 4 },
-    { m: 'Авг', cost: 306629, uniq: 206, costUniq: 1488, clean: 166, costClean: 1847, qual: 105, costQual: 2920, sales: 5 },
+    { m: 'Авг', cost: 306629, uniq: 206, costUniq: 1488, clean: 166, costClean: 1847, qual: 105, costQual: 2920, sales: 4 },
     { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null, sales: null },
   ],
 };
