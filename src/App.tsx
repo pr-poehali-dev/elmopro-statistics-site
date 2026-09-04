@@ -57,9 +57,9 @@ const App = () => (
           <Route path="/vikup_msk" element={<VikupMsk />} />
           <Route path="/vikup_msk/:year" element={<Navigate to="/vikup_msk" replace />} />
           <Route path="/vikup_msk/2026/avgust" element={<PasswordGate project="vikup_msk"><VikupMskAvgust /></PasswordGate>} />
-          <Route path="/Typhoon" element={<Typhoon />} />
-          <Route path="/Typhoon/:year" element={<Navigate to="/Typhoon" replace />} />
-          <Route path="/Typhoon/2026/avgust" element={<PasswordGate project="typhoon"><TyphoonAvgust /></PasswordGate>} />
+          <Route path="/taifun" element={<Typhoon />} />
+          <Route path="/taifun/:year" element={<Navigate to="/taifun" replace />} />
+          <Route path="/taifun/2026/avgust" element={<PasswordGate project="typhoon"><TyphoonAvgust /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

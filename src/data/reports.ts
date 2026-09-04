@@ -74,7 +74,7 @@ export const reportsByYearTyphoon = [
   {
     year: 2026,
     months: [
-      { label: 'Август', href: '/Typhoon/2026/avgust' },
+      { label: 'Август', href: '/taifun/2026/avgust' },
     ],
   },
 ];
