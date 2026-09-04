@@ -6,9 +6,9 @@ import {
 } from 'recharts';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  NEON, CLIENT, AGENCY, aboutLinks, segments, SegmentKey,
+  NEON, CLIENT, AGENCY, aboutLinks, segments, SegmentKey, segmentsWithTotal, SegmentKeyTotal,
   planFactBySegment, monthCompareBySegment, monthlyTrendBySegment, demand,
-  workDone, workPlan, nextPlanBySegment,
+  workDone, workPlan, nextPlanBySegment, opProcessingNote,
 } from '@/data/report-zetaprint';
 import ReportToolbar from '@/components/ReportToolbar';
 
@@ -117,6 +117,18 @@ const SegmentTabs = ({ value, onChange }: { value: SegmentKey; onChange: (v: Seg
   </Tabs>
 );
 
+const SegmentTabsWithTotal = ({ value, onChange }: { value: SegmentKeyTotal; onChange: (v: SegmentKeyTotal) => void }) => (
+  <Tabs value={value} onValueChange={(v) => onChange(v as SegmentKeyTotal)} className="mb-5">
+    <TabsList>
+      {segmentsWithTotal.map((s) => (
+        <TabsTrigger key={s.key} value={s.key} className="gap-1.5">
+          <Icon name={s.icon} size={14} /> {s.label}
+        </TabsTrigger>
+      ))}
+    </TabsList>
+  </Tabs>
+);
+
 const nav = [
   { id: 'about', label: 'Общая инфо' },
   { id: 'planfact', label: 'План / Факт' },
@@ -134,10 +146,10 @@ const ZetaprintAvgust = () => {
   const axisColor = 'hsl(240,4%,45%)';
 
   const [showVals, setShowVals] = useState({ cost: false, uniq: false, costUniq: false, clean: false, costClean: false, qual: false, costQual: false, demand: false });
-  const [segPlanFact, setSegPlanFact] = useState<SegmentKey>('notbrand');
+  const [segPlanFact, setSegPlanFact] = useState<SegmentKeyTotal>('notbrand');
   const [segMonths, setSegMonths] = useState<SegmentKey>('notbrand');
   const [segTrends, setSegTrends] = useState<SegmentKey>('notbrand');
-  const [segNextPlan, setSegNextPlan] = useState<SegmentKey>('notbrand');
+  const [segNextPlan, setSegNextPlan] = useState<SegmentKeyTotal>('notbrand');
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -227,9 +239,9 @@ const ZetaprintAvgust = () => {
         </Section>
 
         {/* 2. ПЛАН / ФАКТ */}
-        <Section id="planfact" num="02" title="Сравнение план / факт" icon="Target" sub={`Динамика по ключевым показателям за ${CLIENT.period}`}>
+        <Section id="planfact" num="02" title="Сравнение план / факт" icon="Target" sub={`Динамика по ключевым показателям за ${CLIENT.period} · бюджет без учёта 3% комиссии eLama`}>
           <Card>
-            <SegmentTabs value={segPlanFact} onChange={setSegPlanFact} />
+            <SegmentTabsWithTotal value={segPlanFact} onChange={setSegPlanFact} />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px]">
                 <thead>
@@ -263,6 +275,31 @@ const ZetaprintAvgust = () => {
               <span className="flex items-center gap-1.5"><Icon name="CircleCheck" size={14} style={{ color: NEON.pos }} /> выполнение ≥ 90%</span>
               <span className="flex items-center gap-1.5"><Icon name="CircleAlert" size={14} style={{ color: NEON.amber }} /> 60–89%</span>
               <span className="flex items-center gap-1.5"><Icon name="CircleX" size={14} style={{ color: NEON.neg }} /> ниже 60%</span>
+            </div>
+          </Card>
+
+          <Card className="mt-6 border-primary/30">
+            <div className="mb-3 flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
+              <Icon name="Users" size={20} /> Обработка лидов отделом продаж
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="rounded-xl bg-secondary/40 p-4">
+                <div className="font-mono text-2xl font-bold text-foreground">{opProcessingNote.totalClean}</div>
+                <div className="mt-1 text-xs text-muted-foreground">
+                  Всего чистых лидов в обработке ОП
+                  {' '}({opProcessingNote.bySegment.map((s) => `${s.label} — ${s.value}`).join(', ')})
+                </div>
+              </div>
+              <div className="rounded-xl bg-secondary/40 p-4">
+                <div className="font-mono text-2xl font-bold text-primary">+{opProcessingNote.potentialMin}–{opProcessingNote.potentialMax}</div>
+                <div className="mt-1 text-xs text-muted-foreground">Потенциал доквалификации — дополнительные квалифицированные лиды при сохранении конверсий</div>
+              </div>
+              <div className="rounded-xl bg-secondary/40 p-4">
+                <div className="font-mono text-2xl font-bold" style={{ color: NEON.pos }}>{opProcessingNote.forecastQualMin}–{opProcessingNote.forecastQualMax}</div>
+                <div className="mt-1 text-xs text-muted-foreground">
+                  Прогнозный итог месяца с учётом обработки, стоимость квала снизится до ~{fmt(opProcessingNote.forecastCpqlMin)}–{fmt(opProcessingNote.forecastCpqlMax)} ₽
+                </div>
+              </div>
             </div>
           </Card>
         </Section>
@@ -420,13 +457,17 @@ const ZetaprintAvgust = () => {
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
               За август 2026 проект показал уверенный результат сразу по всем направлениям: в сегменте «Не Бренд»
-              собрано <b>199 уникальных лидов</b> при плане 175, а стоимость лида оказалась ниже плановой —
-              2 176 ₽ против 2 457 ₽. В «Картах» результат ещё заметнее — <b>118 лидов вместо 69 плановых</b>,
-              стоимость лида снизилась до 1 146 ₽. Бренд-кампания также перевыполнила план по лидам (13 против 10)
-              при экономии бюджета. Особенно радует рост квалифицированных лидов в «Не Бренде» — с 46 в июле
-              до <b>72 в августе</b>, а их стоимость снизилась почти в 1,6 раза (с 9 552 ₽ до 6 013 ₽). Работа
-              с минус-словами и чисткой площадок в РСЯ даёт накопительный эффект — качество трафика растёт
-              месяц к месяцу, и это отличная база для масштабирования бюджета в сентябре.
+              собрано <b>199 уникальных лидов</b> при плане 170, а стоимость лида оказалась ниже плановой —
+              2 176 ₽ против 2 400 ₽. В «Картах» результат ещё заметнее — <b>118 лидов вместо 67 плановых</b>,
+              стоимость лида снизилась до 1 112 ₽. Бренд-кампания также перевыполнила план по лидам (13 против 9)
+              при почти двукратном росте бюджета. Особенно радует рост квалифицированных лидов в «Не Бренде» — с 47 в июле
+              до <b>72 в августе</b>, а их стоимость снизилась почти в 1,6 раза (с 9 348 ₽ до 6 013 ₽). Суммарно по
+              всем направлениям собрано 330 уникальных и <b>110 квалифицированных лидов</b> при плане 99 — план перевыполнен
+              на 11%. При этом в обработке отдела продаж остаётся ещё 95 чистых лидов, которые могут добавить
+              от 36 до 45 квалов — с их учётом итог месяца может вырасти до 145–155 квалов, а стоимость квала
+              снизиться до 3 800–4 000 ₽. Работа с минус-словами и чисткой площадок в РСЯ даёт накопительный
+              эффект — качество трафика растёт месяц к месяцу, и это отличная база для масштабирования бюджета
+              в сентябре.
             </p>
           </Card>
         </Section>
@@ -498,9 +539,9 @@ const ZetaprintAvgust = () => {
         </Section>
 
         {/* 7. ПЛАН МЕСЯЦА */}
-        <Section id="nextplan" num="07" title="План на новый месяц" icon="Flag" sub="Плановые показатели на сентябрь 2026">
+        <Section id="nextplan" num="07" title="План на новый месяц" icon="Flag" sub="Плановые показатели на сентябрь 2026 · бюджет без учёта 3% комиссии eLama">
           <Card>
-            <SegmentTabs value={segNextPlan} onChange={setSegNextPlan} />
+            <SegmentTabsWithTotal value={segNextPlan} onChange={setSegNextPlan} />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[420px]">
                 <thead>
