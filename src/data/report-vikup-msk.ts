@@ -130,22 +130,40 @@ export const monthCompareBySegment: Record<SegmentKey, Array<{ param: string; ma
   ],
 };
 
-// ── Блок: помесячная динамика — работы ведутся с июля 2026 ──
-export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: number | null; uniq: number | null; costUniq: number | null; clean: number | null; costClean: number | null; qual: number | null; costQual: number | null }>> = {
+// ── Блок: помесячная динамика с начала года по сегментам ──
+export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: number | null; uniq: number | null; costUniq: number | null; clean: number | null; costClean: number | null; qual: number | null; costQual: number | null; sales: number | null }>> = {
   msk1: [
-    { m: 'Июл', cost: 300153, uniq: 209, costUniq: 1436, clean: 168, costClean: 1787, qual: 138, costQual: 2175 },
-    { m: 'Авг', cost: 311487, uniq: 263, costUniq: 1184, clean: 210, costClean: 1483, qual: 161, costQual: 1935 },
-    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
+    { m: 'Янв', cost: 253479, uniq: 130, costUniq: 1950, clean: 100, costClean: 2535, qual: 56, costQual: 4526, sales: 3 },
+    { m: 'Фев', cost: 225358, uniq: 84, costUniq: 2683, clean: 53, costClean: 4252, qual: 16, costQual: 14085, sales: 1 },
+    { m: 'Мар', cost: 297038, uniq: 153, costUniq: 1941, clean: 127, costClean: 2339, qual: 40, costQual: 7426, sales: 4 },
+    { m: 'Апр', cost: 342732, uniq: 166, costUniq: 2065, clean: 143, costClean: 2397, qual: 46, costQual: 7451, sales: 6 },
+    { m: 'Май', cost: 296618, uniq: 166, costUniq: 1786.86, clean: 123, costClean: 2412, qual: 30, costQual: 9887, sales: 7 },
+    { m: 'Июн', cost: 287987, uniq: 150, costUniq: 1920, clean: 120, costClean: 2400, qual: 13, costQual: 22153, sales: 3 },
+    { m: 'Июл', cost: 300153, uniq: 209, costUniq: 1436, clean: 168, costClean: 1787, qual: 138, costQual: 2175, sales: 5 },
+    { m: 'Авг', cost: 311487, uniq: 263, costUniq: 1184, clean: 210, costClean: 1483, qual: 161, costQual: 1935, sales: 5 },
+    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null, sales: null },
   ],
   msk2: [
-    { m: 'Июл', cost: 276150, uniq: 174, costUniq: 1587, clean: 157, costClean: 1759, qual: 123, costQual: 2245 },
-    { m: 'Авг', cost: 286927, uniq: 219, costUniq: 1310, clean: 205, costClean: 1400, qual: 134, costQual: 2141 },
-    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
+    { m: 'Янв', cost: 255269, uniq: 146, costUniq: 1748, clean: 118, costClean: 2163, qual: 91, costQual: 2805, sales: 10 },
+    { m: 'Фев', cost: 301870, uniq: 190, costUniq: 1589, clean: 153, costClean: 1973, qual: 38, costQual: 7944, sales: 3 },
+    { m: 'Мар', cost: 249509, uniq: 194, costUniq: 1286, clean: 162, costClean: 1540, qual: 38, costQual: 6566, sales: 8 },
+    { m: 'Апр', cost: 291618, uniq: 296, costUniq: 985, clean: 268, costClean: 1088, qual: 55, costQual: 5302, sales: 19 },
+    { m: 'Май', cost: 305716, uniq: 262, costUniq: 1167, clean: 226, costClean: 1353, qual: 52, costQual: 5879, sales: 13 },
+    { m: 'Июн', cost: 265725, uniq: 179, costUniq: 1484, clean: 165, costClean: 1610, qual: 49, costQual: 5423, sales: 11 },
+    { m: 'Июл', cost: 276150, uniq: 174, costUniq: 1587, clean: 157, costClean: 1759, qual: 123, costQual: 2245, sales: 12 },
+    { m: 'Авг', cost: 286927, uniq: 219, costUniq: 1310, clean: 205, costClean: 1400, qual: 134, costQual: 2141, sales: 14 },
+    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null, sales: null },
   ],
   msk3: [
-    { m: 'Июл', cost: 266091, uniq: 125, costUniq: 2129, clean: 90, costClean: 2957, qual: 79, costQual: 3368 },
-    { m: 'Авг', cost: 306629, uniq: 206, costUniq: 1488, clean: 166, costClean: 1847, qual: 105, costQual: 2920 },
-    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
+    { m: 'Янв', cost: 253313, uniq: 251, costUniq: 1009, clean: 183, costClean: 1384, qual: 116, costQual: 2184, sales: 2 },
+    { m: 'Фев', cost: 260171, uniq: 181, costUniq: 1437, clean: 144, costClean: 1807, qual: 45, costQual: 5782, sales: 7 },
+    { m: 'Мар', cost: 267778, uniq: 144, costUniq: 1860, clean: 124, costClean: 2159, qual: 37, costQual: 7237, sales: 3 },
+    { m: 'Апр', cost: 317336, uniq: 171, costUniq: 1856, clean: 144, costClean: 2204, qual: 47, costQual: 6752, sales: 6 },
+    { m: 'Май', cost: 365321, uniq: 222, costUniq: 1646, clean: 181, costClean: 2018, qual: 42, costQual: 8698, sales: 7 },
+    { m: 'Июн', cost: 292922, uniq: 165, costUniq: 1775, clean: 138, costClean: 2123, qual: 11, costQual: 26629, sales: 6 },
+    { m: 'Июл', cost: 266091, uniq: 125, costUniq: 2129, clean: 90, costClean: 2957, qual: 79, costQual: 3368, sales: 4 },
+    { m: 'Авг', cost: 306629, uniq: 206, costUniq: 1488, clean: 166, costClean: 1847, qual: 105, costQual: 2920, sales: 5 },
+    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null, sales: null },
   ],
 };
 

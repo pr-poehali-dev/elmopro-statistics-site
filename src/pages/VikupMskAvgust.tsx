@@ -136,7 +136,7 @@ const VikupMskAvgust = () => {
   const tipStyle = tipStyleLight;
   const axisColor = 'hsl(240,4%,45%)';
 
-  const [showVals, setShowVals] = useState({ cost: false, uniq: false, costUniq: false, clean: false, costClean: false, qual: false, costQual: false, demand: false });
+  const [showVals, setShowVals] = useState({ cost: false, sales: false, uniq: false, costUniq: false, clean: false, costClean: false, qual: false, costQual: false, demand: false });
   const [segPlanFact, setSegPlanFact] = useState<SegmentKey>('msk1');
   const [segMonths, setSegMonths] = useState<SegmentKey>('msk1');
   const [segTrends, setSegTrends] = useState<SegmentKey>('msk1');
@@ -300,12 +300,12 @@ const VikupMskAvgust = () => {
         </Section>
 
         {/* 4. ТРЕНДЫ С НАЧАЛА РАБОТ */}
-        <Section id="trends" num="04" title="Тренды с начала работ" icon="ChartLine" sub="Проект в работе с июля 2026 — динамика по месяцам">
+        <Section id="trends" num="04" title="Тренды с начала года" icon="ChartLine" sub="Динамика по месяцам с января 2026 года">
           <SegmentTabs value={segTrends} onChange={setSegTrends} />
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
-              <ChartTitle title="Рекламный бюджет, ₽" sub="Июль — Сентябрь"
+              <ChartTitle title="Рекламный бюджет, ₽" sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -321,7 +321,23 @@ const VikupMskAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Заявки, ед." sub="Июль — Сентябрь"
+              <ChartTitle title="Продажи (выкупы), ед." sub="Январь — Сентябрь"
+                action={<ValueToggle show={showVals.sales} setShow={(v) => setShowVals((s) => ({ ...s, sales: v }))} />} />
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={trendData} margin={{ top: 30 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
+                  <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
+                  <YAxis stroke={axisColor} fontSize={11} />
+                  <Tooltip contentStyle={tipStyle} />
+                  <Line type="monotone" dataKey="sales" name="Продажи" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 5 }} connectNulls={false}>
+                    {showVals.sales && <LabelList dataKey="sales" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
+                  </Line>
+                </LineChart>
+              </ResponsiveContainer>
+            </Card>
+
+            <Card>
+              <ChartTitle title="Заявки, ед." sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.uniq} setShow={(v) => setShowVals((s) => ({ ...s, uniq: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -337,7 +353,7 @@ const VikupMskAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость заявки, ₽" sub="Июль — Сентябрь"
+              <ChartTitle title="Стоимость заявки, ₽" sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.costUniq} setShow={(v) => setShowVals((s) => ({ ...s, costUniq: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -353,7 +369,7 @@ const VikupMskAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Чистые заявки, ед." sub="Июль — Сентябрь"
+              <ChartTitle title="Чистые заявки, ед." sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.clean} setShow={(v) => setShowVals((s) => ({ ...s, clean: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -369,7 +385,7 @@ const VikupMskAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость чистой заявки, ₽" sub="Июль — Сентябрь"
+              <ChartTitle title="Стоимость чистой заявки, ₽" sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.costClean} setShow={(v) => setShowVals((s) => ({ ...s, costClean: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -385,7 +401,7 @@ const VikupMskAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Квал. заявки, ед." sub="Июль — Сентябрь"
+              <ChartTitle title="Квал. заявки, ед." sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.qual} setShow={(v) => setShowVals((s) => ({ ...s, qual: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
@@ -401,7 +417,7 @@ const VikupMskAvgust = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость квал. заявки, ₽" sub="Июль — Сентябрь"
+              <ChartTitle title="Стоимость квал. заявки, ₽" sub="Январь — Сентябрь"
                 action={<ValueToggle show={showVals.costQual} setShow={(v) => setShowVals((s) => ({ ...s, costQual: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
