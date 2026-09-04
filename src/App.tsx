@@ -16,6 +16,8 @@ import ZetaprintAvgust from "./pages/ZetaprintAvgust";
 import ArtDizo from "./pages/ArtDizo";
 import ArtDizoIyul from "./pages/ArtDizoIyul";
 import ArtDizoAvgust from "./pages/ArtDizoAvgust";
+import PkZapad from "./pages/PkZapad";
+import PkZapadAvgust from "./pages/PkZapadAvgust";
 import NotFound from "./pages/NotFound";
 import PasswordGate from "./components/PasswordGate";
 
@@ -45,6 +47,9 @@ const App = () => (
           <Route path="/art-dizo/:year" element={<Navigate to="/art-dizo" replace />} />
           <Route path="/art-dizo/2026/iyul" element={<PasswordGate project="art-dizo"><ArtDizoIyul /></PasswordGate>} />
           <Route path="/art-dizo/2026/avgust" element={<PasswordGate project="art-dizo"><ArtDizoAvgust /></PasswordGate>} />
+          <Route path="/pk_zapad" element={<PkZapad />} />
+          <Route path="/pk_zapad/:year" element={<Navigate to="/pk_zapad" replace />} />
+          <Route path="/pk_zapad/2026/avgust" element={<PasswordGate project="pk_zapad"><PkZapadAvgust /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -9,6 +9,7 @@ PROJECT_ENV_MAP = {
     'ximservis': 'REPORT_PASSWORD_XIMSERVIS',
     'zetaprint': 'REPORT_PASSWORD_ZETAPRINT',
     'art-dizo': 'REPORT_PASSWORD_ART_DIZO',
+    'pk_zapad': 'REPORT_PASSWORD_PK_ZAPAD',
 }
 
 

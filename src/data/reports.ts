@@ -48,3 +48,13 @@ export const reportsByYearArtDizo = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту ПК Запад: год → месяцы со ссылками ──
+export const reportsByYearPkZapad = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Август', href: '/pk_zapad/2026/avgust' },
+    ],
+  },
+];
