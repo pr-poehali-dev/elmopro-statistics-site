@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AgencyHome from "./pages/AgencyHome";
 import Elmopro from "./pages/Elmopro";
-import ElmoproIyun from "./pages/ElmoproIyun";
+import ElmoproAvgust from "./pages/ElmoproAvgust";
 import Alyumika from "./pages/Alyumika";
 import AlyumikaAvgust from "./pages/AlyumikaAvgust";
 import Ximservis from "./pages/Ximservis";
@@ -35,7 +35,7 @@ const App = () => (
           <Route path="/" element={<AgencyHome />} />
           <Route path="/elmopro" element={<Elmopro />} />
           <Route path="/elmopro/:year" element={<Navigate to="/elmopro" replace />} />
-          <Route path="/elmopro/2026/iyun" element={<PasswordGate project="elmopro"><ElmoproIyun /></PasswordGate>} />
+          <Route path="/elmopro/2026/avgust" element={<PasswordGate project="elmopro"><ElmoproAvgust /></PasswordGate>} />
           <Route path="/alyumika" element={<Alyumika />} />
           <Route path="/alyumika/:year" element={<Navigate to="/alyumika" replace />} />
           <Route path="/alyumika/2026/avgust" element={<PasswordGate project="alyumika"><AlyumikaAvgust /></PasswordGate>} />

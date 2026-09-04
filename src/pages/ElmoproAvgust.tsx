@@ -7,7 +7,7 @@ import {
 import {
   NEON, CLIENT, AGENCY, aboutLinks, planFact, planFactNotes, monthCompare, yearly, demand,
   workDone, workPlan, nextPlan,
-} from '@/data/report';
+} from '@/data/report-elmopro-avgust';
 import ReportToolbar from '@/components/ReportToolbar';
 
 const tipStyleDark = {
@@ -55,10 +55,6 @@ const MonthDelta = ({ mayNum, junNum, isCost }: { mayNum: number; junNum: number
     </span>
   );
 };
-
-const Sup = ({ children }: { children: string }) => (
-  <sup className="ml-0.5 text-primary">{children}</sup>
-);
 
 const Section = ({ id, num, title, sub, icon, children }: {
   id: string; num: string; title: string; sub?: string; icon: string; children: React.ReactNode;
@@ -121,20 +117,20 @@ const ValueLabel = (props: ValueLabelProps) => {
 const nav = [
   { id: 'about', label: 'Общая инфо' },
   { id: 'planfact', label: 'План / Факт' },
-  { id: 'months', label: 'Май → Июнь' },
+  { id: 'months', label: 'Июль → Август' },
   { id: 'trends', label: 'Тренды года' },
   { id: 'works', label: 'Работы' },
   { id: 'demand', label: 'Спрос' },
   { id: 'nextplan', label: 'План месяца' },
 ];
 
-const ElmoproIyun = () => {
+const ElmoproAvgust = () => {
   const isLight = true;
   const reportRef = useRef<HTMLDivElement>(null);
   const tipStyle = isLight ? tipStyleLight : tipStyleDark;
   const axisColor = isLight ? 'hsl(240,4%,45%)' : 'hsl(240,4%,60%)';
 
-  const [showVals, setShowVals] = useState({ cost: false, clk: false, cpc: false, lead: false, lc: false, qual: false, qc: false, demand: false });
+  const [showVals, setShowVals] = useState({ cost: false, lead: false, lc: false, qual: false, qc: false, demand: false });
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -223,9 +219,7 @@ const ElmoproIyun = () => {
                       <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
                         <td className="py-3.5 font-500">{r.param}</td>
                         <td className="py-3.5 text-right font-mono text-muted-foreground">{r.planLabel}</td>
-                        <td className="py-3.5 text-right font-mono font-bold">
-                          {r.factLabel}{r.factNote && <Sup>{r.factNote}</Sup>}
-                        </td>
+                        <td className="py-3.5 text-right font-mono font-bold">{r.factLabel}</td>
                         <td className="py-3.5 text-right"><MonthDelta mayNum={r.planNum} junNum={r.factNum} isCost={r.isCost} /></td>
                         <td className="py-3.5 text-center">
                           <Icon name={st.icon} size={18} className="inline" style={{ color: st.color }} />
@@ -247,16 +241,16 @@ const ElmoproIyun = () => {
           </Card>
         </Section>
 
-        {/* 3. МАЙ → ИЮНЬ */}
-        <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт май → факт июнь 2026">
+        {/* 3. ИЮЛЬ → АВГУСТ */}
+        <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт июль → факт август 2026">
           <Card>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
                     <th className="pb-3 font-500">Параметры</th>
-                    <th className="pb-3 text-right font-500">Факт май</th>
-                    <th className="pb-3 text-right font-500">Факт июнь</th>
+                    <th className="pb-3 text-right font-500">Факт июль</th>
+                    <th className="pb-3 text-right font-500">Факт август</th>
                     <th className="pb-3 text-right font-500">Δ</th>
                   </tr>
                 </thead>
@@ -265,10 +259,10 @@ const ElmoproIyun = () => {
                     <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
                       <td className="py-3.5 font-500">{r.param}</td>
                       <td className="py-3.5 text-right font-mono text-muted-foreground">
-                        {r.mayLabel}{r.mayNote && <Sup>{r.mayNote}</Sup>}
+                        {r.mayLabel}
                       </td>
                       <td className="py-3.5 text-right font-mono font-bold">
-                        {r.junLabel}{r.junNote && <Sup>{r.junNote}</Sup>}
+                        {r.junLabel}
                       </td>
                       <td className="py-3.5 text-right"><MonthDelta mayNum={r.mayNum} junNum={r.junNum} isCost={r.isCost} /></td>
                     </tr>
@@ -301,42 +295,6 @@ const ElmoproIyun = () => {
             </Card>
 
             <div className="grid gap-6 lg:grid-cols-2">
-              <Card>
-                <ChartTitle title="Клики" sub="Количество"
-                  action={<ValueToggle show={showVals.clk} setShow={(v) => setShowVals((s) => ({ ...s, clk: v }))} />} />
-                <ResponsiveContainer width="100%" height={260}>
-                  <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
-                    <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                    <YAxis stroke={axisColor} fontSize={11} />
-                    <Tooltip contentStyle={tipStyle} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line type="monotone" dataKey="clk25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
-                    <Line type="monotone" dataKey="clk26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.clk && <LabelList dataKey="clk26" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
-                    </Line>
-                  </LineChart>
-                </ResponsiveContainer>
-              </Card>
-
-              <Card>
-                <ChartTitle title="Цена клика, ₽"
-                  action={<ValueToggle show={showVals.cpc} setShow={(v) => setShowVals((s) => ({ ...s, cpc: v }))} />} />
-                <ResponsiveContainer width="100%" height={260}>
-                  <LineChart data={yearly} margin={{ top: 30 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
-                    <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                    <YAxis stroke={axisColor} fontSize={11} />
-                    <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
-                    <Legend wrapperStyle={{ fontSize: 12 }} />
-                    <Line type="monotone" dataKey="cpc25" name="2025" stroke={NEON.violet} strokeWidth={1.5} strokeDasharray="6 4" dot={false} opacity={0.6} />
-                    <Line type="monotone" dataKey="cpc26" name="2026" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
-                      {showVals.cpc && <LabelList dataKey="cpc26" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
-                    </Line>
-                  </LineChart>
-                </ResponsiveContainer>
-              </Card>
-
               <Card>
                 <ChartTitle title="Уникальные лиды" sub="Количество"
                   action={<ValueToggle show={showVals.lead} setShow={(v) => setShowVals((s) => ({ ...s, lead: v }))} />} />
@@ -416,11 +374,14 @@ const ElmoproIyun = () => {
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
-              За 2026 год расход растёт при заметном удорожании трафика: <b>цена клика в июне выросла до 643 ₽</b> против 259 ₽ год назад —
-              рост в 2,5 раза. Одновременно падает число кликов (298 против 381) и уникальных лидов (24 против 36),
-              а стоимость уникального лида выросла с ~2 700 ₽ до <b>~7 990 ₽</b>. Ключевая причина — усиление аукциона
-              и ставка на дорогие высокочастотные фразы. Рекомендация: сместить фокус с «выкупа объёма» на результативные
-              связки, усилить минусацию и корректировки, а бюджетный рост направлять в сегменты, где заявки обходятся дешевле плана (45-54, десктоп).
+              Август закрепил положительную динамику последних месяцев: при снижении бюджета до <b>182 993 ₽</b>
+              (против 210 491 ₽ в июле) число заявок выросло до <b>34</b>, а стоимость заявки снизилась
+              до <b>5 382 ₽</b> — заметно дешевле плановых 5 500 ₽. Особенно хорошо отработала квалификация:
+              количество квал. заявок выросло до <b>8</b> при плане 8, а их стоимость снизилась
+              до <b>22 874 ₽</b> — почти вдвое дешевле, чем в июле (35 082 ₽). Снижение доли чистых заявок
+              связано с технической особенностью CRM (см. примечание к разделу 02), а не с качеством трафика.
+              Рекомендуем сохранять текущую настройку кампаний и в сентябре сфокусироваться на закреплении
+              достигнутой стоимости квалифицированной заявки.
             </p>
           </Card>
         </Section>
@@ -483,13 +444,13 @@ const ElmoproIyun = () => {
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
               Спрос по Wordstat в 2026 году заметно ниже 2024-2025: в среднем на 40-45% запросов меньше, чем годом ранее.
               Сезонный рост к маю-июню сохраняется, но на суженной базе — рынок в целом сжался, а не только наш канал.
-              Рекомендуем учитывать это при планировании бюджета на июль и не ожидать роста количества заявок пропорционально прошлым годам.
+              Рекомендуем учитывать это при планировании бюджета на сентябрь и не ожидать роста количества заявок пропорционально прошлым годам.
             </p>
           </Card>
         </Section>
 
         {/* 7. ПЛАН МЕСЯЦА */}
-        <Section id="nextplan" num="07" title="План на новый месяц" icon="Flag" sub="Плановые показатели">
+        <Section id="nextplan" num="07" title="План на новый месяц" icon="Flag" sub="Плановые показатели на сентябрь 2026">
           <Card>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[420px]">
@@ -520,4 +481,4 @@ const ElmoproIyun = () => {
   );
 };
 
-export default ElmoproIyun;
+export default ElmoproAvgust;
