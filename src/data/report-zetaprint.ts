@@ -16,8 +16,15 @@ export const CLIENT = {
 export const aboutLinks = [
   { icon: 'CalendarRange', label: 'Понедельная статистика', desc: 'Расход, заявки и стоимость лида по неделям месяца.', href: CLIENT.weeklyStats, cta: 'Открыть таблицу' },
   { icon: 'TrendingUp', label: 'Воронка окупаемости', desc: 'Путь от лида до сделки и юнит-экономика проекта.', href: CLIENT.paybackFunnel, cta: 'Открыть таблицу' },
-  { icon: 'Globe', label: 'Сайт', desc: 'Основной сайт, на который ведёт реклама.', href: CLIENT.site, cta: 'zetaprint.ru' },
-  { icon: 'Spade', label: 'Сайт с Картами', desc: 'Лендинг с Яндекс Картами.', href: CLIENT.siteCards, cta: 'cards.zetaprint.ru' },
+  {
+    icon: 'Map',
+    label: 'Сайты',
+    desc: 'Основной сайт и лендинг с Яндекс Картами, на которые ведёт реклама.',
+    links: [
+      { href: CLIENT.site, cta: 'zetaprint.ru' },
+      { href: CLIENT.siteCards, cta: 'cards.zetaprint.ru' },
+    ],
+  },
 ];
 
 // ── Сегменты рекламы ──

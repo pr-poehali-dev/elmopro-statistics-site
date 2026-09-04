@@ -191,19 +191,38 @@ const ZetaprintAvgust = () => {
         {/* 1. ОБЩАЯ ИНФОРМАЦИЯ */}
         <Section id="about" num="01" title="Общая информация" icon="Info" sub="Ключевые ссылки по проекту">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {aboutLinks.map((l) => (
-              <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
-                className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Icon name={l.icon} size={20} />
+            {aboutLinks.map((l) =>
+              'links' in l && l.links ? (
+                <div key={l.label}
+                  className="rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon name={l.icon} size={20} />
+                  </div>
+                  <div className="mb-1 font-500">{l.label}</div>
+                  <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
+                  <div className="flex flex-col gap-1.5">
+                    {l.links.map((sub) => (
+                      <a key={sub.href} href={sub.href} target="_blank" rel="noreferrer"
+                        className="group inline-flex items-center gap-1 text-sm font-500 text-primary">
+                        {sub.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </a>
+                    ))}
+                  </div>
                 </div>
-                <div className="mb-1 font-500">{l.label}</div>
-                <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
-                <span className="inline-flex items-center gap-1 text-sm font-500 text-primary">
-                  {l.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
-              </a>
-            ))}
+              ) : (
+                <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+                  className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon name={l.icon} size={20} />
+                  </div>
+                  <div className="mb-1 font-500">{l.label}</div>
+                  <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
+                  <span className="inline-flex items-center gap-1 text-sm font-500 text-primary">
+                    {l.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </span>
+                </a>
+              )
+            )}
           </div>
         </Section>
 
