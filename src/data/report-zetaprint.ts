@@ -16,15 +16,8 @@ export const CLIENT = {
 export const aboutLinks = [
   { icon: 'CalendarRange', label: 'Понедельная статистика', desc: 'Расход, заявки и стоимость лида по неделям месяца.', href: CLIENT.weeklyStats, cta: 'Открыть таблицу' },
   { icon: 'TrendingUp', label: 'Воронка окупаемости', desc: 'Путь от лида до сделки и юнит-экономика проекта.', href: CLIENT.paybackFunnel, cta: 'Открыть таблицу' },
-  {
-    icon: 'Map',
-    label: 'Сайты',
-    desc: 'Основной сайт и лендинг с Картами, на которые ведёт реклама.',
-    links: [
-      { href: CLIENT.site, cta: 'zetaprint.ru' },
-      { href: CLIENT.siteCards, cta: 'cards.zetaprint.ru' },
-    ],
-  },
+  { icon: 'Globe', label: 'Сайт', desc: 'Основной сайт компании Zetaprint.', href: CLIENT.site, cta: 'zetaprint.ru' },
+  { icon: 'Layers', label: 'Сайт с игральными картами', desc: 'Лендинг по производству и печати игральных карт.', href: CLIENT.siteCards, cta: 'cards.zetaprint.ru' },
 ];
 
 // ── Сегменты рекламы (без сводного — используются в разделах 03 и 04) ──
@@ -94,22 +87,6 @@ export const planFactBySegment: Record<SegmentKeyTotal, Array<{ param: string; p
     { param: 'Квалифицированные лиды, ед.', planNum: 99, factNum: 110, planLabel: '99', factLabel: '110', isCost: false },
     { param: 'Стоимость квалифицированного лида, руб.', planNum: 5631, factNum: 5223, planLabel: '5 631 ₽', factLabel: '5 223 ₽', isCost: true },
   ],
-};
-
-// ── Плашка «Обработка лидов отделом продаж» под таблицей раздела 02 ──
-export const opProcessingNote = {
-  totalClean: 95,
-  bySegment: [
-    { label: 'Не Бренд', value: 27 },
-    { label: 'Бренд', value: 10 },
-    { label: 'Карты', value: 58 },
-  ],
-  potentialMin: 36,
-  potentialMax: 45,
-  forecastQualMin: 145,
-  forecastQualMax: 155,
-  forecastCpqlMin: 3800,
-  forecastCpqlMax: 4000,
 };
 
 // ── Блок: факт июль vs факт август по сегментам ──

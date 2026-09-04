@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   NEON, CLIENT, AGENCY, aboutLinks, segments, SegmentKey, segmentsWithTotal, SegmentKeyTotal,
   planFactBySegment, monthCompareBySegment, monthlyTrendBySegment, demand,
-  workDone, workPlan, nextPlanBySegment, opProcessingNote,
+  workDone, workPlan, nextPlanBySegment,
 } from '@/data/report-zetaprint';
 import ReportToolbar from '@/components/ReportToolbar';
 
@@ -203,38 +203,19 @@ const ZetaprintAvgust = () => {
         {/* 1. ОБЩАЯ ИНФОРМАЦИЯ */}
         <Section id="about" num="01" title="Общая информация" icon="Info" sub="Ключевые ссылки по проекту">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {aboutLinks.map((l) =>
-              'links' in l && l.links ? (
-                <div key={l.label}
-                  className="rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon name={l.icon} size={20} />
-                  </div>
-                  <div className="mb-1 font-500">{l.label}</div>
-                  <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
-                  <div className="flex flex-col gap-1.5">
-                    {l.links.map((sub) => (
-                      <a key={sub.href} href={sub.href} target="_blank" rel="noreferrer"
-                        className="group inline-flex items-center gap-1 text-sm font-500 text-primary">
-                        {sub.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                      </a>
-                    ))}
-                  </div>
+            {aboutLinks.map((l) => (
+              <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
+                className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon name={l.icon} size={20} />
                 </div>
-              ) : (
-                <a key={l.label} href={l.href} target="_blank" rel="noreferrer"
-                  className="group rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/50 hover:glow-cyan">
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon name={l.icon} size={20} />
-                  </div>
-                  <div className="mb-1 font-500">{l.label}</div>
-                  <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
-                  <span className="inline-flex items-center gap-1 text-sm font-500 text-primary">
-                    {l.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
-                </a>
-              )
-            )}
+                <div className="mb-1 font-500">{l.label}</div>
+                <p className="mb-3 text-sm text-muted-foreground">{l.desc}</p>
+                <span className="inline-flex items-center gap-1 text-sm font-500 text-primary">
+                  {l.cta} <Icon name="ArrowUpRight" size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              </a>
+            ))}
           </div>
         </Section>
 
@@ -275,31 +256,6 @@ const ZetaprintAvgust = () => {
               <span className="flex items-center gap-1.5"><Icon name="CircleCheck" size={14} style={{ color: NEON.pos }} /> выполнение ≥ 90%</span>
               <span className="flex items-center gap-1.5"><Icon name="CircleAlert" size={14} style={{ color: NEON.amber }} /> 60–89%</span>
               <span className="flex items-center gap-1.5"><Icon name="CircleX" size={14} style={{ color: NEON.neg }} /> ниже 60%</span>
-            </div>
-          </Card>
-
-          <Card className="mt-6 border-primary/30">
-            <div className="mb-3 flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
-              <Icon name="Users" size={20} /> Обработка лидов отделом продаж
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl bg-secondary/40 p-4">
-                <div className="font-mono text-2xl font-bold text-foreground">{opProcessingNote.totalClean}</div>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  Всего чистых лидов в обработке ОП
-                  {' '}({opProcessingNote.bySegment.map((s) => `${s.label} — ${s.value}`).join(', ')})
-                </div>
-              </div>
-              <div className="rounded-xl bg-secondary/40 p-4">
-                <div className="font-mono text-2xl font-bold text-primary">+{opProcessingNote.potentialMin}–{opProcessingNote.potentialMax}</div>
-                <div className="mt-1 text-xs text-muted-foreground">Потенциал доквалификации — дополнительные квалифицированные лиды при сохранении конверсий</div>
-              </div>
-              <div className="rounded-xl bg-secondary/40 p-4">
-                <div className="font-mono text-2xl font-bold" style={{ color: NEON.pos }}>{opProcessingNote.forecastQualMin}–{opProcessingNote.forecastQualMax}</div>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  Прогнозный итог месяца с учётом обработки, стоимость квала снизится до ~{fmt(opProcessingNote.forecastCpqlMin)}–{fmt(opProcessingNote.forecastCpqlMax)} ₽
-                </div>
-              </div>
             </div>
           </Card>
         </Section>
@@ -456,18 +412,14 @@ const ZetaprintAvgust = () => {
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
-              За август 2026 проект показал уверенный результат сразу по всем направлениям: в сегменте «Не Бренд»
-              собрано <b>199 уникальных лидов</b> при плане 170, а стоимость лида оказалась ниже плановой —
-              2 176 ₽ против 2 400 ₽. В «Картах» результат ещё заметнее — <b>118 лидов вместо 67 плановых</b>,
-              стоимость лида снизилась до 1 112 ₽. Бренд-кампания также перевыполнила план по лидам (13 против 9)
-              при почти двукратном росте бюджета. Особенно радует рост квалифицированных лидов в «Не Бренде» — с 47 в июле
-              до <b>72 в августе</b>, а их стоимость снизилась почти в 1,6 раза (с 9 348 ₽ до 6 013 ₽). Суммарно по
-              всем направлениям собрано 330 уникальных и <b>110 квалифицированных лидов</b> при плане 99 — план перевыполнен
-              на 11%. При этом в обработке отдела продаж остаётся ещё 95 чистых лидов, которые могут добавить
-              от 36 до 45 квалов — с их учётом итог месяца может вырасти до 145–155 квалов, а стоимость квала
-              снизиться до 3 800–4 000 ₽. Работа с минус-словами и чисткой площадок в РСЯ даёт накопительный
-              эффект — качество трафика растёт месяц к месяцу, и это отличная база для масштабирования бюджета
-              в сентябре.
+              В августе 2026 года основные средства бюджета направлены на ключевое направление «Не бренд»
+              (<b>432 953 руб.</b> с НДС без учёта комиссии), что принесло львиную долю результатов
+              (<b>199 уникальных</b> и <b>72 квалифицированных лида</b>) по комфортной цене <b>2 176 руб.</b> за
+              уникальный лид. При этом отлично сработало направление «Карты», давшее сразу <b>118 уникальных
+              лидов</b> по рекордно низкой цене <b>1 112 руб.</b> (на 47% дешевле плана!) и <b>35 квалов</b> по
+              <b> 3 749 руб.</b> Направление «Бренд» стабильно защищало позиции компании с минимальным расходом
+              и 100% конверсией в чистые лиды. В целом месяц завершён с перевыполнением планов по лидам при
+              соблюдении плановых рамок бюджета.
             </p>
           </Card>
         </Section>
