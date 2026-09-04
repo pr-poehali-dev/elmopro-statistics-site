@@ -68,3 +68,13 @@ export const reportsByYearVikupMsk = [
     ],
   },
 ];
+
+// ── Список отчётов по клиенту Тайфун: год → месяцы со ссылками ──
+export const reportsByYearTyphoon = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Август', href: '/Typhoon/2026/avgust' },
+    ],
+  },
+];
