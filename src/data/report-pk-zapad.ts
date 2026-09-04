@@ -92,10 +92,12 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
   poligrafiya: [
     { m: 'Июл', cost: 254163, uniq: 77, costUniq: 3301, clean: 72, costClean: 3530, qual: 21, costQual: 12103 },
     { m: 'Авг', cost: 202256, uniq: 84, costUniq: 2408, clean: 70, costClean: 2889, qual: 24, costQual: 8427 },
+    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
   ],
   upakovka: [
     { m: 'Июл', cost: 154654, uniq: 39, costUniq: 3965, clean: 33, costClean: 4686, qual: 14, costQual: 11047 },
     { m: 'Авг', cost: 195464, uniq: 66, costUniq: 2962, clean: 57, costClean: 3429, qual: 15, costQual: 13031 },
+    { m: 'Сен', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
   ],
 };
 

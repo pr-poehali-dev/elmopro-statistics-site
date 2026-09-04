@@ -19,7 +19,7 @@ export const aboutLinks = [
   {
     icon: 'Map',
     label: 'Сайты',
-    desc: 'Основной сайт и лендинг с Яндекс Картами, на которые ведёт реклама.',
+    desc: 'Основной сайт и лендинг с Картами, на которые ведёт реклама.',
     links: [
       { href: CLIENT.site, cta: 'zetaprint.ru' },
       { href: CLIENT.siteCards, cta: 'cards.zetaprint.ru' },
@@ -31,7 +31,7 @@ export const aboutLinks = [
 export const segments = [
   { key: 'notbrand', label: 'Не Бренд', icon: 'Search' },
   { key: 'brand', label: 'Бренд', icon: 'Star' },
-  { key: 'cards', label: 'Карты', icon: 'Spade' },
+  { key: 'cards', label: 'Карты', icon: 'Map' },
 ] as const;
 
 export type SegmentKey = typeof segments[number]['key'];
