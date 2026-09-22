@@ -23,7 +23,7 @@ export const planFact = [
   { param: 'Рекламный бюджет, с НДС', planNum: 80000, factNum: 32409, planLabel: '80 000 ₽', factLabel: '32 409 ₽', isCost: false },
   { param: 'Заявки, ед.', planNum: 67, factNum: 49, planLabel: '67', factLabel: '49', isCost: false },
   { param: 'Стоимость заявки, с НДС', planNum: 1200, factNum: 661, planLabel: '1 200 ₽', factLabel: '661 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', planNum: 85, factNum: 102.04, planLabel: '85%', factLabel: '102,04%', isCost: false },
+  { param: '% чистых заявок от общего числа', planNum: 85, factNum: 100, planLabel: '85%', factLabel: '100%', isCost: false },
   { param: 'Чистые заявки, ед.', planNum: 57, factNum: 49, planLabel: '57', factLabel: '49', isCost: false },
   { param: 'Стоимость чистой заявки, с НДС', planNum: 1412, factNum: 661, planLabel: '1 412 ₽', factLabel: '661 ₽', isCost: true },
 ];
@@ -37,7 +37,7 @@ export const monthCompare = [
   { param: 'Рекламный бюджет, руб.', mayNum: 129249, junNum: 32409, mayLabel: '129 249 ₽', junLabel: '32 409 ₽', isCost: false },
   { param: 'Заявки, ед.', mayNum: 117, junNum: 49, mayLabel: '117', junLabel: '49', isCost: false },
   { param: 'Стоимость заявки (с НДС), руб.', mayNum: 1105, junNum: 661, mayLabel: '1 105 ₽', junLabel: '661 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', mayNum: 95.73, junNum: 102.04, mayLabel: '95,73%', junLabel: '102,04%', isCost: false },
+  { param: '% чистых заявок от общего числа', mayNum: 95.73, junNum: 100, mayLabel: '95,73%', junLabel: '100%', isCost: false },
   { param: 'Чистые заявки, ед.', mayNum: 112, junNum: 49, mayLabel: '112', junLabel: '49', isCost: false },
   { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 1154, junNum: 661, mayLabel: '1 154 ₽', junLabel: '661 ₽', isCost: true },
   { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 65.18, junNum: 0, mayLabel: '65,18%', junLabel: '—', isCost: false },
@@ -49,7 +49,7 @@ export const monthCompare = [
 export const monthlyTrend = [
   { m: 'Июл', cost: 51644, leads: 49, cpl: 1054, clean: 38, ccpl: 1359, cleanPct: 77.55, qual: 26, qcpl: 1986 },
   { m: 'Авг', cost: 129249, leads: 117, cpl: 1105, clean: 112, ccpl: 1154, cleanPct: 95.73, qual: 73, qcpl: 1771 },
-  { m: 'Сен', cost: 32409, leads: 49, cpl: 661, clean: 49, ccpl: 661, cleanPct: 102.04, qual: null, qcpl: null },
+  { m: 'Сен', cost: 32409, leads: 49, cpl: 661, clean: 49, ccpl: 661, cleanPct: 100, qual: null, qcpl: null },
   { m: 'Окт', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
   { m: 'Ноя', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
   { m: 'Дек', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
