@@ -45,6 +45,7 @@ export const reportsByYearArtDizo = [
     months: [
       { label: 'Июль', href: '/art-dizo/2026/iyul' },
       { label: 'Август', href: '/art-dizo/2026/avgust' },
+      { label: 'Сентябрь', href: '/art-dizo/2026/september' },
     ],
   },
 ];
