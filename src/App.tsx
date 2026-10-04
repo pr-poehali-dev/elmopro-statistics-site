@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AgencyHome from "./pages/AgencyHome";
 import Elmopro from "./pages/Elmopro";
 import ElmoproAvgust from "./pages/ElmoproAvgust";
+import ElmoproSentyabr from "./pages/ElmoproSentyabr";
 import Sada3 from "./pages/Sada3";
 import Sada3Sentyabr from "./pages/Sada3Sentyabr";
 import Alyumika from "./pages/Alyumika";
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/elmopro" element={<Elmopro />} />
           <Route path="/elmopro/:year" element={<Navigate to="/elmopro" replace />} />
           <Route path="/elmopro/2026/avgust" element={<PasswordGate project="elmopro"><ElmoproAvgust /></PasswordGate>} />
+          <Route path="/elmopro/2026/september" element={<PasswordGate project="elmopro"><ElmoproSentyabr /></PasswordGate>} />
           <Route path="/3sada" element={<Sada3 />} />
           <Route path="/3sada/:year" element={<Navigate to="/3sada" replace />} />
           <Route path="/3sada/2026/september" element={<PasswordGate project="3sada"><Sada3Sentyabr /></PasswordGate>} />

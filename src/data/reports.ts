@@ -3,6 +3,7 @@ export const reportsByYear = [
   {
     year: 2026,
     months: [
+      { label: 'Сентябрь', href: '/elmopro/2026/september' },
       { label: 'Август', href: '/elmopro/2026/avgust' },
     ],
   },
