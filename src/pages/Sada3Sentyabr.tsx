@@ -268,7 +268,7 @@ const Sada3Sentyabr = () => {
         <Section id="trends" num="04" title="Тренды по месяцам" icon="ChartLine" sub="Август — Октябрь 2026">
           <div className="grid gap-6 lg:grid-cols-2">
             {charts.map((c) => (
-              <Card key={c.key}>
+              <Card key={c.key} className={c.key === 'cost' ? 'lg:col-span-2' : ''}>
                 <ChartTitle title={c.title} sub="Помесячно"
                   action={<ValueToggle show={!!showVals[c.key]} setShow={(v) => setShowVals((s) => ({ ...s, [c.key]: v }))} />} />
                 <ResponsiveContainer width="100%" height={260}>
@@ -346,8 +346,8 @@ const Sada3Sentyabr = () => {
                 <YAxis stroke={axisColor} fontSize={11} />
                 <Tooltip contentStyle={tipStyle} formatter={(v: number) => fmt(v)} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={2} dot={{ r: 2 }} />
-                <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} dot={{ r: 2 }} />
+                <Line type="monotone" dataKey="y24" name="2024" stroke={NEON.gray} strokeWidth={2} strokeDasharray="6 4" dot={false} />
+                <Line type="monotone" dataKey="y25" name="2025" stroke={NEON.violet} strokeWidth={2} strokeDasharray="6 4" dot={false} />
                 <Line type="monotone" dataKey="y26" name="2026" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                   {showVals.demand && <LabelList dataKey="y26" content={<ValueLabel fill={NEON.cyan} />} />}
                 </Line>
