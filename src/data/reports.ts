@@ -8,6 +8,16 @@ export const reportsByYear = [
   },
 ];
 
+// ── Список отчётов по клиенту 3 Сада: год → месяцы со ссылками ──
+export const reportsByYear3Sada = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Сентябрь', href: '/3sada/2026/september' },
+    ],
+  },
+];
+
 // ── Список отчётов по клиенту Алюмика: год → месяцы со ссылками ──
 export const reportsByYearAlyumika = [
   {

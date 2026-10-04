@@ -12,6 +12,7 @@ PROJECT_ENV_MAP = {
     'pk_zapad': 'REPORT_PASSWORD_PK_ZAPAD',
     'vikup_msk': 'REPORT_PASSWORD_VIKUP_MSK',
     'typhoon': 'REPORT_PASSWORD_TYPHOON',
+    '3sada': 'REPORT_PASSWORD_3SADA',
 }
 
 
