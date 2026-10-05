@@ -103,3 +103,12 @@ export const reportsByYearTyphoon = [
     ],
   },
 ];
+// ── Список отчётов по клиенту АРТБОКС (РайтБокс): год → месяцы со ссылками ──
+export const reportsByYearRightbox = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Сентябрь', href: '/rightbox/2026/september' },
+    ],
+  },
+];
