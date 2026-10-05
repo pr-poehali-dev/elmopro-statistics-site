@@ -34,6 +34,7 @@ export const reportsByYearXimservis = [
   {
     year: 2026,
     months: [
+      { label: 'Сентябрь', href: '/ximservis/2026/september' },
       { label: 'Август', href: '/ximservis/2026/avgust' },
     ],
   },
