@@ -27,6 +27,7 @@ import VikupMsk from "./pages/VikupMsk";
 import VikupMskAvgust from "./pages/VikupMskAvgust";
 import Typhoon from "./pages/Typhoon";
 import TyphoonAvgust from "./pages/TyphoonAvgust";
+import TyphoonSentyabr from "./pages/TyphoonSentyabr";
 import NotFound from "./pages/NotFound";
 import PasswordGate from "./components/PasswordGate";
 
@@ -70,6 +71,7 @@ const App = () => (
           <Route path="/vikup_msk/2026/avgust" element={<PasswordGate project="vikup_msk"><VikupMskAvgust /></PasswordGate>} />
           <Route path="/taifun" element={<Typhoon />} />
           <Route path="/taifun/:year" element={<Navigate to="/taifun" replace />} />
+          <Route path="/taifun/2026/september" element={<PasswordGate project="typhoon"><TyphoonSentyabr /></PasswordGate>} />
           <Route path="/taifun/2026/avgust" element={<PasswordGate project="typhoon"><TyphoonAvgust /></PasswordGate>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
