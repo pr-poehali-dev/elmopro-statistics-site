@@ -25,6 +25,8 @@ import PkZapad from "./pages/PkZapad";
 import PkZapadAvgust from "./pages/PkZapadAvgust";
 import VikupMsk from "./pages/VikupMsk";
 import VikupMskAvgust from "./pages/VikupMskAvgust";
+import VikupSpb from "./pages/VikupSpb";
+import VikupSpbSentyabr from "./pages/VikupSpbSentyabr";
 import Typhoon from "./pages/Typhoon";
 import TyphoonAvgust from "./pages/TyphoonAvgust";
 import TyphoonSentyabr from "./pages/TyphoonSentyabr";
@@ -69,6 +71,9 @@ const App = () => (
           <Route path="/vikup_msk" element={<VikupMsk />} />
           <Route path="/vikup_msk/:year" element={<Navigate to="/vikup_msk" replace />} />
           <Route path="/vikup_msk/2026/avgust" element={<PasswordGate project="vikup_msk"><VikupMskAvgust /></PasswordGate>} />
+          <Route path="/vikup_spb" element={<VikupSpb />} />
+          <Route path="/vikup_spb/:year" element={<Navigate to="/vikup_spb" replace />} />
+          <Route path="/vikup_spb/2026/september" element={<PasswordGate project="vikup_spb"><VikupSpbSentyabr /></PasswordGate>} />
           <Route path="/taifun" element={<Typhoon />} />
           <Route path="/taifun/:year" element={<Navigate to="/taifun" replace />} />
           <Route path="/taifun/2026/september" element={<PasswordGate project="typhoon"><TyphoonSentyabr /></PasswordGate>} />

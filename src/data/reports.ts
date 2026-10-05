@@ -82,6 +82,16 @@ export const reportsByYearVikupMsk = [
   },
 ];
 
+// ── Список отчётов по клиенту Выкуп Автобумс СПб: год → месяцы со ссылками ──
+export const reportsByYearVikupSpb = [
+  {
+    year: 2026,
+    months: [
+      { label: 'Сентябрь', href: '/vikup_spb/2026/september' },
+    ],
+  },
+];
+
 // ── Список отчётов по клиенту Тайфун: год → месяцы со ссылками ──
 export const reportsByYearTyphoon = [
   {
