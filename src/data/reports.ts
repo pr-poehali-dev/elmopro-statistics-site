@@ -45,6 +45,7 @@ export const reportsByYearZetaprint = [
   {
     year: 2026,
     months: [
+      { label: 'Сентябрь', href: '/zetaprint/2026/september' },
       { label: 'Август', href: '/zetaprint/2026/avgust' },
     ],
   },

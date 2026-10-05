@@ -17,6 +17,7 @@ import XimservisAvgust from "./pages/XimservisAvgust";
 import XimservisSentyabr from "./pages/XimservisSentyabr";
 import Zetaprint from "./pages/Zetaprint";
 import ZetaprintAvgust from "./pages/ZetaprintAvgust";
+import ZetaprintSentyabr from "./pages/ZetaprintSentyabr";
 import ArtDizo from "./pages/ArtDizo";
 import ArtDizoIyul from "./pages/ArtDizoIyul";
 import ArtDizoAvgust from "./pages/ArtDizoAvgust";
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/ximservis/2026/avgust" element={<PasswordGate project="ximservis"><XimservisAvgust /></PasswordGate>} />
           <Route path="/zetaprint" element={<Zetaprint />} />
           <Route path="/zetaprint/:year" element={<Navigate to="/zetaprint" replace />} />
+          <Route path="/zetaprint/2026/september" element={<PasswordGate project="zetaprint_sep"><ZetaprintSentyabr /></PasswordGate>} />
           <Route path="/zetaprint/2026/avgust" element={<PasswordGate project="zetaprint"><ZetaprintAvgust /></PasswordGate>} />
           <Route path="/art-dizo" element={<ArtDizo />} />
           <Route path="/art-dizo/:year" element={<Navigate to="/art-dizo" replace />} />
