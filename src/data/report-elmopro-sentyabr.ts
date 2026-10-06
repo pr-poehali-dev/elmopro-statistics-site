@@ -26,9 +26,9 @@ export const planFact = [
   { param: '% чистых от общего числа', planNum: 80, factNum: 71.88, planLabel: '80,00%', factLabel: '71,88%', isCost: false },
   { param: 'Чистые заявки, ед.', planNum: 27, factNum: 23, planLabel: '27', factLabel: '23', isCost: false },
   { param: 'Стоимость чистой заявки (с НДС), руб.', planNum: 7500, factNum: 9247, planLabel: '7 500 ₽', factLabel: '9 247 ₽', isCost: true },
-  { param: 'Конверсия из заявки в квал. заявку', planNum: 24, factNum: 4.35, planLabel: '24,00%', factLabel: '4,35%', isCost: false },
-  { param: 'Квал. заявки, ед.', planNum: 6, factNum: 1, planLabel: '6', factLabel: '1', isCost: false },
-  { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 33333, factNum: 212686, planLabel: '33 333 ₽', factLabel: '212 686 ₽', isCost: true },
+  { param: 'Конверсия из заявки в квал. заявку', planNum: 24, factNum: 8.70, planLabel: '24,00%', factLabel: '8,70%', isCost: false },
+  { param: 'Квал. заявки, ед.', planNum: 6, factNum: 2, planLabel: '6', factLabel: '2', isCost: false },
+  { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 33333, factNum: 106343, planLabel: '33 333 ₽', factLabel: '106 343 ₽', isCost: true },
 ];
 
 export const planFactNotes = [
@@ -43,9 +43,9 @@ export const monthCompare = [
   { param: '% чистых от общего числа', mayNum: 67.65, junNum: 71.88, mayLabel: '67,65%', junLabel: '71,88%', isCost: false },
   { param: 'Чистые заявки, ед.', mayNum: 23, junNum: 23, mayLabel: '23', junLabel: '23', isCost: false },
   { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 7956, junNum: 9247, mayLabel: '7 956 ₽', junLabel: '9 247 ₽', isCost: true },
-  { param: 'Конверсия из заявки в квал. заявку', mayNum: 34.78, junNum: 4.35, mayLabel: '34,78%', junLabel: '4,35%', isCost: false },
-  { param: 'Квал. заявки, ед.', mayNum: 8, junNum: 1, mayLabel: '8', junLabel: '1', isCost: false },
-  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 22874, junNum: 212686, mayLabel: '22 874 ₽', junLabel: '212 686 ₽', isCost: true },
+  { param: 'Конверсия из заявки в квал. заявку', mayNum: 34.78, junNum: 8.70, mayLabel: '34,78%', junLabel: '8,70%', isCost: false },
+  { param: 'Квал. заявки, ед.', mayNum: 8, junNum: 2, mayLabel: '8', junLabel: '2', isCost: false },
+  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 22874, junNum: 106343, mayLabel: '22 874 ₽', junLabel: '106 343 ₽', isCost: true },
 ];
 
 // ── Блок: годовые тренды (текущий 2026 vs прошлый 2025 год) ──
@@ -58,7 +58,7 @@ export const yearly = [
   { m: 'Июн', cost25: 98689, cost26: 191751, lead25: 36, lead26: 24, lc25: 2741, lc26: 7990, qual25: 4, qual26: 3, qc25: 24672, qc26: 63917 },
   { m: 'Июл', cost25: 115596, cost26: 210491, lead25: 37, lead26: 32, lc25: 3124, lc26: 6578, qual25: 6, qual26: 6, qc25: 19266, qc26: 35082 },
   { m: 'Авг', cost25: 103875, cost26: 182993, lead25: 28, lead26: 34, lc25: 3710, lc26: 5382, qual25: 3, qual26: 8, qc25: 34625, qc26: 22874 },
-  { m: 'Сен', cost25: 117486, cost26: 212686, lead25: 34, lead26: 32, lc25: 3455, lc26: 6646, qual25: 4, qual26: 1, qc25: 29371, qc26: 212686 },
+  { m: 'Сен', cost25: 117486, cost26: 212686, lead25: 34, lead26: 32, lc25: 3455, lc26: 6646, qual25: 4, qual26: 2, qc25: 29371, qc26: 106343 },
   { m: 'Окт', cost25: 115688, cost26: null, lead25: 34, lead26: null, lc25: 3403, lc26: null, qual25: 6, qual26: null, qc25: 19281, qc26: null },
   { m: 'Ноя', cost25: 104500, cost26: null, lead25: 26, lead26: null, lc25: 4019, lc26: null, qual25: 2, qual26: null, qc25: 52250, qc26: null },
   { m: 'Дек', cost25: 98785, cost26: null, lead25: 25, lead26: null, lc25: 3951, lc26: null, qual25: 4, qual26: null, qc25: 24696, qc26: null },
