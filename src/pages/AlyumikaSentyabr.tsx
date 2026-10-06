@@ -261,7 +261,7 @@ const AlyumikaSentyabr = () => {
         {/* 4. ТРЕНДЫ С АПРЕЛЯ */}
         <Section id="trends" num="04" title="Тренды с начала работ" icon="ChartLine" sub="Проект в работе с апреля 2026 — динамика по месяцам">
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
+            <Card className="lg:col-span-2">
               <ChartTitle title="Рекламный бюджет, ₽" sub="Апрель — Ноябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
