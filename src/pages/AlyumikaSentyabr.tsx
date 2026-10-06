@@ -262,7 +262,7 @@ const AlyumikaSentyabr = () => {
         <Section id="trends" num="04" title="Тренды с начала работ" icon="ChartLine" sub="Проект в работе с апреля 2026 — динамика по месяцам">
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
-              <ChartTitle title="Рекламный бюджет, ₽" sub="Апрель — Сентябрь"
+              <ChartTitle title="Рекламный бюджет, ₽" sub="Апрель — Ноябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -278,7 +278,7 @@ const AlyumikaSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Заявки, ед." sub="Апрель — Сентябрь"
+              <ChartTitle title="Заявки, ед." sub="Апрель — Ноябрь"
                 action={<ValueToggle show={showVals.leads} setShow={(v) => setShowVals((s) => ({ ...s, leads: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -294,7 +294,7 @@ const AlyumikaSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Чистые заявки, ед." sub="Апрель — Сентябрь"
+              <ChartTitle title="Чистые заявки, ед." sub="Апрель — Ноябрь"
                 action={<ValueToggle show={showVals.clean} setShow={(v) => setShowVals((s) => ({ ...s, clean: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -310,7 +310,7 @@ const AlyumikaSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость заявки, ₽" sub="Апрель — Сентябрь"
+              <ChartTitle title="Стоимость заявки, ₽" sub="Апрель — Ноябрь"
                 action={<ValueToggle show={showVals.cpl} setShow={(v) => setShowVals((s) => ({ ...s, cpl: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>
@@ -326,7 +326,7 @@ const AlyumikaSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость чистой заявки, ₽" sub="Апрель — Сентябрь"
+              <ChartTitle title="Стоимость чистой заявки, ₽" sub="Апрель — Ноябрь"
                 action={<ValueToggle show={showVals.ccpl} setShow={(v) => setShowVals((s) => ({ ...s, ccpl: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={monthlyTrend} margin={{ top: 30 }}>

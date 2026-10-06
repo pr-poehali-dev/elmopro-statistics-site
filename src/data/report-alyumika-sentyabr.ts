@@ -51,6 +51,8 @@ export const monthlyTrend = [
   { m: 'Июл', cost: 148041, leads: 60, cpl: 2467, clean: 33, ccpl: 4486, cleanPct: 55.00 },
   { m: 'Авг', cost: 91200, leads: 46, cpl: 1983, clean: 21, ccpl: 4343, cleanPct: 45.65 },
   { m: 'Сен', cost: 89562, leads: 38, cpl: 2357, clean: 30, ccpl: 2985, cleanPct: 78.95 },
+  { m: 'Окт', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null },
+  { m: 'Ноя', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null },
 ];
 
 // ── Спрос по Wordstat: помесячно, 2024 / 2025 / 2026 на одном графике ──
