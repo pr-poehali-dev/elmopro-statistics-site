@@ -12,6 +12,7 @@ import Sada3 from "./pages/Sada3";
 import Sada3Sentyabr from "./pages/Sada3Sentyabr";
 import Alyumika from "./pages/Alyumika";
 import AlyumikaAvgust from "./pages/AlyumikaAvgust";
+import AlyumikaSentyabr from "./pages/AlyumikaSentyabr";
 import Ximservis from "./pages/Ximservis";
 import XimservisAvgust from "./pages/XimservisAvgust";
 import XimservisSentyabr from "./pages/XimservisSentyabr";
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/3sada/2026/september" element={<PasswordGate project="3sada"><Sada3Sentyabr /></PasswordGate>} />
           <Route path="/alyumika" element={<Alyumika />} />
           <Route path="/alyumika/:year" element={<Navigate to="/alyumika" replace />} />
+          <Route path="/alyumika/2026/september" element={<PasswordGate project="alyumika"><AlyumikaSentyabr /></PasswordGate>} />
           <Route path="/alyumika/2026/avgust" element={<PasswordGate project="alyumika"><AlyumikaAvgust /></PasswordGate>} />
           <Route path="/ximservis" element={<Ximservis />} />
           <Route path="/ximservis/:year" element={<Navigate to="/ximservis" replace />} />
