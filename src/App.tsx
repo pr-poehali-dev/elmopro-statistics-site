@@ -29,6 +29,7 @@ import PkZapad from "./pages/PkZapad";
 import PkZapadSentyabr from "./pages/PkZapadSentyabr";
 import PkZapadAvgust from "./pages/PkZapadAvgust";
 import VikupMsk from "./pages/VikupMsk";
+import VikupMskSentyabr from "./pages/VikupMskSentyabr";
 import VikupMskAvgust from "./pages/VikupMskAvgust";
 import VikupSpb from "./pages/VikupSpb";
 import VikupSpbSentyabr from "./pages/VikupSpbSentyabr";
@@ -81,6 +82,7 @@ const App = () => (
           <Route path="/pk_zapad/2026/avgust" element={<PasswordGate project="pk_zapad"><PkZapadAvgust /></PasswordGate>} />
           <Route path="/vikup_msk" element={<VikupMsk />} />
           <Route path="/vikup_msk/:year" element={<Navigate to="/vikup_msk" replace />} />
+          <Route path="/vikup_msk/2026/september" element={<PasswordGate project="vikup_msk"><VikupMskSentyabr /></PasswordGate>} />
           <Route path="/vikup_msk/2026/avgust" element={<PasswordGate project="vikup_msk"><VikupMskAvgust /></PasswordGate>} />
           <Route path="/vikup_spb" element={<VikupSpb />} />
           <Route path="/vikup_spb/:year" element={<Navigate to="/vikup_spb" replace />} />

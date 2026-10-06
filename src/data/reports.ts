@@ -81,6 +81,7 @@ export const reportsByYearVikupMsk = [
     year: 2026,
     months: [
       { label: 'Август', href: '/vikup_msk/2026/avgust' },
+      { label: 'Сентябрь', href: '/vikup_msk/2026/september' },
     ],
   },
 ];
