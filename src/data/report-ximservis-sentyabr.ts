@@ -23,11 +23,11 @@ export const planFact = [
   { param: 'Рекламный бюджет, руб.', planNum: 145500, factNum: 127596, planLabel: '145 500 ₽', factLabel: '127 596 ₽', isCost: false },
   { param: 'Уникальные лиды, ед.', planNum: 41, factNum: 59, planLabel: '41', factLabel: '59', isCost: false },
   { param: 'Стоимость уникального лида, с НДС', planNum: 3500, factNum: 2163, planLabel: '3 500 ₽', factLabel: '2 163 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', planNum: 65, factNum: 57.63, planLabel: '65%', factLabel: '57,63%', isCost: false },
-  { param: 'Чистые уник. лиды, ед.', planNum: 27, factNum: 34, planLabel: '27', factLabel: '34', isCost: false },
-  { param: 'Стоимость чистого лида, с НДС', planNum: 5460, factNum: 3753, planLabel: '5 460 ₽', factLabel: '3 753 ₽', isCost: true },
-  { param: 'Квалифицированные лиды, ед.', planNum: 17, factNum: 29, planLabel: '17', factLabel: '29', isCost: false },
-  { param: 'Стоимость квалифицированных лидов, с НДС', planNum: 8559, factNum: 4400, planLabel: '8 559 ₽', factLabel: '4 400 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', planNum: 65, factNum: 52.54, planLabel: '65%', factLabel: '52,54%', isCost: false },
+  { param: 'Чистые уник. лиды, ед.', planNum: 27, factNum: 31, planLabel: '27', factLabel: '31', isCost: false },
+  { param: 'Стоимость чистого лида, с НДС', planNum: 5460, factNum: 4116, planLabel: '5 460 ₽', factLabel: '4 116 ₽', isCost: true },
+  { param: 'Квалифицированные лиды, ед.', planNum: 17, factNum: 28, planLabel: '17', factLabel: '28', isCost: false },
+  { param: 'Стоимость квалифицированных лидов, с НДС', planNum: 8559, factNum: 4557, planLabel: '8 559 ₽', factLabel: '4 557 ₽', isCost: true },
 ];
 
 export const planFactNotes = [
@@ -39,11 +39,11 @@ export const monthCompare = [
   { param: 'Рекламный бюджет, руб.', mayNum: 157163, junNum: 127596, mayLabel: '157 163 ₽', junLabel: '127 596 ₽', isCost: false },
   { param: 'Заявки, ед.', mayNum: 49, junNum: 59, mayLabel: '49', junLabel: '59', isCost: false },
   { param: 'Стоимость уникального лида, с НДС', mayNum: 3207, junNum: 2163, mayLabel: '3 207 ₽', junLabel: '2 163 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', mayNum: 63.27, junNum: 57.63, mayLabel: '63,27%', junLabel: '57,63%', isCost: false },
-  { param: 'Чистые заявки, ед.', mayNum: 31, junNum: 34, mayLabel: '31', junLabel: '34', isCost: false },
-  { param: 'Стоимость чистого лида, с НДС', mayNum: 5070, junNum: 3753, mayLabel: '5 070 ₽', junLabel: '3 753 ₽', isCost: true },
-  { param: 'Квалифицированные лиды, ед.', mayNum: 20, junNum: 29, mayLabel: '20', junLabel: '29', isCost: false },
-  { param: 'Стоимость квалифицированных лидов, с НДС', mayNum: 7858, junNum: 4400, mayLabel: '7 858 ₽', junLabel: '4 400 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', mayNum: 63.27, junNum: 52.54, mayLabel: '63,27%', junLabel: '52,54%', isCost: false },
+  { param: 'Чистые заявки, ед.', mayNum: 31, junNum: 31, mayLabel: '31', junLabel: '31', isCost: false },
+  { param: 'Стоимость чистого лида, с НДС', mayNum: 5070, junNum: 4116, mayLabel: '5 070 ₽', junLabel: '4 116 ₽', isCost: true },
+  { param: 'Квалифицированные лиды, ед.', mayNum: 20, junNum: 28, mayLabel: '20', junLabel: '28', isCost: false },
+  { param: 'Стоимость квалифицированных лидов, с НДС', mayNum: 7858, junNum: 4557, mayLabel: '7 858 ₽', junLabel: '4 557 ₽', isCost: true },
 ];
 
 // ── Блок: помесячная динамика — работы ведутся с января 2026 ──
@@ -56,7 +56,7 @@ export const monthlyTrend = [
   { m: 'Июн', cost: 166618, leads: 64, cpl: 2603, clean: 54, ccpl: 3086, cleanPct: 84.38, qual: 37, qcpl: 4503 },
   { m: 'Июл', cost: 152408, leads: 68, cpl: 2241, clean: 52, ccpl: 2931, cleanPct: 76.47, qual: 30, qcpl: 5080 },
   { m: 'Авг', cost: 157163, leads: 49, cpl: 3207, clean: 31, ccpl: 5070, cleanPct: 63.27, qual: 20, qcpl: 7858 },
-  { m: 'Сен', cost: 127596, leads: 59, cpl: 2163, clean: 34, ccpl: 3753, cleanPct: 57.63, qual: 29, qcpl: 4400 },
+  { m: 'Сен', cost: 127596, leads: 59, cpl: 2163, clean: 31, ccpl: 4116, cleanPct: 52.54, qual: 28, qcpl: 4557 },
   { m: 'Окт', cost: null, leads: null, cpl: null, clean: null, ccpl: null, cleanPct: null, qual: null, qcpl: null },
 ];
 
