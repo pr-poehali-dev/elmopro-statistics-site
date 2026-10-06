@@ -121,13 +121,9 @@ export const monthCompareBySegment: Record<SegmentKeyTotal, Array<{ param: strin
     { param: 'Конверсия в чистые лиды (1-й ур.), %', mayNum: 89.45, junNum: 93.94, mayLabel: '89,45%', junLabel: '93,94%', isCost: false },
     { param: 'Чистые лиды, ед. (1-й уровень)', mayNum: 178, junNum: 248, mayLabel: '178', junLabel: '248', isCost: false },
     { param: 'Стоимость чистого лида 1-го ур., руб.', mayNum: 2432, junNum: 1880, mayLabel: '2 432 ₽', junLabel: '1 880 ₽', isCost: true },
-    { param: 'Конверсия в чистые лиды (2-й ур.), %', mayNum: 106.03, junNum: 88.64, mayLabel: '106,03%', junLabel: '88,64%', isCost: false },
-    { param: 'Чистые лиды, ед. (2-й уровень)', mayNum: 211, junNum: 234, mayLabel: '211', junLabel: '234', isCost: false },
-    { param: 'Стоимость чистого лида 2-го ур., руб.', mayNum: 2052, junNum: 1992, mayLabel: '2 052 ₽', junLabel: '1 992 ₽', isCost: true },
     { param: 'Квалифицированные лиды, ед.', mayNum: 72, junNum: 76, mayLabel: '72', junLabel: '76', isCost: false },
     { param: 'Стоимость квалифицированного лида, руб.', mayNum: 6013, junNum: 6134, mayLabel: '6 013 ₽', junLabel: '6 134 ₽', isCost: true },
     { param: 'Конверсия из чистой 1-го ур. в квал, %', mayNum: 40.45, junNum: 30.65, mayLabel: '40,45%', junLabel: '30,65%', isCost: false },
-    { param: 'Конверсия из чистой 2-го ур. в квал, %', mayNum: 34.12, junNum: 32.48, mayLabel: '34,12%', junLabel: '32,48%', isCost: false },
   ],
   brand: [
     { param: 'Рекламный бюджет, руб.', mayNum: 10300, junNum: 4959, mayLabel: '10 300 ₽', junLabel: '4 959 ₽', isCost: false },
@@ -136,13 +132,9 @@ export const monthCompareBySegment: Record<SegmentKeyTotal, Array<{ param: strin
     { param: 'Конверсия в чистые лиды (1-й ур.), %', mayNum: 92.31, junNum: 91.67, mayLabel: '92,31%', junLabel: '91,67%', isCost: false },
     { param: 'Чистые лиды, ед. (1-й уровень)', mayNum: 12, junNum: 22, mayLabel: '12', junLabel: '22', isCost: false },
     { param: 'Стоимость чистого лида 1-го ур., руб.', mayNum: 858, junNum: 225, mayLabel: '858 ₽', junLabel: '225 ₽', isCost: true },
-    { param: 'Конверсия в чистые лиды (2-й ур.), %', mayNum: 92.31, junNum: 79.17, mayLabel: '92,31%', junLabel: '79,17%', isCost: false },
-    { param: 'Чистые лиды, ед. (2-й уровень)', mayNum: 12, junNum: 19, mayLabel: '12', junLabel: '19', isCost: false },
-    { param: 'Стоимость чистого лида 2-го ур., руб.', mayNum: 858, junNum: 261, mayLabel: '858 ₽', junLabel: '261 ₽', isCost: true },
     { param: 'Квалифицированные лиды, ед.', mayNum: 3, junNum: 9, mayLabel: '3', junLabel: '9', isCost: false },
     { param: 'Стоимость квалифицированного лида, руб.', mayNum: 3433, junNum: 551, mayLabel: '3 433 ₽', junLabel: '551 ₽', isCost: true },
     { param: 'Конверсия из чистой 1-го ур. в квал, %', mayNum: 25.0, junNum: 40.91, mayLabel: '25,00%', junLabel: '40,91%', isCost: false },
-    { param: 'Конверсия из чистой 2-го ур. в квал, %', mayNum: 25.0, junNum: 47.37, mayLabel: '25,00%', junLabel: '47,37%', isCost: false },
   ],
   cards: [
     { param: 'Рекламный бюджет, руб.', mayNum: 161886, junNum: 129584, mayLabel: '161 886 ₽', junLabel: '129 584 ₽', isCost: false },
@@ -151,13 +143,9 @@ export const monthCompareBySegment: Record<SegmentKeyTotal, Array<{ param: strin
     { param: 'Конверсия в чистые лиды (1-й ур.), %', mayNum: 94.32, junNum: 91.23, mayLabel: '94,32%', junLabel: '91,23%', isCost: false },
     { param: 'Чистые лиды, ед. (1-й уровень)', mayNum: 83, junNum: 104, mayLabel: '83', junLabel: '104', isCost: false },
     { param: 'Стоимость чистого лида 1-го ур., руб.', mayNum: 1950, junNum: 1246, mayLabel: '1 950 ₽', junLabel: '1 246 ₽', isCost: true },
-    { param: 'Конверсия в чистые лиды (2-й ур.), %', mayNum: 45.45, junNum: 81.58, mayLabel: '45,45%', junLabel: '81,58%', isCost: false },
-    { param: 'Чистые лиды, ед. (2-й уровень)', mayNum: 40, junNum: 93, mayLabel: '40', junLabel: '93', isCost: false },
-    { param: 'Стоимость чистого лида 2-го ур., руб.', mayNum: 4047, junNum: 1393, mayLabel: '4 047 ₽', junLabel: '1 393 ₽', isCost: true },
     { param: 'Квалифицированные лиды, ед.', mayNum: 32, junNum: 32, mayLabel: '32', junLabel: '32', isCost: false },
     { param: 'Стоимость квалифицированного лида, руб.', mayNum: 5058, junNum: 4050, mayLabel: '5 058 ₽', junLabel: '4 050 ₽', isCost: true },
     { param: 'Конверсия из чистой 1-го ур. в квал, %', mayNum: 38.55, junNum: 30.77, mayLabel: '38,55%', junLabel: '30,77%', isCost: false },
-    { param: 'Конверсия из чистой 2-го ур. в квал, %', mayNum: 80.0, junNum: 34.41, mayLabel: '80,00%', junLabel: '34,41%', isCost: false },
   ],
   total: [
     { param: 'Рекламный бюджет, руб.', mayNum: 605139, junNum: 600708, mayLabel: '605 139 ₽', junLabel: '600 708 ₽', isCost: false },
@@ -166,13 +154,9 @@ export const monthCompareBySegment: Record<SegmentKeyTotal, Array<{ param: strin
     { param: 'Конверсия в чистые лиды (1-й ур.), %', mayNum: 91.0, junNum: 93.03, mayLabel: '91,00%', junLabel: '93,03%', isCost: false },
     { param: 'Чистые лиды, ед. (1-й уровень)', mayNum: 273, junNum: 374, mayLabel: '273', junLabel: '374', isCost: false },
     { param: 'Стоимость чистого лида 1-го ур., руб.', mayNum: 2217, junNum: 1606, mayLabel: '2 217 ₽', junLabel: '1 606 ₽', isCost: true },
-    { param: 'Конверсия в чистые лиды (2-й ур.), %', mayNum: 87.67, junNum: 86.07, mayLabel: '87,67%', junLabel: '86,07%', isCost: false },
-    { param: 'Чистые лиды, ед. (2-й уровень)', mayNum: 263, junNum: 346, mayLabel: '263', junLabel: '346', isCost: false },
-    { param: 'Стоимость чистого лида 2-го ур., руб.', mayNum: 2301, junNum: 1736, mayLabel: '2 301 ₽', junLabel: '1 736 ₽', isCost: true },
     { param: 'Квалифицированные лиды, ед.', mayNum: 107, junNum: 117, mayLabel: '107', junLabel: '117', isCost: false },
     { param: 'Стоимость квалифицированного лида, руб.', mayNum: 5655, junNum: 5134, mayLabel: '5 655 ₽', junLabel: '5 134 ₽', isCost: true },
     { param: 'Конверсия из чистой 1-го ур. в квал, %', mayNum: 39.19, junNum: 31.28, mayLabel: '39,19%', junLabel: '31,28%', isCost: false },
-    { param: 'Конверсия из чистой 2-го ур. в квал, %', mayNum: 40.68, junNum: 33.82, mayLabel: '40,68%', junLabel: '33,82%', isCost: false },
   ],
 };
 
@@ -248,16 +232,13 @@ export const workDone = [
 ];
 
 export const workPlan = [
-  'Масштабирование бюджета до 557 600 ₽ под растущий сезонный спрос 4 квартала (календари, упаковка, корпоративная полиграфия)',
-  'Запуск кастомных посадочных блоков под ТОП-3 тиражных продукта на сайте zetaprint.ru',
   'Создание сегментов ретаргетинга и LAL-аудиторий на базе базы квалифицированных клиентов из CRM',
   'Расширение таргетингов под тиражные настольные игры и мерч для продавцов маркетплейсов',
   'Тестирование микроконверсий с контролем времени на сайте (>90 сек) для отсечения единичного розничного трафика',
-  'Ежедневный мониторинг ДРР и стоимости целевого квал-лида',
+  'Ежедневный мониторинг количества лидов и стоимости уникальных, чистых и квал. лидов',
 ];
 
 export const growthPoints = [
-  'Запуск кастомных посадочных экранов под ТОП-3 тиражных продукта (прогноз: рост конверсии с 2.8% до 3.8% и +15-20% чистых заявок)',
   'Сегментация РСЯ по LAL-аудиториям квалифицированных лидов из CRM (прогноз: рост доли квалов до 40%+)',
   'Старт продвижения корпоративной новогодней полиграфии и упаковки в октябре до пикового подорожания аукциона в ноябре',
 ];
