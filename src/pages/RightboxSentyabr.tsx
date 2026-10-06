@@ -4,9 +4,8 @@ import {
   ComposedChart, Area, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LabelList,
 } from 'recharts';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  NEON, CLIENT, AGENCY, aboutLinks, segmentsWithTotal, SegmentKeyTotal,
+  NEON, CLIENT, AGENCY, aboutLinks,
   planFactBySegment, monthCompareBySegment, monthlyTrend,
   workDone, workPlan, growthPoints, nextPlanBySegment,
 } from '@/data/report-rightbox';
@@ -105,18 +104,6 @@ const ValueLabel = (props: ValueLabelProps) => {
   );
 };
 
-const SegmentTabsWithTotal = ({ value, onChange }: { value: SegmentKeyTotal; onChange: (v: SegmentKeyTotal) => void }) => (
-  <Tabs value={value} onValueChange={(v) => onChange(v as SegmentKeyTotal)} className="mb-5">
-    <TabsList>
-      {segmentsWithTotal.map((s) => (
-        <TabsTrigger key={s.key} value={s.key} className="gap-1.5">
-          <Icon name={s.icon} size={14} /> {s.label}
-        </TabsTrigger>
-      ))}
-    </TabsList>
-  </Tabs>
-);
-
 const nav = [
   { id: 'about', label: 'Общая инфо' },
   { id: 'planfact', label: 'План / Факт' },
@@ -134,9 +121,6 @@ const RightboxSentyabr = () => {
   const axisColor = 'hsl(240,4%,45%)';
 
   const [showVals, setShowVals] = useState({ cost: false, uniq: false, costUniq: false, clean: false, costClean: false, qual: false, costQual: false, demand: false });
-  const [segPlanFact, setSegPlanFact] = useState<SegmentKeyTotal>('search');
-  const [segMonths, setSegMonths] = useState<SegmentKeyTotal>('search');
-  const [segNextPlan, setSegNextPlan] = useState<SegmentKeyTotal>('search');
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -230,7 +214,6 @@ const RightboxSentyabr = () => {
         {/* 2. ПЛАН / ФАКТ */}
         <Section id="planfact" num="02" title="Сравнение план / факт" icon="Target" sub={`Динамика по ключевым показателям за ${CLIENT.period}`}>
           <Card>
-            <SegmentTabsWithTotal value={segPlanFact} onChange={setSegPlanFact} />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[640px]">
                 <thead>
@@ -243,7 +226,7 @@ const RightboxSentyabr = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {planFactBySegment[segPlanFact].map((r) => {
+                  {planFactBySegment.total.map((r) => {
                     const st = planStatusColor(r.planNum, r.factNum, r.isCost);
                     return (
                       <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
@@ -271,7 +254,6 @@ const RightboxSentyabr = () => {
         {/* 3. АВГУСТ → СЕНТЯБРЬ */}
         <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт август → факт сентябрь 2026">
           <Card>
-            <SegmentTabsWithTotal value={segMonths} onChange={setSegMonths} />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px]">
                 <thead>
@@ -283,7 +265,7 @@ const RightboxSentyabr = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {monthCompareBySegment[segMonths].map((r) => (
+                  {monthCompareBySegment.total.map((r) => (
                     <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
                       <td className="py-3.5 font-500">{r.param}</td>
                       <td className="py-3.5 text-right font-mono text-muted-foreground">{r.mayLabel}</td>
@@ -477,7 +459,6 @@ const RightboxSentyabr = () => {
         {/* 7. ПЛАН МЕСЯЦА */}
         <Section id="nextplan" num="07" title="План на новый месяц" icon="Flag" sub="Плановые показатели на октябрь 2026">
           <Card>
-            <SegmentTabsWithTotal value={segNextPlan} onChange={setSegNextPlan} />
             <div className="overflow-x-auto">
               <table className="w-full min-w-[420px]">
                 <thead>
@@ -487,7 +468,7 @@ const RightboxSentyabr = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {nextPlanBySegment[segNextPlan].map((r) => (
+                  {nextPlanBySegment.total.map((r) => (
                     <tr key={r.param} className="border-b border-border/50 hover:bg-secondary/40">
                       <td className="py-3.5 font-500">{r.param}</td>
                       <td className="py-3.5 text-right font-mono font-bold text-primary">{r.plan}</td>
