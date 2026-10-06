@@ -40,20 +40,20 @@ export const planFact = [
 ];
 
 export const monthCompare = [
-  { param: 'Рекламный бюджет, руб.', mayNum: 397720, junNum: 215808, mayLabel: '397 720 ₽', junLabel: '215 808 ₽', isCost: false },
-  { param: 'Заявки, ед.', mayNum: 150, junNum: 109, mayLabel: '150', junLabel: '109', isCost: false },
-  { param: 'Стоимость заявки (с НДС), руб.', mayNum: 2651, junNum: 1980, mayLabel: '2 651 ₽', junLabel: '1 980 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', mayNum: 84.67, junNum: 73.39, mayLabel: '84,67%', junLabel: '73,39%', isCost: false },
-  { param: 'Чистые заявки, ед.', mayNum: 127, junNum: 80, mayLabel: '127', junLabel: '80', isCost: false },
-  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 3132, junNum: 2698, mayLabel: '3 132 ₽', junLabel: '2 698 ₽', isCost: true },
-  { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 30.71, junNum: 35, mayLabel: '30,71%', junLabel: '35,00%', isCost: false },
-  { param: 'Квал. заявки, ед.', mayNum: 39, junNum: 28, mayLabel: '39', junLabel: '28', isCost: false },
-  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 10198, junNum: 7707, mayLabel: '10 198 ₽', junLabel: '7 707 ₽', isCost: true },
+  { param: 'Рекламный бюджет, руб.', mayNum: 400399, junNum: 215808, mayLabel: '400 399 ₽', junLabel: '215 808 ₽', isCost: false },
+  { param: 'Заявки, ед.', mayNum: 154, junNum: 109, mayLabel: '154', junLabel: '109', isCost: false },
+  { param: 'Стоимость заявки (с НДС), руб.', mayNum: 2600, junNum: 1980, mayLabel: '2 600 ₽', junLabel: '1 980 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', mayNum: 84, junNum: 73.39, mayLabel: '84%', junLabel: '73,39%', isCost: false },
+  { param: 'Чистые заявки, ед.', mayNum: 130, junNum: 80, mayLabel: '130', junLabel: '80', isCost: false },
+  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 3080, junNum: 2698, mayLabel: '3 080 ₽', junLabel: '2 698 ₽', isCost: true },
+  { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 38, junNum: 35, mayLabel: '38%', junLabel: '35,00%', isCost: false },
+  { param: 'Квал. заявки, ед.', mayNum: 50, junNum: 28, mayLabel: '50', junLabel: '28', isCost: false },
+  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 8008, junNum: 7707, mayLabel: '8 008 ₽', junLabel: '7 707 ₽', isCost: true },
 ];
 
 export const monthlyTrend: Array<{ m: string; cost: number | null; uniq: number | null; costUniq: number | null; clean: number | null; costClean: number | null; qual: number | null; costQual: number | null }> = [
   { m: 'Июл', cost: 408817, uniq: 116, costUniq: 3524, clean: 105, costClean: 3893, qual: 35, costQual: 11680 },
-  { m: 'Авг', cost: 397720, uniq: 150, costUniq: 2651, clean: 127, costClean: 3132, qual: 39, costQual: 10198 },
+  { m: 'Авг', cost: 400399, uniq: 154, costUniq: 2600, clean: 130, costClean: 3080, qual: 50, costQual: 8008 },
   { m: 'Сен', cost: 215808, uniq: 109, costUniq: 1980, clean: 80, costClean: 2698, qual: 28, costQual: 7707 },
   { m: 'Окт', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
 ];
