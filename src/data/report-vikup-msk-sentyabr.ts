@@ -6,9 +6,9 @@ export { NEON, AGENCY };
 export const CLIENT = {
   name: 'Выкуп Автобумс МСК',
   id: 'vikup_msk',
-  site1: 'https://выкуп-авто-мск.рф/',
+  site1: 'https://1.выкуп-авто-мск.рф/',
   site2: 'https://центр-выкупа-авто-мск.рф/',
-  site3: 'https://выкуп-авто-срочно-мск.рф/',
+  site3: 'https://выкуп-авто-срочно-мск.com/',
   period: 'Сентябрь 2026',
   weeklyStats: 'https://docs.google.com/spreadsheets/d/1F9Rj5pt4D4VTYdkDlIVI3qDuSS9ZFX4D6nhqVc36hCw/edit?gid=1882095314#gid=1882095314',
   paybackFunnel: 'https://docs.google.com/spreadsheets/d/1F9Rj5pt4D4VTYdkDlIVI3qDuSS9ZFX4D6nhqVc36hCw/edit?gid=374539239#gid=374539239',
@@ -24,7 +24,7 @@ export const aboutLinks = [
     links: [
       { href: CLIENT.site1, cta: '1.выкуп-авто-мск.рф' },
       { href: CLIENT.site2, cta: 'центр-выкупа-авто-мск.рф' },
-      { href: CLIENT.site3, cta: '2.выкуп-авто-срочно-мск.рф' },
+      { href: CLIENT.site3, cta: 'выкуп-авто-срочно-мск.com' },
     ],
   },
 ];
@@ -80,7 +80,7 @@ export const planFactBySegment: Record<SegmentKey, Array<{ param: string; planNu
     { param: 'Конверсия из чистой в квал. заявку, %', planNum: 80, factNum: 61.46, planLabel: '80%', factLabel: '61,46%', isCost: false },
     { param: 'Квал. заявки, ед.', planNum: 118, factNum: 59, planLabel: '118', factLabel: '59', isCost: false },
     { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 2474, factNum: 3690, planLabel: '2 474 ₽', factLabel: '3 690 ₽', isCost: true },
-    { param: 'Продажи (выкупы), ед.', planNum: 5, factNum: 1, planLabel: '5', factLabel: '1', isCost: false },
+    { param: 'Продажи (выкупы), ед.', planNum: 5, factNum: 0, planLabel: '5', factLabel: '0', isCost: false },
   ],
 };
 
@@ -126,7 +126,7 @@ export const monthCompareBySegment: Record<SegmentKey, Array<{ param: string; ma
     { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 63.25, junNum: 61.46, mayLabel: '63,25%', junLabel: '61,46%', isCost: false },
     { param: 'Квал. заявки, ед.', mayNum: 105, junNum: 59, mayLabel: '105', junLabel: '59', isCost: false },
     { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 2920, junNum: 3690, mayLabel: '2 920 ₽', junLabel: '3 690 ₽', isCost: true },
-    { param: 'Продажи (выкупы), ед.', mayNum: 4, junNum: 1, mayLabel: '4', junLabel: '1', isCost: false },
+    { param: 'Продажи (выкупы), ед.', mayNum: 4, junNum: 0, mayLabel: '4', junLabel: '0', isCost: false },
   ],
 };
 
@@ -165,7 +165,7 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Июн', cost: 292922, uniq: 165, costUniq: 1775, clean: 138, costClean: 2123, qual: 11, costQual: 26629, sales: 6 },
     { m: 'Июл', cost: 266091, uniq: 125, costUniq: 2129, clean: 90, costClean: 2957, qual: 79, costQual: 3368, sales: 4 },
     { m: 'Авг', cost: 306629, uniq: 206, costUniq: 1488, clean: 166, costClean: 1847, qual: 105, costQual: 2920, sales: 4 },
-    { m: 'Сен', cost: 217681, uniq: 111, costUniq: 1961, clean: 96, costClean: 2268, qual: 59, costQual: 3690, sales: 1 },
+    { m: 'Сен', cost: 217681, uniq: 111, costUniq: 1961, clean: 96, costClean: 2268, qual: 59, costQual: 3690, sales: 0 },
     { m: 'Окт', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null, sales: null },
   ],
 };
