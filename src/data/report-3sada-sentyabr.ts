@@ -22,12 +22,12 @@ export const planFact = [
   { param: 'Рекламный бюджет, руб.', planNum: 200000, factNum: 67950, planLabel: '200 000 ₽', factLabel: '67 950 ₽', isCost: false },
   { param: 'Заявки, ед.', planNum: 40, factNum: 56, planLabel: '40', factLabel: '56', isCost: false },
   { param: 'Стоимость заявки (с НДС), руб.', planNum: 5000, factNum: 1213, planLabel: '5 000 ₽', factLabel: '1 213 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', planNum: 80, factNum: 55.36, planLabel: '80%', factLabel: '55,36%', isCost: false },
-  { param: 'Чистые заявки, ед.', planNum: 32, factNum: 31, planLabel: '32', factLabel: '31', isCost: false },
-  { param: 'Стоимость чистой заявки (с НДС), руб.', planNum: 6250, factNum: 2192, planLabel: '6 250 ₽', factLabel: '2 192 ₽', isCost: true },
-  { param: 'Конверсия из чистой в квал. заявку, %', planNum: 65, factNum: 22.58, planLabel: '65%', factLabel: '22,58%', isCost: false },
-  { param: 'Квал. заявки, ед.', planNum: 20, factNum: 7, planLabel: '20', factLabel: '7', isCost: false },
-  { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 10000, factNum: 9707, planLabel: '10 000 ₽', factLabel: '9 707 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', planNum: 80, factNum: 57.14, planLabel: '80%', factLabel: '57,14%', isCost: false },
+  { param: 'Чистые заявки, ед.', planNum: 32, factNum: 32, planLabel: '32', factLabel: '32', isCost: false },
+  { param: 'Стоимость чистой заявки (с НДС), руб.', planNum: 6250, factNum: 2123, planLabel: '6 250 ₽', factLabel: '2 123 ₽', isCost: true },
+  { param: 'Конверсия из чистой в квал. заявку, %', planNum: 65, factNum: 25, planLabel: '65%', factLabel: '25%', isCost: false },
+  { param: 'Квал. заявки, ед.', planNum: 20, factNum: 8, planLabel: '20', factLabel: '8', isCost: false },
+  { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 10000, factNum: 8494, planLabel: '10 000 ₽', factLabel: '8 494 ₽', isCost: true },
 ];
 
 export const planFactNotes = [
@@ -39,26 +39,30 @@ export const monthCompare = [
   { param: 'Рекламный бюджет, руб.', mayNum: 80515, junNum: 67950, mayLabel: '80 515 ₽', junLabel: '67 950 ₽', isCost: false },
   { param: 'Заявки, ед.', mayNum: 41, junNum: 56, mayLabel: '41', junLabel: '56', isCost: false },
   { param: 'Стоимость заявки (с НДС), руб.', mayNum: 1964, junNum: 1213, mayLabel: '1 964 ₽', junLabel: '1 213 ₽', isCost: true },
-  { param: '% чистых заявок от общего числа', mayNum: 73.17, junNum: 55.36, mayLabel: '73,17%', junLabel: '55,36%', isCost: false },
-  { param: 'Чистые заявки, ед.', mayNum: 30, junNum: 31, mayLabel: '30', junLabel: '31', isCost: false },
-  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 2684, junNum: 2192, mayLabel: '2 684 ₽', junLabel: '2 192 ₽', isCost: true },
-  { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 2.44, junNum: 22.58, mayLabel: '2,44%', junLabel: '22,58%', isCost: false },
-  { param: 'Квал. заявки, ед.', mayNum: 1, junNum: 7, mayLabel: '1', junLabel: '7', isCost: false },
-  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 80515, junNum: 9707, mayLabel: '80 515 ₽', junLabel: '9 707 ₽', isCost: true },
+  { param: '% чистых заявок от общего числа', mayNum: 73.17, junNum: 57.14, mayLabel: '73,17%', junLabel: '57,14%', isCost: false },
+  { param: 'Чистые заявки, ед.', mayNum: 30, junNum: 32, mayLabel: '30', junLabel: '32', isCost: false },
+  { param: 'Стоимость чистой заявки (с НДС), руб.', mayNum: 2684, junNum: 2123, mayLabel: '2 684 ₽', junLabel: '2 123 ₽', isCost: true },
+  { param: 'Конверсия из чистой в квал. заявку, %', mayNum: 2.44, junNum: 25, mayLabel: '2,44%', junLabel: '25%', isCost: false },
+  { param: 'Квал. заявки, ед.', mayNum: 1, junNum: 8, mayLabel: '1', junLabel: '8', isCost: false },
+  { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 80515, junNum: 8494, mayLabel: '80 515 ₽', junLabel: '8 494 ₽', isCost: true },
 ];
 
 // ── Блок: динамика по месяцам ──
 export const monthlyTrend = [
   { m: 'Авг', cost: null, leads: null, cpl: null, clean: null, ccpl: null, qual: null, qcpl: null },
-  { m: 'Сен', cost: 67950, leads: 56, cpl: 1213, clean: 31, ccpl: 2192, qual: 7, qcpl: 9707 },
+  { m: 'Сен', cost: 67950, leads: 56, cpl: 1213, clean: 32, ccpl: 2123, qual: 8, qcpl: 8494 },
   { m: 'Окт', cost: null, leads: null, cpl: null, clean: null, ccpl: null, qual: null, qcpl: null },
 ];
 
 export const marketerConclusion =
-  'Сентябрь прошёл с сильными результатами по стоимости обращений. При бюджете 67 950 ₽ получено 56 заявок — на 40% больше плановых 40, а стоимость заявки составила 1 213 ₽ вместо запланированных 5 000 ₽. Стоимость чистой заявки — 2 192 ₽ против плановых 6 250 ₽, а стоимость квалифицированной заявки (9 707 ₽) укладывается в плановые 10 000 ₽. По сравнению с точкой А стоимость заявки снизилась с 1 964 ₽ до 1 213 ₽ (−38%), стоимость чистой заявки — с 2 684 ₽ до 2 192 ₽ (−18%), а число квалифицированных заявок выросло с 1 до 7: конверсия из чистой заявки в квалифицированную выросла с 2,44% до 22,58%, а стоимость квалифицированной заявки сократилась с 80 515 ₽ до 9 707 ₽. Это хорошая основа, чтобы в октябре наращивать объём при сохранении низкой цены обращения.';
+  'Сентябрь прошёл с сильными результатами по стоимости обращений. При бюджете 67 950 ₽ получено 56 заявок — на 40% больше плановых 40, а стоимость заявки составила 1 213 ₽ вместо запланированных 5 000 ₽. Стоимость чистой заявки — 2 123 ₽ против плановых 6 250 ₽, а стоимость квалифицированной заявки (8 494 ₽) укладывается в плановые 10 000 ₽. По сравнению с точкой А стоимость заявки снизилась с 1 964 ₽ до 1 213 ₽ (−38%), стоимость чистой заявки — с 2 684 ₽ до 2 123 ₽ (−21%), а число квалифицированных заявок выросло с 1 до 8: конверсия из чистой заявки в квалифицированную выросла с 2,44% до 25%, а стоимость квалифицированной заявки сократилась с 80 515 ₽ до 8 494 ₽. Расход получился заметно ниже планового (67 950 ₽ при плане 200 000 ₽): спрос по направлениям снижался в рамках сезонного спада, поэтому освоить больший бюджет без потери качества трафика не удалось. Это хорошая основа, чтобы в октябре наращивать объём при сохранении низкой цены обращения.';
 
 // ── Работы ──
 export const workDone = [
+  'Внесение правок на главную страницу сайта и на страницы услуг: добавление новых блоков, корректировка старых блоков, обновление текстовой информации, замена визуальной составляющей',
+  'Контроль приходящих заявок, запрос обратной связи, анализ их качества',
+  'Регулярные рекомендации по работе с рекламными заявками и CRM-системой',
+  'Подключение email-трекинга: отслеживание заявок с почты',
   'Отслеживание показателей рекламы',
   'Оптимизация рекламного бюджета под задачи за счёт:',
   'Работы с корректировками пола/возраста и устройств',
