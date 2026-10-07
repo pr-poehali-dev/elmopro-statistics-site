@@ -30,9 +30,7 @@ export const planFact = [
   { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 10000, factNum: 8494, planLabel: '10 000 ₽', factLabel: '8 494 ₽', isCost: true },
 ];
 
-export const planFactNotes = [
-  '* 18 лидов в статистике не обработаны',
-];
+export const planFactNotes: string[] = [];
 
 // ── Блок: точка А vs факт сентябрь ──
 export const monthCompare = [
