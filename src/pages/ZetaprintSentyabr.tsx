@@ -187,7 +187,7 @@ const ZetaprintSentyabr = () => {
               <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary">Яндекс Директ · ежемесячный отчёт</span>
             </div>
             <h1 className="font-display text-4xl font-semibold leading-tight md:text-[58px] md:leading-[1.03]">
-              Zetaprint
+              ЗетаПринт
             </h1>
             <h2 className="mt-2 font-display text-2xl font-semibold leading-tight text-primary md:text-4xl">
               Отчёт {CLIENT.period}
@@ -315,7 +315,7 @@ const ZetaprintSentyabr = () => {
           <SegmentTabs value={segTrends} onChange={setSegTrends} />
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card>
+            <Card className="lg:col-span-2">
               <ChartTitle title="Бюджет, ₽" sub="Январь — Октябрь"
                 action={<ValueToggle show={showVals.cost} setShow={(v) => setShowVals((s) => ({ ...s, cost: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
@@ -433,7 +433,7 @@ const ZetaprintSentyabr = () => {
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
             <p className="text-sm leading-relaxed text-foreground/90">
-              В сентябре 2026 зафиксирован рекордный рост объёма заявок по проекту Zetaprint: суммарно получено
+              В сентябре 2026 зафиксирован рекордный рост объёма заявок по проекту ЗетаПринт: суммарно получено
               <b> 374 чистых лида 1-го уровня (+41,1% к плану)</b> и <b>346 чистых лидов 2-го уровня (+64,8% к плану)</b> при
               снижении стоимости чистого обращения до <b>1 606 ₽</b> (на 23,7% ниже плана). Направление «Карты игральные»
               показало высокую динамику: стоимость чистой заявки 1-го уровня снизилась на 35,8% (до 1 246 ₽), а 2-го

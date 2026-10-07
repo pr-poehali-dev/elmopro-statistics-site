@@ -1,10 +1,10 @@
-// ── Данные отчёта клиента Zetaprint ──
+// ── Данные отчёта клиента ЗетаПринт ──
 import { NEON, AGENCY } from '@/data/report';
 
 export { NEON, AGENCY };
 
 export const CLIENT = {
-  name: 'Zetaprint',
+  name: 'ЗетаПринт',
   id: 'zetaprint',
   site: 'https://zetaprint.ru/',
   siteCards: 'https://cards.zetaprint.ru/',
