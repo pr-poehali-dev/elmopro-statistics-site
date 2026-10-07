@@ -138,10 +138,10 @@ const VikupSpbSentyabr = () => {
   const axisColor = 'hsl(240,4%,45%)';
 
   const [showVals, setShowVals] = useState({ cost: false, sales: false, uniq: false, costUniq: false, clean: false, costClean: false, qual: false, costQual: false, demand: false });
-  const [segPlanFact, setSegPlanFact] = useState<SegmentKey>('spb');
-  const [segMonths, setSegMonths] = useState<SegmentKey>('spb');
-  const [segTrends, setSegTrends] = useState<SegmentKey>('spb');
-  const [segNextPlan, setSegNextPlan] = useState<SegmentKey>('spb');
+  const [segPlanFact, setSegPlanFact] = useState<SegmentKey>('premium');
+  const [segMonths, setSegMonths] = useState<SegmentKey>('premium');
+  const [segTrends, setSegTrends] = useState<SegmentKey>('premium');
+  const [segNextPlan, setSegNextPlan] = useState<SegmentKey>('premium');
 
   const scroll = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -438,7 +438,7 @@ const VikupSpbSentyabr = () => {
             <div className="mb-3 flex items-center gap-2 font-display text-lg font-semibold uppercase text-primary">
               <Icon name="Lightbulb" size={20} /> Вывод маркетолога
             </div>
-            <p className="text-sm leading-relaxed text-foreground/90">В сентябре направление «Премиум СПБ» показало мощный рост: при бюджете 283 581 ₽ получено 247 заявок против 70 в августе, а доля спама снизилась с 34,29% до 8,91% — трафик стал заметно качественнее. Квалифицированных заявок стало 165 (было 33), а их стоимость снизилась с 2 122 ₽ до 1 719 ₽. Количество продаж (выкупов) выросло с 3 до 27 — это лучший результат за все месяцы года, а план по продажам (7) перевыполнен почти в четыре раза. Все плановые показатели по объёму заявок, чистым и квалифицированным лидам превышены. Направление СПБ запущено с 01.10 на новый кабинет и домен. В октябре планируем закрепить рост по Премиум СПБ и выйти на плановые показатели по СПБ.</p>
+            <p className="text-sm leading-relaxed text-foreground/90">В сентябре направление «СПБ-1» показало мощный рост: при бюджете 283 581 ₽ получено 247 заявок, а доля спама снизилась с 34,29% до 8,91% — трафик стал заметно качественнее. Квалифицированных заявок получено 165, а их стоимость снизилась с 2 122 ₽ до 1 719 ₽. Получили 30 выкупов — это лучший результат за все месяцы года, а план по продажам (7) перевыполнен в четыре раза. Все плановые показатели по объёму заявок, чистым и квалифицированным лидам превышены. Направление СПБ-2 запущено с 01.10 на новый кабинет и домен. В октябре планируем закрепить рост по СПБ-1 и выйти на плановые показатели по СПБ-2.</p>
           </Card>
         </Section>
 

@@ -31,8 +31,8 @@ export const aboutLinks = [
 
 // ── Сегменты рекламы ──
 export const segments = [
-  { key: 'spb', label: 'СПБ', icon: 'MapPin' },
-  { key: 'premium', label: 'Премиум СПБ', icon: 'MapPin' },
+  { key: 'premium', label: 'СПб-1 (Премиум)', icon: 'MapPin' },
+  { key: 'spb', label: 'СПб-2', icon: 'MapPin' },
 ] as const;
 
 export type SegmentKey = typeof segments[number]['key'];
@@ -65,7 +65,7 @@ export const planFactBySegment: Record<SegmentKey, Array<{ param: string; planNu
     { param: 'Конверсия из заявки в квал. заявку, %', planNum: 90, factNum: 90.66, planLabel: '90%', factLabel: '90,66%', isCost: false },
     { param: 'Квал. заявки, ед.', planNum: 92, factNum: 165, planLabel: '92', factLabel: '165', isCost: false },
     { param: 'Стоимость квал. заявки (с НДС), руб.', planNum: 3205.43, factNum: 1719, planLabel: '3205,43 ₽', factLabel: '1 719 ₽', isCost: true },
-    { param: 'Продажи (выкупы), ед.', planNum: 7, factNum: 27, planLabel: '7', factLabel: '27', isCost: false },
+    { param: 'Продажи (выкупы), ед.', planNum: 7, factNum: 30, planLabel: '7', factLabel: '30', isCost: false },
   ],
 };
 
@@ -97,7 +97,7 @@ export const monthCompareBySegment: Record<SegmentKey, Array<{ param: string; ma
     { param: 'Конверсия из заявки в квал. заявку, %', mayNum: 71.74, junNum: 90.66, mayLabel: '71,74%', junLabel: '90,66%', isCost: false },
     { param: 'Квал. заявки, ед.', mayNum: 33, junNum: 165, mayLabel: '33', junLabel: '165', isCost: false },
     { param: 'Стоимость квал. заявки (с НДС), руб.', mayNum: 2122, junNum: 1719, mayLabel: '2 122 ₽', junLabel: '1 719 ₽', isCost: true },
-    { param: 'Продажи (выкупы), ед.', mayNum: 3, junNum: 27, mayLabel: '3', junLabel: '27', isCost: false },
+    { param: 'Продажи (выкупы), ед.', mayNum: 3, junNum: 30, mayLabel: '3', junLabel: '30', isCost: false },
   ],
 };
 
@@ -124,7 +124,7 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Июн', cost: 300362, uniq: 135, costUniq: 2225, clean: 110, costClean: 2731, qual: 45, costQual: 6675, sales: 6 },
     { m: 'Июл', cost: 249864, uniq: 173, costUniq: 1444, clean: 120, costClean: 2082, qual: 118, costQual: 2117, sales: 8 },
     { m: 'Авг', cost: 70039, uniq: 70, costUniq: 1001, clean: 46, costClean: 1523, qual: 33, costQual: 2122, sales: 3 },
-    { m: 'Сен', cost: 283581, uniq: 247, costUniq: 1148, clean: 182, costClean: 1558, qual: 165, costQual: 1719, sales: 27 },
+    { m: 'Сен', cost: 283581, uniq: 247, costUniq: 1148, clean: 182, costClean: 1558, qual: 165, costQual: 1719, sales: 30 },
     { m: 'Окт', cost: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null, sales: null },
   ],
 };
