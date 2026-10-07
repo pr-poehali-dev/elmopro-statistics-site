@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import {
   NEON, CLIENT, AGENCY, aboutLinks,
-  planFactBySegment, monthCompareBySegment, monthlyTrend,
+  planFactBySegment, monthlyTrend,
   workDone, workPlan, growthPoints, nextPlanBySegment,
 } from '@/data/report-rightbox';
 import ReportToolbar from '@/components/ReportToolbar';
@@ -243,6 +243,7 @@ const RightboxSentyabr = () => {
                 </tbody>
               </table>
             </div>
+            <p className="mt-4 text-sm text-muted-foreground">* Реклама стартовала 7 сентября.</p>
             <div className="mt-4 flex flex-wrap gap-4 font-mono text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><Icon name="CircleCheck" size={14} style={{ color: NEON.pos }} /> выполнение ≥ 90%</span>
               <span className="flex items-center gap-1.5"><Icon name="CircleAlert" size={14} style={{ color: NEON.amber }} /> 60–89%</span>
@@ -254,33 +255,18 @@ const RightboxSentyabr = () => {
         {/* 3. АВГУСТ → СЕНТЯБРЬ */}
         <Section id="months" num="03" title="Сравнение с прошлым месяцем" icon="GitCompareArrows" sub="Факт август → факт сентябрь 2026">
           <Card>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px]">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wide text-muted-foreground">
-                    <th className="pb-3 font-500">Параметры</th>
-                    <th className="pb-3 text-right font-500">Факт август</th>
-                    <th className="pb-3 text-right font-500">Факт сентябрь</th>
-                    <th className="pb-3 text-right font-500">Δ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {monthCompareBySegment.total.map((r) => (
-                    <tr key={r.param} className="border-b border-border/50 transition-colors hover:bg-secondary/40">
-                      <td className="py-3.5 font-500">{r.param}</td>
-                      <td className="py-3.5 text-right font-mono text-muted-foreground">{r.mayLabel}</td>
-                      <td className="py-3.5 text-right font-mono font-bold">{r.junLabel}</td>
-                      <td className="py-3.5 text-right"><MonthDelta mayNum={r.mayNum} junNum={r.junNum} isCost={r.isCost} /></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="flex items-start gap-3">
+              <Icon name="Info" size={20} style={{ color: NEON.amber }} />
+              <p className="text-sm leading-relaxed text-foreground/90">
+                Реклама была остановлена 09 августа из-за отсутствия рекламного бюджета, поэтому корректное сравнение с августом недоступно.
+              </p>
             </div>
           </Card>
         </Section>
 
         {/* 4. ТРЕНДЫ С НАЧАЛА ГОДА */}
         <Section id="trends" num="04" title="Тренды с начала года" icon="ChartLine" sub="Динамика по месяцам с мая 2026">
+          <p className="mb-4 text-sm text-muted-foreground">* Данные за ранние периоды взяты из Calltouch.</p>
           <div className="grid gap-6 lg:grid-cols-2">
             <Card>
               <ChartTitle title="Бюджет, ₽" sub="Май — Октябрь"

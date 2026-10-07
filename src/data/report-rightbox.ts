@@ -10,7 +10,7 @@ export const CLIENT = {
   siteMirror: 'https://райтбокс.рф/',
   period: 'Сентябрь 2026',
   weeklyStats: 'https://docs.google.com/spreadsheets/d/11PjUYEiMB0omnL7poTXnIQqw-a-jBRKixHlVE6fHMbk/edit?gid=107427889',
-  paybackFunnel: 'https://docs.google.com/spreadsheets/d/11PjUYEiMB0omnL7poTXnIQqw-a-jBRKixHlVE6fHMbk/edit?gid=1267657330',
+  paybackFunnel: 'https://docs.google.com/spreadsheets/d/11PjUYEiMB0omnL7poTXnIQqw-a-jBRKixHlVE6fHMbk/edit?gid=1767247993#gid=1767247993',
 };
 
 export const aboutLinks = [
@@ -172,13 +172,13 @@ export const nextPlanBySegment: Record<SegmentKeyTotal, Array<{ param: string; p
   ],
   total: [
     { param: 'Рекламный бюджет, руб.', plan: '150 000 ₽' },
-    { param: 'Уникальные лиды (заявки), ед.', plan: '100' },
-    { param: 'Стоимость уникального лида, руб.', plan: '1 500 ₽' },
-    { param: 'Чистые лиды, ед.', plan: '70' },
-    { param: 'Стоимость чистой заявки, руб.', plan: '2 143 ₽' },
+    { param: 'Уникальные лиды (заявки), ед.', plan: '75' },
+    { param: 'Стоимость уникального лида, руб.', plan: '2 000 ₽' },
+    { param: 'Чистые лиды, ед.', plan: '53' },
+    { param: 'Стоимость чистой заявки, руб.', plan: '2 857 ₽' },
     { param: 'Конверсия в чистые лиды, %', plan: '70,00%' },
-    { param: 'Квал. заявки, ед.', plan: '42' },
-    { param: 'Стоимость квал. заявки, руб.', plan: '3 571 ₽' },
+    { param: 'Квал. заявки, ед.', plan: '31' },
+    { param: 'Стоимость квал. заявки, руб.', plan: '4 839 ₽' },
     { param: 'Конверсия в квал. лиды (от чистых), %', plan: '60,00%' },
   ],
 };
