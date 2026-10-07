@@ -169,7 +169,7 @@ export const monthlyTrendBySegment: Record<SegmentKey, Array<{ m: string; cost: 
     { m: 'Апр', cost: 410000, clicks: null, uniq: 142, costUniq: 2887, clean: 130, costClean: 2887, qual: 58, costQual: 7069 },
     { m: 'Май', cost: 414000, clicks: null, uniq: 166, costUniq: 2494, clean: 152, costClean: 2493, qual: 64, costQual: 6469 },
     { m: 'Июн', cost: 456000, clicks: null, uniq: 198, costUniq: 2303, clean: 181, costClean: 2303, qual: 74, costQual: 6162 },
-    { m: 'Июл', cost: 437000, clicks: null, uniq: 181, costUniq: 2414, clean: 167, costClean: 2414, qual: 71, costQual: 6155 },
+    { m: 'Июл', cost: 437000, clicks: null, uniq: 181, costUniq: 2414, clean: 167, costClean: 2414, qual: 71, costQual: 9348 },
     { m: 'Авг', cost: 432953, clicks: null, uniq: 199, costUniq: 2176, clean: 178, costClean: 2432, qual: 72, costQual: 6013 },
     { m: 'Сен', cost: 466165, clicks: null, uniq: 264, costUniq: 1766, clean: 248, costClean: 1880, qual: 76, costQual: 6134 },
     { m: 'Окт', cost: null, clicks: null, uniq: null, costUniq: null, clean: null, costClean: null, qual: null, costQual: null },
