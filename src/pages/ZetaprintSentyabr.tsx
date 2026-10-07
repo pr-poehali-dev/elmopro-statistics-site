@@ -322,7 +322,7 @@ const ZetaprintSentyabr = () => {
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}к`} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Line type="monotone" dataKey="cost" name="Бюджет" stroke={NEON.cyan} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.cost && <LabelList dataKey="cost" content={<ValueLabel fill={NEON.cyan} isLight={isLight} />} />}
@@ -338,7 +338,7 @@ const ZetaprintSentyabr = () => {
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} />
                   <Line type="monotone" dataKey="uniq" name="Уникальные лиды" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.uniq && <LabelList dataKey="uniq" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
@@ -348,13 +348,13 @@ const ZetaprintSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость уникального лида, ₽"
+              <ChartTitle title="Стоимость уникального лида, ₽" sub="Январь — Октябрь"
                 action={<ValueToggle show={showVals.costUniq} setShow={(v) => setShowVals((s) => ({ ...s, costUniq: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Line type="monotone" dataKey="costUniq" name="Стоимость уник. лида" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.costUniq && <LabelList dataKey="costUniq" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
@@ -370,7 +370,7 @@ const ZetaprintSentyabr = () => {
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} />
                   <Line type="monotone" dataKey="clean" name="Чистые лиды" stroke={NEON.lime} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.clean && <LabelList dataKey="clean" content={<ValueLabel fill={NEON.lime} isLight={isLight} />} />}
@@ -380,13 +380,13 @@ const ZetaprintSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость чистого лида, ₽"
+              <ChartTitle title="Стоимость чистого лида, ₽" sub="Январь — Октябрь"
                 action={<ValueToggle show={showVals.costClean} setShow={(v) => setShowVals((s) => ({ ...s, costClean: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Line type="monotone" dataKey="costClean" name="Стоимость чист. лида" stroke={NEON.violet} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.costClean && <LabelList dataKey="costClean" content={<ValueLabel fill={NEON.violet} isLight={isLight} />} />}
@@ -402,7 +402,7 @@ const ZetaprintSentyabr = () => {
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} />
                   <Line type="monotone" dataKey="qual" name="Квал. лиды" stroke={NEON.amber} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.qual && <LabelList dataKey="qual" content={<ValueLabel fill={NEON.amber} isLight={isLight} />} />}
@@ -412,13 +412,13 @@ const ZetaprintSentyabr = () => {
             </Card>
 
             <Card>
-              <ChartTitle title="Стоимость квалифицированного лида, ₽"
+              <ChartTitle title="Стоимость квалифицированного лида, ₽" sub="Январь — Октябрь"
                 action={<ValueToggle show={showVals.costQual} setShow={(v) => setShowVals((s) => ({ ...s, costQual: v }))} />} />
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={trendData} margin={{ top: 30 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={isLight ? "hsl(0,0%,90%)" : "hsl(0,0%,20%)"} />
                   <XAxis dataKey="m" stroke={axisColor} fontSize={12} />
-                  <YAxis stroke={axisColor} fontSize={11} />
+                  <YAxis width={48} stroke={axisColor} fontSize={11} />
                   <Tooltip contentStyle={tipStyle} formatter={(v: number) => `${fmt(v)} ₽`} />
                   <Line type="monotone" dataKey="costQual" name="Стоимость квал. лида" stroke={NEON.neg} strokeWidth={2.5} dot={{ r: 3 }} connectNulls={false}>
                     {showVals.costQual && <LabelList dataKey="costQual" content={<ValueLabel fill={NEON.neg} isLight={isLight} />} />}
